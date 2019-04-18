@@ -1,4 +1,4 @@
-package univ
+package theater
 
 import java.sql.Connection
 import javax.sql.DataSource

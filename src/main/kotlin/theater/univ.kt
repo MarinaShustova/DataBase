@@ -1,4 +1,4 @@
-package univ
+package theater
 
 
 fun main() {

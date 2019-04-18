@@ -1,4 +1,4 @@
-package univ
+package theater
 
 
 class Controller(private val service: Service) {

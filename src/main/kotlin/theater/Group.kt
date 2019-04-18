@@ -1,4 +1,4 @@
-package univ
+package theater
 
 import java.lang.IllegalStateException
 import java.sql.Connection

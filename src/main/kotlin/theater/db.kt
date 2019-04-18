@@ -1,4 +1,4 @@
-package univ
+package theater
 
 import org.flywaydb.core.Flyway
 import org.postgresql.ds.PGSimpleDataSource
