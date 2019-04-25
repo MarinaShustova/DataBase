@@ -74,14 +74,16 @@ class PerformanceDao(private val dataSource: DataSource) {
             Performance(
                 rs.getLong("pid"), rs.getString("production_designer"),
                 rs.getString("production_director"), rs.getString("production_conductor"),
-                rs.getInt("season"))
+                rs.getInt("season")
+            )
         } else {
             null
         }
     }
 
     fun updatePerformance(performance: Performance) {
-        val stmt = dataSource.connection.prepareStatement("UPDATE performances SET production_designer = ?, production_director = ?, production_conductor = ?, season = ? WHERE id = ?")
+        val stmt =
+            dataSource.connection.prepareStatement("UPDATE performances SET production_designer = ?, production_director = ?, production_conductor = ?, season = ? WHERE id = ?")
         stmt.setString(1, performance.production_designer)
         stmt.setString(2, performance.production_director)
         stmt.setString(3, performance.production_conductor)
@@ -91,7 +93,8 @@ class PerformanceDao(private val dataSource: DataSource) {
     }
 
     fun getPerformances(page: Page): List<Performance> {
-        val theQuery = "SELECT id, production_designer, production_director, production_conductor, season  FROM performances ORDER BY season LIMIT ? OFFSET ?"
+        val theQuery =
+            "SELECT id, production_designer, production_director, production_conductor, season  FROM performances ORDER BY season LIMIT ? OFFSET ?"
         val conn = dataSource.connection
         val stmt = conn.prepareStatement(theQuery)
         stmt.setInt(1, page.size)
@@ -100,13 +103,31 @@ class PerformanceDao(private val dataSource: DataSource) {
         val res = ArrayList<Performance>()
         val rs = stmt.executeQuery()
         while (rs.next()) {
-            res.add(Performance(
-                rs.getLong("id"), rs.getString("production_designer"),
-                rs.getString("production_director"), rs.getString("production_conductor"),
-                rs.getInt("season"))
+            res.add(
+                Performance(
+                    rs.getLong("id"), rs.getString("production_designer"),
+                    rs.getString("production_director"), rs.getString("production_conductor"),
+                    rs.getInt("season")
+                )
             )
         }
         return res
+    }
+
+    fun addConcertTourToPerformance(performanceId: Long, concertTourId: Long) {
+        val stmt =
+            dataSource.connection.prepareStatement("INSERT INTO goes_to (performance_id, tour_id) VALUES (?,?)")
+        stmt.setLong(1, performanceId)
+        stmt.setLong(2, concertTourId)
+        stmt.executeUpdate()
+    }
+
+    fun addRoleToPerformance(performanceId: Long, roleId: Long) {
+        val stmt =
+            dataSource.connection.prepareStatement("INSERT INTO contains (performance_id, role_id) VALUES (?,?)")
+        stmt.setLong(1, performanceId)
+        stmt.setLong(2, roleId)
+        stmt.executeUpdate()
     }
 
 }

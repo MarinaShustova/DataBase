@@ -33,7 +33,8 @@ fun main() {
                     } else {
                         "Unknown command"
                     }
-                } else if (it.startsWith("get")) {
+                }
+                else if (it.startsWith("get")) {
                     if (it.contains("performances")) {
                         controller.getPerformances(it.substring("get performances".length).trim())
                     } else if (it.contains("concert tours")) {
@@ -45,7 +46,8 @@ fun main() {
                     } else {
                         "Unknown command"
                     }
-                } else if (it.startsWith("update")) {
+                }
+                else if (it.startsWith("update")) {
                     if (it.contains("performance")) {
                         controller.updatePerformance(it.substring("update performance".length).trim())
                     } else if (it.contains("concert tour")) {
@@ -67,6 +69,17 @@ fun main() {
                         controller.deleteRole(it.substring("delete role".length).trim())
                     } else if (it.contains("feature")) {
                         controller.deleteFeature(it.substring("delete feature".length).trim())
+                    } else {
+                        "Unknown command"
+                    }
+                }
+                else if (it.startsWith("link")){
+                    if (it.contains("performance") && it.contains("concert tour")) {
+                        controller.addConcertTourToPerformance(it.substring("link performance with concert tour".length).trim())
+                    } else if (it.contains("role") && it.contains("performance")) {
+                        controller.addRoleToPerformance(it.substring("link performance with role".length).trim())
+                    } else if (it.contains("feature") && it.contains("role")) {
+                        controller.addFeatureToRole(it.substring("link role with feature".length).trim())
                     } else {
                         "Unknown command"
                     }

@@ -93,4 +93,12 @@ class RoleDao(private val dataSource: DataSource) {
         return res
     }
 
+    fun addFeatureToRole(roleId: Long, featureId: Long) {
+        val stmt =
+            dataSource.connection.prepareStatement("INSERT INTO requires (role_id, feature_id) VALUES (?,?)")
+        stmt.setLong(1, roleId)
+        stmt.setLong(2, featureId)
+        stmt.executeUpdate()
+    }
+
 }

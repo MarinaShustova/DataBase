@@ -20,15 +20,6 @@ class Service(
         return transaction(dataSource) {
 
             val performanceIds = performanceDao.createPerformances(toCreate)
-
-//            val counts = toCreate.groupBy { it.group.id }
-//                .map { it.key to it.value.size }
-
-//            for ((group, cnt) in counts) {
-//                if (group != null) {
-//                    groupDao.addStudents(group, cnt)
-//                }
-//            }
             performanceIds
         }
     }
@@ -182,27 +173,23 @@ class Service(
         }
     }
 
-//    fun getGroupByNumber(groupNumber: String): Group? {
-//        return transaction(dataSource) {
-//            groupDao.getGroupByNumber(groupNumber)
-//        }
-//
-//    }
-//
-//    fun createGroup(group: Group): Long {
-//        return transaction(dataSource) {
-//            groupDao.createGroup(group)
-//        }
-//    }
-//    fun move(toMove: Performance, targetGroup: Group) {
-//        return transaction(dataSource) {
-//            val srcGroup = toMove.group
-//            toMove.group = targetGroup
-//            performanceDao.updateStudent(toMove)
-//            groupDao.addStudents(srcGroup.id!!, -1)
-//            groupDao.addStudents(targetGroup.id!!, 1)
-//        }
-//    }
+    fun addConcertTourToPerformance(performanceId: Long, concertTourId: Long) {
+        return transaction(dataSource) {
+            performanceDao.addConcertTourToPerformance(performanceId, concertTourId)
+        }
+    }
+
+    fun addRoleToPerformance(performanceId: Long, roleId: Long) {
+        return transaction(dataSource) {
+            performanceDao.addRoleToPerformance(performanceId, roleId)
+        }
+    }
+
+    fun addFeatureToRole(roleId: Long, featureId: Long) {
+        return transaction(dataSource) {
+            roleDao.addFeatureToRole(roleId, featureId)
+        }
+    }
 }
 
 fun <T> transaction(ds: TheaterDataSource, body: () -> T): T {

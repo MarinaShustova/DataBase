@@ -239,6 +239,44 @@ class Controller(private val service: Service) {
         return service.deleteFeature(Integer.parseInt(args[0]).toLong()).toString()
     }
 
+    fun addConcertTourToPerformance(argsStr: String): String{
+        val args = argsStr.split(",")
+            .map { it.trim() }
+        if (argsStr.isEmpty() || args.size != 2) {
+            return "2 arg expected"
+        }
+        val performanceId = Integer.parseInt(args[0]).toLong()
+        val concertTourId = Integer.parseInt(args[1]).toLong();
+        val performance = service.findPerformance(performanceId) ?: return "Performance with id ${args[0]} not found"
+        val concertTour = service.findConcertTour(concertTourId) ?: return "Concert tour with id ${args[1]} not found"
+        return service.addConcertTourToPerformance(performanceId, concertTourId).toString()
+    }
+
+    fun addRoleToPerformance(argsStr: String): String{
+        val args = argsStr.split(",")
+            .map { it.trim() }
+        if (argsStr.isEmpty() || args.size != 2) {
+            return "2 arg expected"
+        }
+        val performanceId = Integer.parseInt(args[0]).toLong()
+        val roleId = Integer.parseInt(args[1]).toLong();
+        val performance = service.findPerformance(performanceId) ?: return "Performance with id ${args[0]} not found"
+        val role = service.findRole(roleId) ?: return "Role with id ${args[1]} not found"
+        return service.addRoleToPerformance(performanceId, roleId).toString()
+    }
+
+    fun addFeatureToRole(argsStr: String): String{
+        val args = argsStr.split(",")
+            .map { it.trim() }
+        if (argsStr.isEmpty() || args.size != 2) {
+            return "2 arg expected"
+        }
+        val featureId = Integer.parseInt(args[1]).toLong()
+        val roleId = Integer.parseInt(args[0]).toLong();
+        val feature = service.findFeature(featureId) ?: return "Feature with id ${args[1]} not found"
+        val role = service.findRole(roleId) ?: return "Role with id ${args[0]} not found"
+        return service.addFeatureToRole(roleId, featureId).toString()
+    }
 
     //    fun moveStudent(argsStr: String): String {
 //        val args = argsStr.split(",")
