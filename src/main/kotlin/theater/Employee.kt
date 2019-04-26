@@ -1,0 +1,7 @@
+package theater
+
+import java.sql.Date
+
+data class Employee(var id: Long, val fio: String, val sex: String,
+                    val birthDate: Date, val childrenAmount: Int, val salary: Int,
+                    val origin: String, val hireDate: Date)
