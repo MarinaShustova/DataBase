@@ -6,7 +6,7 @@ class Controller(private val service: Service) {
 
     fun createProducer(argsStr: String): String {
         // fio sex birth child salary origin hire activity
-        val args = argsStr.split(" ").map { it.trim() }
+        val args = argsStr.split(", ").map { it.trim() }
         if (argsStr.isEmpty() || args.size != 8) {
             return "8 args expected"
         }
@@ -18,8 +18,8 @@ class Controller(private val service: Service) {
     }
 
     fun deleteProducer(argsStr: String): String {
-        val args = argsStr.split(" ").map { it.trim() }
-        if (argsStr.isEmpty() || args.size != 1) {
+        val args = argsStr.trim()
+        if (argsStr.isEmpty()) {
             return "1 arg expected"
         }
         val toDeleteId = args[0].toLong()
@@ -28,8 +28,8 @@ class Controller(private val service: Service) {
     }
 
     fun deleteActor(argsStr: String): String {
-        val args = argsStr.split(" ").map { it.trim() }
-        if (argsStr.isEmpty() || args.size != 1) {
+        val args = argsStr.trim()
+        if (argsStr.isEmpty()) {
             return "1 arg expected"
         }
         val toDeleteId = args[0].toLong()
@@ -38,8 +38,8 @@ class Controller(private val service: Service) {
     }
 
     fun deleteMusician(argsStr: String): String {
-        val args = argsStr.split(" ").map { it.trim() }
-        if (argsStr.isEmpty() || args.size != 1) {
+        val args = argsStr.trim()
+        if (argsStr.isEmpty()) {
             return "1 arg expected"
         }
         val toDeleteId = args[0].toLong()
@@ -48,8 +48,8 @@ class Controller(private val service: Service) {
     }
 
     fun deleteServant(argsStr: String): String {
-        val args = argsStr.split(" ").map { it.trim() }
-        if (argsStr.isEmpty() || args.size != 1) {
+        val args = argsStr.trim()
+        if (argsStr.isEmpty()) {
             return "1 arg expected"
         }
         val toDeleteId = args[0].toLong()
@@ -59,7 +59,7 @@ class Controller(private val service: Service) {
 
     fun createActor(argsStr: String): String {
         // fio sex birth child salary origin hire is_student
-        val args = argsStr.split(" ").map { it.trim() }
+        val args = argsStr.split(", ").map { it.trim() }
         if (argsStr.isEmpty() || args.size != 8 || args.size != 7) {
             return "7-8 args expected"
         }
@@ -72,7 +72,7 @@ class Controller(private val service: Service) {
 
     fun createMusician(argsStr: String): String {
         // fio sex birth child salary origin hire instrument
-        val args = argsStr.split(" ").map { it.trim() }
+        val args = argsStr.split(", ").map { it.trim() }
         if (argsStr.isEmpty() || args.size != 8 || args.size != 7) {
             return "8 args expected"
         }

@@ -45,11 +45,11 @@ fun main() {
                         if (it.contains("producer")) {
                             controller.updateProducer(it.substring("update producer".length).trim());
                         } else if (it.contains("actor")) {
-                            controller.deleteActor(it.substring("update actor".length).trim());
+                            controller.updateActor(it.substring("update actor".length).trim());
                         } else if (it.contains("musician")) {
-                            controller.deleteMusician(it.substring("update musician".length).trim());
+                            controller.updateMusician(it.substring("update musician".length).trim());
                         } else if (it.contains("servant")) {
-                            controller.deleteServant(it.substring("update servant".length).trim());
+                            controller.updateServant(it.substring("update servant".length).trim());
                         } else {
                             "Unknown command: $it"
                         }
