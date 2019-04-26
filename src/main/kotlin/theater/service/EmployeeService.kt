@@ -1,8 +1,16 @@
-package theater
+package theater.service
 
-class Service(private val employeesDao: EmployeesDao, private val producersDao: ProducersDao,
-              private val actorsDao: ActorsDao, private val musiciansDao: MusiciansDao,
-              private val servantsDao: ServantsDao) {
+import theater.dao.*
+import theater.model.Actor
+import theater.model.Musician
+import theater.model.Producer
+import theater.model.Servant
+
+class EmployeeService(private val employeesDao: EmployeesDao,
+                      private val producersDao: ProducersDao,
+                      private val actorsDao: ActorsDao,
+                      private val musiciansDao: MusiciansDao,
+                      private val servantsDao: ServantsDao) {
 
     fun createProducer(toCreate: Producer): Long {
         val employeeId = employeesDao.createEmployee(toCreate.employee)

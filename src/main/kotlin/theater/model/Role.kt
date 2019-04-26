@@ -1,4 +1,4 @@
-package theater
+package theater.model
 
 
 data class Role(val id: Long?, val name: String)

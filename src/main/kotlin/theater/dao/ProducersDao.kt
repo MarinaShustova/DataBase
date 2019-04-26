@@ -1,13 +1,14 @@
-package theater
+package theater.dao
 
 import java.sql.Date
 import java.sql.Statement
 import javax.sql.DataSource
+import theater.model.*
 
-class ServantsDao(private val dataSource: DataSource) {
-    fun createServant(toCreate: Servant): Long {
+class ProducersDao(private val dataSource: DataSource) {
+    fun createProducer(toCreate: Producer): Long {
         val stmt = dataSource.connection.prepareStatement(
-                "INSERT INTO servants (employee_id, activity) VALUES (?, ?)",
+                "INSERT INTO producers (employee_id, activity) VALUES (?, ?)",
                 Statement.RETURN_GENERATED_KEYS
         )
         stmt.setLong(1, toCreate.employee.id)
@@ -20,25 +21,25 @@ class ServantsDao(private val dataSource: DataSource) {
         return gk.getLong(1)
     }
 
-    fun deleteServant(id: Long) {
-        val stmt = dataSource.connection.prepareStatement("DELETE FROM servants WHERE servants.id = ?")
+    fun deleteProducer(id: Long) {
+        val stmt = dataSource.connection.prepareStatement("DELETE FROM producers WHERE producers.id = ?")
         stmt.setInt(1, id.toInt())
         stmt.executeUpdate()
     }
 
-    fun updateServant(id: Long, keysNValues: Map<String, String>) { //updating in two statements
+    fun updateProducer(id: Long, keysNValues: Map<String, String>) { //updating in two statements
         val employeeProperties = keysNValues.asSequence().filter {
             it.key.equals("fio") || it.key.equals("sex") || it.key.equals("origin")
                     || it.key.equals("birth_date") ||  it.key.equals("hire_date")
                     || it.key.equals("salary") ||  it.key.equals("children_amount")
         }
-        val servantProperties = keysNValues.asSequence().filter { it.key.equals("activity") }
+        val producerProperties = keysNValues.asSequence().filter { it.key.equals("activity") }
 
         var questionMarks = employeeProperties.asSequence().map{ "${it.key} = ?" }.joinToString(", ")
 
         var stmt = dataSource.connection.prepareStatement(
                 "UPDATE employees SET ${questionMarks} WHERE " +
-                        "employees.id = (SELECT employee_id FROM servants WHERE servants.id = ?)")
+                        "employees.id = (SELECT employee_id FROM producers WHERE producers.id = ?)")
 
         var count = 1
 
@@ -58,22 +59,21 @@ class ServantsDao(private val dataSource: DataSource) {
         stmt.setLong(employeeProperties.toList().size + 1, id)
         stmt.executeUpdate()
 
-        questionMarks = servantProperties.asSequence().map{ "${it.key} = ?" }.joinToString(", ")
+        questionMarks = producerProperties.asSequence().map{ "${it.key} = ?" }.joinToString(", ")
 
         stmt = dataSource.connection.prepareStatement(
-                "UPDATE servants SET ${questionMarks} WHERE servants.id = ?")
+                "UPDATE producers SET ${questionMarks} WHERE producers.id = ?")
 
         count = 1
-        for (it in servantProperties) {
+        for (it in producerProperties) {
             when (it.key) {
                 "activity" -> {
                     stmt.setString(count++, it.value)
                 }
             }
         }
-        stmt.setLong(servantProperties.toList().size + 1, id)
+        stmt.setLong(producerProperties.toList().size + 1, id)
         stmt.executeUpdate()
     }
-
 
 }

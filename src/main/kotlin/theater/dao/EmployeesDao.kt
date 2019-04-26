@@ -1,7 +1,9 @@
-package theater
+package theater.dao
 
+import theater.model.Employee
 import javax.sql.DataSource
 import java.sql.Statement
+
 
 class EmployeesDao(private val dataSource: DataSource) {
     fun createEmployee(toCreate: Employee): Long {

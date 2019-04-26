@@ -1,9 +1,16 @@
-package theater
+package theater.controller
 
+import theater.dao.Page
+import theater.model.ConcertTour
+import theater.model.Feature
+import theater.model.Performance
+import theater.model.Role
+import theater.service.PerformanceService
+import theater.service.Service
 import java.sql.Date
 
 
-class PerformanceController(private val service: Service) {
+class PerformanceController(private val service: PerformanceService) {
 
     fun createPerformance(argsStr: String): String {
         val args = argsStr.split(",")

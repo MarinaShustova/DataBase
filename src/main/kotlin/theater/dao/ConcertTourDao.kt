@@ -1,5 +1,6 @@
-package theater
+package theater.dao
 
+import theater.model.ConcertTour
 import java.sql.Statement
 import javax.sql.DataSource
 

@@ -1,8 +1,10 @@
-package theater
+package theater.controller
 
+import theater.service.EmployeeService
+import theater.model.*
 import java.sql.Date
 
-class Controller(private val service: Service) {
+class EmployeeController(private val service: EmployeeService) {
 
     fun createProducer(argsStr: String): String {
         // fio sex birth child salary origin hire activity

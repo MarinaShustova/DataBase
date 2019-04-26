@@ -1,7 +1,8 @@
-package theater
+package theater.dao
 
 import java.sql.Statement
 import javax.sql.DataSource
+import theater.model.*
 
 data class Page(val num: Int, val size: Int)
 

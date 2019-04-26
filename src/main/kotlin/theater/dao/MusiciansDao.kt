@@ -1,17 +1,18 @@
-package theater
+package theater.dao
 
 import java.sql.Date
 import java.sql.Statement
 import javax.sql.DataSource
+import theater.model.*
 
-class ProducersDao(private val dataSource: DataSource) {
-    fun createProducer(toCreate: Producer): Long {
+class MusiciansDao(private val dataSource: DataSource) {
+    fun createMusician(toCreate: Musician): Long {
         val stmt = dataSource.connection.prepareStatement(
-                "INSERT INTO producers (employee_id, activity) VALUES (?, ?)",
+                "INSERT INTO musicians (employee_id, instrument) VALUES (?, ?)",
                 Statement.RETURN_GENERATED_KEYS
         )
         stmt.setLong(1, toCreate.employee.id)
-        stmt.setString(2, toCreate.activity)
+        stmt.setString(2, toCreate.instrument)
 
         stmt.executeUpdate()
         val gk = stmt.generatedKeys
@@ -20,25 +21,25 @@ class ProducersDao(private val dataSource: DataSource) {
         return gk.getLong(1)
     }
 
-    fun deleteProducer(id: Long) {
-        val stmt = dataSource.connection.prepareStatement("DELETE FROM producers WHERE producers.id = ?")
+    fun deleteMusician(id: Long) {
+        val stmt = dataSource.connection.prepareStatement("DELETE FROM musicians WHERE musicians.id = ?")
         stmt.setInt(1, id.toInt())
         stmt.executeUpdate()
     }
 
-    fun updateProducer(id: Long, keysNValues: Map<String, String>) { //updating in two statements
+    fun updateMusician(id: Long, keysNValues: Map<String, String>) { //updating in two statements
         val employeeProperties = keysNValues.asSequence().filter {
             it.key.equals("fio") || it.key.equals("sex") || it.key.equals("origin")
-                    || it.key.equals("birth_date") ||  it.key.equals("hire_date")
-                    || it.key.equals("salary") ||  it.key.equals("children_amount")
+                    || it.key.equals("birth_date") || it.key.equals("hire_date")
+                    || it.key.equals("salary") || it.key.equals("children_amount")
         }
-        val producerProperties = keysNValues.asSequence().filter { it.key.equals("activity") }
+        val musicianProperties = keysNValues.asSequence().filter { it.key.equals("instrument") }
 
-        var questionMarks = employeeProperties.asSequence().map{ "${it.key} = ?" }.joinToString(", ")
+        var questionMarks = employeeProperties.asSequence().map { "${it.key} = ?" }.joinToString(", ")
 
         var stmt = dataSource.connection.prepareStatement(
                 "UPDATE employees SET ${questionMarks} WHERE " +
-                        "employees.id = (SELECT employee_id FROM producers WHERE producers.id = ?)")
+                        "employees.id = (SELECT employee_id FROM musicians WHERE musicians.id = ?)")
 
         var count = 1
 
@@ -47,10 +48,10 @@ class ProducersDao(private val dataSource: DataSource) {
                 "fio", "sex", "origin" -> {
                     stmt.setString(count++, it.value)
                 }
-                "birth_date",  "hire_date" -> {
+                "birth_date", "hire_date" -> {
                     stmt.setDate(count++, Date.valueOf(it.value))
                 }
-                "salary",  "children_amount" -> {
+                "salary", "children_amount" -> {
                     stmt.setInt(count++, it.value.toInt())
                 }
             }
@@ -58,21 +59,20 @@ class ProducersDao(private val dataSource: DataSource) {
         stmt.setLong(employeeProperties.toList().size + 1, id)
         stmt.executeUpdate()
 
-        questionMarks = producerProperties.asSequence().map{ "${it.key} = ?" }.joinToString(", ")
+        questionMarks = musicianProperties.asSequence().map { "${it.key} = ?" }.joinToString(", ")
 
         stmt = dataSource.connection.prepareStatement(
-                "UPDATE producers SET ${questionMarks} WHERE producers.id = ?")
+                "UPDATE musicians SET ${questionMarks} WHERE musicians.id = ?")
 
         count = 1
-        for (it in producerProperties) {
+        for (it in musicianProperties) {
             when (it.key) {
-                "activity" -> {
+                "instrument" -> {
                     stmt.setString(count++, it.value)
                 }
             }
         }
-        stmt.setLong(producerProperties.toList().size + 1, id)
+        stmt.setLong(musicianProperties.toList().size + 1, id)
         stmt.executeUpdate()
     }
-
 }

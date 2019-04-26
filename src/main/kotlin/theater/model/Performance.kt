@@ -1,4 +1,4 @@
-package theater
+package theater.model
 
 
 data class Performance(val id: Long?, val production_designer: String, val production_director: String,

@@ -1,4 +1,4 @@
-package theater
+package theater.model
 
 import java.sql.Date
 

@@ -1,13 +1,19 @@
-package theater
+package theater.service
+
+import theater.model.Role
+import theater.dao.RoleDao
+import theater.TheaterDataSource
+import theater.dao.*
+import theater.model.*
 
 
-class Service(
-    private val dataSource: TheaterDataSource,
-    private val performanceDao: PerformanceDao,
-    private val concertTourDao: ConcertTourDao,
-    private val roleDao: RoleDao,
-    private val featureDao: FeatureDao
-) {
+class PerformanceService(
+        private val dataSource: TheaterDataSource,
+        private val performanceDao: PerformanceDao,
+        private val concertTourDao: ConcertTourDao,
+        private val roleDao: RoleDao,
+        private val featureDao: FeatureDao
+) : Service() {
 
     fun createPerformance(toCreate: Performance): Long {
         return transaction(dataSource) {
@@ -188,21 +194,6 @@ class Service(
     fun addFeatureToRole(roleId: Long, featureId: Long) {
         return transaction(dataSource) {
             roleDao.addFeatureToRole(roleId, featureId)
-        }
-    }
-}
-
-fun <T> transaction(ds: TheaterDataSource, body: () -> T): T {
-    ds.realGetConnection().use {
-        it.autoCommit = false
-        ds.connection = it
-        try {
-            val res = body()
-            it.commit()
-            return res
-        } catch (e: Exception) {
-            it.rollback()
-            throw e
         }
     }
 }
