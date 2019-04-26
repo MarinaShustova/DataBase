@@ -3,7 +3,7 @@ package theater
 import java.sql.Date
 
 
-class Controller(private val service: Service) {
+class PerformanceController(private val service: Service) {
 
     fun createPerformance(argsStr: String): String {
         val args = argsStr.split(",")

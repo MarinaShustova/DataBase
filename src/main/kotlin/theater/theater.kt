@@ -8,7 +8,7 @@ fun main() {
     val concertTourDao = ConcertTourDao(theaterDs)
     val roleDao = RoleDao(theaterDs)
     val featureDao = FeatureDao(theaterDs)
-    val controller = Controller(Service(theaterDs, performanceDao, concertTourDao, roleDao, featureDao))
+    val controller = PerformanceController(Service(theaterDs, performanceDao, concertTourDao, roleDao, featureDao))
     generateSequence { print("> "); readLine() }
         .takeWhile { it != "exit" }
         .map {
