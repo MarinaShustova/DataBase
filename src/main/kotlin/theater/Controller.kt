@@ -84,7 +84,7 @@ class Controller(private val service: Service) {
     }
 
     fun createServant(argsStr: String): String {
-        val args = argsStr.split(" ").map { it.trim() }
+        val args = argsStr.split(", ").map { it.trim() }
         if (argsStr.isEmpty() || args.size != 8 || args.size != 7) {
             return "8 args expected"
         }
