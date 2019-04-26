@@ -65,7 +65,7 @@ class AuthorDao(private val dataSource: DataSource) {
 
     fun getAuthor(id: Int): Author? {
         val stmt = dataSource.connection.prepareStatement(
-                "SELECT a.id id, a.surname surname, a.name author_name, a.birth_date birth_date, a.death_date death_date" +
+                "SELECT a.id author_id, a.surname surname, a.name author_name, a.birth_date birth_date, a.death_date death_date" +
                         ", c.id country_id, c.name country_name"
                         + "FROM authors AS a"
                         + "JOIN countries AS c ON a.country = c.id "
@@ -75,7 +75,7 @@ class AuthorDao(private val dataSource: DataSource) {
 
         val queryResult = stmt.executeQuery()
         return if (queryResult.next()) {
-            Author(queryResult.getInt("id"), queryResult.getString("surname"),
+            Author(queryResult.getInt("author_id"), queryResult.getString("surname"),
                     queryResult.getString("author_name"), queryResult.getDate("birth_date"),
                     queryResult.getDate("death_date"), Country(queryResult.getInt("country_id"),
                     queryResult.getString("country_name")))
@@ -86,7 +86,7 @@ class AuthorDao(private val dataSource: DataSource) {
 
     fun getAuthorByFullName(name: String, surname: String): Author? {
         val stmt = dataSource.connection.prepareStatement(
-                "SELECT a.id id, a.surname surname, a.name author_name, a.birth_date birth_date, a.death_date death_date" +
+                "SELECT a.id author_id, a.surname surname, a.name author_name, a.birth_date birth_date, a.death_date death_date" +
                         ", c.id country_id, c.name country_name"
                         + " FROM authors AS a"
                         + " JOIN countries AS c ON a.country = c.id "
@@ -97,7 +97,7 @@ class AuthorDao(private val dataSource: DataSource) {
 
         val queryResult = stmt.executeQuery()
         return if (queryResult.next()) {
-            Author(queryResult.getInt("id"), queryResult.getString("surname"),
+            Author(queryResult.getInt("author_id"), queryResult.getString("surname"),
                     queryResult.getString("author_name"), queryResult.getDate("birth_date"),
                     queryResult.getDate("death_date"), Country(queryResult.getInt("country_id"),
                     queryResult.getString("country_name")))
@@ -108,7 +108,8 @@ class AuthorDao(private val dataSource: DataSource) {
 
     fun getAuthorsOfCountry(country: Country): ArrayList<Author> {
         val stmt = dataSource.connection.prepareStatement(
-                "SELECT a.id id, a.surname surname, a.name author_name, a.birth_date birth_date, a.death_date death_date\n" +
+                "SELECT a.id author_id, a.surname surname, a.name author_name, a.birth_date birth_date, a.death_date death_date" +
+                        ", c.id country_id, c.name country_name\n" +
                         "FROM authors AS a\n" +
                         "JOIN countries AS c ON a.country = c.id\n" +
                         "WHERE c.name = ?"
@@ -117,7 +118,7 @@ class AuthorDao(private val dataSource: DataSource) {
         val authorsList = ArrayList<Author>()
         val queryResult = stmt.executeQuery()
         while (queryResult.next()) {
-            authorsList.add(Author(queryResult.getInt("id"), queryResult.getString("surname"),
+            authorsList.add(Author(queryResult.getInt("author_id"), queryResult.getString("surname"),
                     queryResult.getString("author_name"), queryResult.getDate("birth_date"),
                     queryResult.getDate("death_date"), Country(queryResult.getInt("country_id"),
                     queryResult.getString("country_name"))))
@@ -127,9 +128,11 @@ class AuthorDao(private val dataSource: DataSource) {
 
     fun getAuthorsOfCurCentury(century: Date): ArrayList<Author> {
         val stmt = dataSource.connection.prepareStatement(
-                "SELECT authors.name\n" +
-                        "FROM authors\n" +
-                        "WHERE (authors.birth_date > ?) AND (authors.death_date < ?)"
+                "SELECT a.id author_id, a.surname surname, a.name author_name, a.birth_date birth_date, a.death_date death_date" +
+                        ", c.id country_id, c.name country_name\n" +
+                        "FROM authors AS a\n" +
+                        "JOIN countries AS c ON a.country = c.id\n" +
+                        "WHERE (a.birth_date > ?) OR (a.death_date < ?)"
         )
         stmt.setDate(1, century)
         stmt.setDate(2, century)
@@ -137,7 +140,7 @@ class AuthorDao(private val dataSource: DataSource) {
         val authorsList = ArrayList<Author>()
         val queryResult = stmt.executeQuery()
         while (queryResult.next()) {
-            authorsList.add(Author(queryResult.getInt("id"), queryResult.getString("surname"),
+            authorsList.add(Author(queryResult.getInt("author_id"), queryResult.getString("surname"),
                     queryResult.getString("author_name"), queryResult.getDate("birth_date"),
                     queryResult.getDate("death_date"), Country(queryResult.getInt("country_id"),
                     queryResult.getString("country_name"))))

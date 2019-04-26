@@ -99,8 +99,11 @@ class SpectacleController(private val spectacleService: SpectacleService,
         }
 
         return try {
-            val spectaclesList = spectacleService.getSpectacleOfCurAuthorLifePeriod(Timestamp.valueOf(args[0]),
-                    Timestamp.valueOf(args[1]))
+            val start = Timestamp.valueOf((args[0].toInt() - 1).toString() + "00-01-01 00:00:00")
+            val end = Timestamp.valueOf((args[1].toInt() - 1).toString() + "00-01-01 00:00:00")
+            val spectaclesList = spectacleService.getSpectacleOfCurAuthorLifePeriod(start, end)
+            println("start = $start")
+            println("end = $end")
             var res = ""
             for (spectacle in spectaclesList) {
                 res += "${spectacle.id}, \"${spectacle.name}\", ${spectacle.genre.name}, ${spectacle.ageCategory} \n"

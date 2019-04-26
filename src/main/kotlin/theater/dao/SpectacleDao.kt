@@ -89,16 +89,16 @@ class SpectacleDao(private val dataSource: DataSource) {
                 "SELECT s.id spect_id, s.name spect_name, s.age_category spect_age, s.genre spect_genre, g.name genre_name \n" +
                         "FROM spectacles AS s\n" +
                         "\tJOIN genres AS g ON g.id = s.genre\n" +
-                        "WHERE genres.name = ?"
+                        "WHERE g.name = ?"
         )
         stmt.setString(1, genre.name)
         val res = ArrayList<Spectacle>()
         val queryResult = stmt.executeQuery()
         while (queryResult.next()) {
-            res.add(Spectacle(queryResult.getInt("s.id"),
-                    queryResult.getString("s.name"),
-                    Genre(queryResult.getInt("s.genre"), queryResult.getString("g.name")),
-                    queryResult.getInt("s.age_category")))
+            res.add(Spectacle(queryResult.getInt("spect_id"),
+                    queryResult.getString("spect_name"),
+                    Genre(queryResult.getInt("spect_genre"), queryResult.getString("genre_name")),
+                    queryResult.getInt("spect_age")))
         }
         return res
     }
@@ -109,6 +109,7 @@ class SpectacleDao(private val dataSource: DataSource) {
                         "FROM spectacles AS s\n" +
                         "\tJOIN authors_spectacles ON spectacles.id = authors_spectacles.spectacle_id\n" +
                         "\tJOIN authors ON authors_spectacles.author_id = authors.id\n" +
+                        "\tJOIN genres AS g ON g.id = s.genre\n" +
                         "WHERE authors.name = ?"
         )
         stmt.setString(1, author.name)
@@ -127,39 +128,41 @@ class SpectacleDao(private val dataSource: DataSource) {
         val stmt = dataSource.connection.prepareStatement(
                 "SELECT s.id spect_id, s.name spect_name, s.age_category spect_age, s.genre spect_genre, g.name genre_name\n" +
                         "FROM spectacles AS s\n" +
-                        "\tJOIN authors_spectacles ON spectacles.id = authors_spectacles.spectacle_id\n" +
+                        "\tJOIN authors_spectacles ON s.id = authors_spectacles.spectacle_id\n" +
                         "\tJOIN authors ON authors_spectacles.author_id = authors.id\n" +
+                        "\tJOIN genres AS g ON g.id = s.genre\n" +
                         "WHERE authors.country = ?"
         )
-        stmt.setString(1, country.name)
+        stmt.setInt(1, country.id)
         val res = ArrayList<Spectacle>()
         val queryResult = stmt.executeQuery()
         while (queryResult.next()) {
-            res.add(Spectacle(queryResult.getInt("s.id"),
-                    queryResult.getString("s.name"),
-                    Genre(queryResult.getInt("s.genre"), queryResult.getString("g.name")),
-                    queryResult.getInt("s.age_category")))
+            res.add(Spectacle(queryResult.getInt("spect_id"),
+                    queryResult.getString("spect_name"),
+                    Genre(queryResult.getInt("spect_genre"), queryResult.getString("genre_name")),
+                    queryResult.getInt("spect_age")))
         }
         return res
     }
 
     fun getSpectacleOfCurAuthorLifePeriod(dateFrom: Timestamp, dateTo: Timestamp): ArrayList<Spectacle> {
         val stmt = dataSource.connection.prepareStatement(
-                "SELECT spectacles.name\n" +
-                        "FROM spectacles\n" +
-                        "\tJOIN authors_spectacles ON spectacles.id = authors_spectacles.spectacle_id\n" +
+                "SELECT s.id spect_id, s.name spect_name, s.age_category spect_age, s.genre spect_genre, g.name genre_name\n" +
+                        "FROM spectacles AS s\n" +
+                        "\tJOIN authors_spectacles ON s.id = authors_spectacles.spectacle_id\n" +
                         "\tJOIN authors ON authors_spectacles.author_id = authors.id\n" +
-                        "WHERE (authors.birth_date > ?) AND (authors.death_date < ?)"
+                        "\tJOIN genres AS g ON g.id = s.genre\n" +
+                        "WHERE (authors.birth_date > ?) OR (authors.death_date < ?)"
         )
         stmt.setTimestamp(1, dateFrom)
         stmt.setTimestamp(2, dateTo)
         val res = ArrayList<Spectacle>()
         val queryResult = stmt.executeQuery()
         while (queryResult.next()) {
-            res.add(Spectacle(queryResult.getInt("s.id"),
-                    queryResult.getString("s.name"),
-                    Genre(queryResult.getInt("s.genre"), queryResult.getString("g.name")),
-                    queryResult.getInt("s.age_category")))
+            res.add(Spectacle(queryResult.getInt("spect_id"),
+                    queryResult.getString("spect_name"),
+                    Genre(queryResult.getInt("spect_genre"), queryResult.getString("genre_name")),
+                    queryResult.getInt("spect_age")))
         }
         return res
     }

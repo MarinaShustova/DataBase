@@ -21,6 +21,7 @@ class Db {
                 .load()
 
         // Start the migration
+        flyway.repair()
         flyway.migrate()
     }
 }

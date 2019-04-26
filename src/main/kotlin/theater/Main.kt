@@ -87,26 +87,26 @@ fun main(args: Array<String>) {
                             "Unknown command"
                         }
                     } else if (it.startsWith("get")) {
-                        if (it.contains("author")) {
+                        if (it.contains("spectacle")) {
+                            if (it.contains("of genre")) {
+                                spectacleController.getSpectacleOfGenre(it.substring("get spectacle of genre".length).trim())
+                            } else if (it.contains("of author life period")) {
+                                spectacleController.getSpectacleOfCurAuthorLifePeriod(
+                                        it.substring("get spectacle of author life period".length).trim())
+                            } else if (it.contains("of author")) {
+                                spectacleController.getSpectacleOfAuthor(it.substring("get spectacle of author".length).trim())
+                            } else if (it.contains("of country")) {
+                                spectacleController.getSpectacleOfCountry(it.substring("get spectacle of country".length).trim())
+                            } else {
+                                spectacleController.getSpectacle(it.substring("get spectacle".length).trim())
+                            }
+                        } else if (it.contains("author")) {
                             if (it.contains("of country")) {
                                 authorController.getAuthorsOfCountry(it.substring("get author of country".length).trim())
                             } else if (it.contains("of century")) {
                                 authorController.getAuthorOfCurCentury(it.substring("get author of century".length).trim())
                             } else {
                                 authorController.getAuthor(it.substring("get author".length).trim())
-                            }
-                        } else if (it.contains("spectacle")) {
-                            if (it.contains("of genre")) {
-                                spectacleController.getSpectacleOfGenre(it.substring("get spectacle of genre".length).trim())
-                            } else if (it.contains("of author")) {
-                                spectacleController.getSpectacleOfAuthor(it.substring("get spectacle of author".length).trim())
-                            } else if (it.contains("of country")) {
-                                spectacleController.getSpectacleOfCountry(it.substring("get spectacle of country".length).trim())
-                            } else if (it.contains("of author life period")) {
-                                spectacleController.getSpectacleOfCurAuthorLifePeriod(
-                                        it.substring("get spectacle author life period".length).trim())
-                            } else {
-                                spectacleController.getSpectacle(it.substring("get spectacle".length).trim())
                             }
                         } else if (it.contains("show")) {
                             showController.getShow(it.substring("get spectacle".length).trim())
