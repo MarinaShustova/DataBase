@@ -8,8 +8,6 @@ CREATE TABLE concert_tours
   finish_date date
 );
 
--- INSERT INTO groups (id, number)
--- VALUES (0, 'Default');
 
 ALTER TABLE goes_to
   ADD COLUMN tour_id bigint NOT NULL REFERENCES concert_tours(id) DEFAULT 0;
