@@ -8,7 +8,7 @@ class ConcertTourDao(private val dataSource: DataSource) {
 
     fun createConcertTour(toCreate: ConcertTour): Long {
         val stmt = dataSource.connection.prepareStatement(
-            "INSERT INTO concert_tours (city, start_date, finish_date) VALUES (?, ?, ?)",
+            "INSERT INTO tours (city, start_date, finish_date) VALUES (?, ?, ?)",
             Statement.RETURN_GENERATED_KEYS
         )
         stmt.setString(1, toCreate.city)
@@ -23,7 +23,7 @@ class ConcertTourDao(private val dataSource: DataSource) {
 
     fun createConcertTours(toCreate: Iterable<ConcertTour>): List<Long> {
         val stmt = dataSource.connection.prepareStatement(
-            "INSERT INTO concert_tours (city, start_date, finish_date) VALUES (?, ?, ?)",
+            "INSERT INTO tours (city, start_date, finish_date) VALUES (?, ?, ?)",
             Statement.RETURN_GENERATED_KEYS
 
         )
@@ -48,7 +48,7 @@ class ConcertTourDao(private val dataSource: DataSource) {
         val stmt = dataSource.connection.prepareStatement(
             "SELECT " +
                     "ct.id ctid, ct.city, ct.start_date, ct.finish_date " +
-                    "FROM concert_tours AS ct " +
+                    "FROM tours AS ct " +
                     "WHERE ct.id = ?"
         )
         stmt.setLong(1, id)
@@ -65,7 +65,7 @@ class ConcertTourDao(private val dataSource: DataSource) {
 
     fun updateConcertTour(tour: ConcertTour) {
         val stmt =
-            dataSource.connection.prepareStatement("UPDATE concert_tours SET city = ?, start_date = ?, finish_date = ? WHERE id = ?")
+            dataSource.connection.prepareStatement("UPDATE tours SET city = ?, start_date = ?, finish_date = ? WHERE id = ?")
         stmt.setString(1, tour.city)
         stmt.setDate(2, tour.start_date)
         stmt.setDate(3, tour.finish_date)
@@ -75,7 +75,7 @@ class ConcertTourDao(private val dataSource: DataSource) {
 
     fun deleteConcertTour(id: Long): Long {
         val stmt = dataSource.connection.prepareStatement(
-            "DELETE FROM concert_tours WHERE id = ?",
+            "DELETE FROM tours WHERE id = ?",
             Statement.RETURN_GENERATED_KEYS
         )
         stmt.setLong(1, id)
@@ -88,7 +88,7 @@ class ConcertTourDao(private val dataSource: DataSource) {
 
     fun getConcertTours(page: Page): List<ConcertTour> {
         val theQuery =
-            "SELECT id, city, start_date, finish_date  FROM concert_tours ORDER BY start_date LIMIT ? OFFSET ?"
+            "SELECT id, city, start_date, finish_date  FROM tours ORDER BY start_date LIMIT ? OFFSET ?"
         val conn = dataSource.connection
         val stmt = conn.prepareStatement(theQuery)
         stmt.setInt(1, page.size)
