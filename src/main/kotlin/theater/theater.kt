@@ -89,10 +89,10 @@ fun main() {
                         performanceController.createPerformance(it.substring("create performance".length).trim())
                     } else if (it.contains("performances")) {
                         performanceController.createPerformances(it.substring("create performances".length).trim())
-                    } else if (it.contains("concert tour")) {
-                        performanceController.createConcertTour(it.substring("create concert tour".length).trim())
-                    } else if (it.contains("concert tours")) {
-                        performanceController.createConcertTours(it.substring("create concert tours".length).trim())
+                    } else if (it.contains("tour")) {
+                        performanceController.createConcertTour(it.substring("create tour".length).trim())
+                    } else if (it.contains("tours")) {
+                        performanceController.createConcertTours(it.substring("create tours".length).trim())
                     } else if (it.contains("role")) {
                         performanceController.createRole(it.substring("create role".length).trim())
                     } else if (it.contains("roles")) {
@@ -128,8 +128,8 @@ fun main() {
                 else if (it.startsWith("get")) {
                     if (it.contains("performances")) {
                         performanceController.getPerformances(it.substring("get performances".length).trim())
-                    } else if (it.contains("concert tours")) {
-                        performanceController.getConcertTours(it.substring("get concert tours".length).trim())
+                    } else if (it.contains("tours")) {
+                        performanceController.getConcertTours(it.substring("get tours".length).trim())
                     } else if (it.contains("roles")) {
                         performanceController.getRoles(it.substring("get roles".length).trim())
                     } else if (it.contains("features")) {
@@ -164,8 +164,8 @@ fun main() {
                 else if (it.startsWith("update")) {
                     if (it.contains("performance")) {
                         performanceController.updatePerformance(it.substring("update performance".length).trim())
-                    } else if (it.contains("concert tour")) {
-                        performanceController.updateConcertTour(it.substring("update concert tour".length).trim())
+                    } else if (it.contains("tour")) {
+                        performanceController.updateConcertTour(it.substring("update tour".length).trim())
                     } else if (it.contains("role")) {
                         performanceController.updateRole(it.substring("update role".length).trim())
                     } else if (it.contains("feature")) {
@@ -191,8 +191,8 @@ fun main() {
                 else if (it.startsWith("delete")) {
                     if (it.contains("performance")) {
                         performanceController.deletePerformance(it.substring("delete performance".length).trim())
-                    } else if (it.contains("concert tour")) {
-                        performanceController.deleteConcertTour(it.substring("delete concert tours".length).trim())
+                    } else if (it.contains("tour")) {
+                        performanceController.deleteConcertTour(it.substring("delete tour".length).trim())
                     } else if (it.contains("role")) {
                         performanceController.deleteRole(it.substring("delete role".length).trim())
                     } else if (it.contains("feature")) {
@@ -216,8 +216,8 @@ fun main() {
                     }
                 }
                 else if (it.startsWith("link")){
-                    if (it.contains("performance") && it.contains("concert tour")) {
-                        performanceController.addConcertTourToPerformance(it.substring("link performance with concert tour".length).trim())
+                    if (it.contains("performance") && it.contains("tour")) {
+                        performanceController.addConcertTourToPerformance(it.substring("link performance with tour".length).trim())
                     } else if (it.contains("role") && it.contains("performance")) {
                         performanceController.addRoleToPerformance(it.substring("link performance with role".length).trim())
                     } else if (it.contains("feature") && it.contains("role")) {

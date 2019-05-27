@@ -117,7 +117,7 @@ class PerformanceDao(private val dataSource: DataSource) {
 
     fun addConcertTourToPerformance(performanceId: Long, concertTourId: Long) {
         val stmt =
-            dataSource.connection.prepareStatement("INSERT INTO goes_to (performance_id, tour_id) VALUES (?,?)")
+            dataSource.connection.prepareStatement("INSERT INTO tours_performances (performance_id, tour_id) VALUES (?,?)")
         stmt.setLong(1, performanceId)
         stmt.setLong(2, concertTourId)
         stmt.executeUpdate()
@@ -125,7 +125,7 @@ class PerformanceDao(private val dataSource: DataSource) {
 
     fun addRoleToPerformance(performanceId: Long, roleId: Long) {
         val stmt =
-            dataSource.connection.prepareStatement("INSERT INTO contains (performance_id, role_id) VALUES (?,?)")
+            dataSource.connection.prepareStatement("INSERT INTO roles_performances (performance_id, role_id) VALUES (?,?)")
         stmt.setLong(1, performanceId)
         stmt.setLong(2, roleId)
         stmt.executeUpdate()
