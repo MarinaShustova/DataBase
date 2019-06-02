@@ -46,13 +46,13 @@ class ServantsDao(private val dataSource: DataSource) {
 
         for (it in employeeProperties) {
             when (it.key) {
-                "fio", "sex", "origin" -> {
+                "fio", "sex" -> {
                     stmt.setString(count++, it.value)
                 }
                 "birth_date",  "hire_date" -> {
                     stmt.setDate(count++, Date.valueOf(it.value))
                 }
-                "salary",  "children_amount" -> {
+                "salary",  "children_amount", "origin" -> {
                     stmt.setInt(count++, it.value.toInt())
                 }
             }
@@ -77,5 +77,52 @@ class ServantsDao(private val dataSource: DataSource) {
         stmt.executeUpdate()
     }
 
+    fun getServantById(id: Long): Servant? {
+        val stmt = dataSource.connection.prepareStatement(
+                "SELECT * FROM servants WHERE id = ?"
+        )
+        stmt.setLong(1, id)
+        val res = stmt.executeQuery()
 
+        return if (res.next()) {
+            val employeesDao = EmployeesDao(dataSource)
+            val relatedEmployee = employeesDao.getEmployeeById(res.getLong("employee_id"))
+            return if (relatedEmployee == null) {
+                null
+            } else {
+                Servant(
+                        res.getLong("id"),
+                        relatedEmployee,
+                        res.getString("activity")
+                )
+            }
+        } else {
+            null
+        }
+    }
+
+    fun getServantByName(fio: String): Servant? {
+        val employeesDao = EmployeesDao(dataSource)
+        val relatedEmployee = employeesDao.getEmployeeByName(fio)
+        return if (relatedEmployee != null) {
+
+            val stmt = dataSource.connection.prepareStatement(
+                    "SELECT * FROM servants WHERE servants.employee_id = ?")
+            stmt.setLong(1, relatedEmployee.id)
+            val res = stmt.executeQuery()
+
+            return if (res.next()) {
+                Servant(
+                        res.getLong("id"),
+                        relatedEmployee,
+                        res.getString("activity")
+                )
+            } else {
+                null
+            }
+        } else {
+            null
+        }
+    }
+    
 }

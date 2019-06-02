@@ -23,7 +23,7 @@ class CountryDao(private val dataSource: DataSource) {
 
     fun getCountry(id: Int): Country? {
         val stmt = dataSource.connection.prepareStatement(
-                "SELECT id, name FROM countries"
+                "SELECT id, name FROM countries WHERE id = ?"
         )
         stmt.setInt(1, id)
         val queryResult = stmt.executeQuery()
