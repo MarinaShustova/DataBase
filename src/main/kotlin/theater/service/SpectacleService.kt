@@ -5,6 +5,7 @@ import theater.model.Author
 import theater.model.Country
 import theater.model.Genre
 import theater.model.Spectacle
+import java.sql.Date
 import java.sql.Timestamp
 import javax.sql.DataSource
 
@@ -73,6 +74,18 @@ class SpectacleService(private val dataSource: DataSource, private val spectacle
     fun deleteSpectacle(spectacleId: Int) {
         transaction(dataSource) {
             spectacleDao.deleteSpectacle(spectacleId)
+        }
+    }
+
+    fun getSpectacleProfitByPeriod(spectacleId: Int, periodStart: Date, periodEnd: Date): Int {
+        return transaction(dataSource) {
+            spectacleDao.getSpectacleProfitByPeriod(spectacleId, periodStart, periodEnd)
+        }
+    }
+
+    fun getSpectacleProfit(spectacleId: Int): Int {
+        return transaction(dataSource) {
+            spectacleDao.getSpectacleProfit(spectacleId)
         }
     }
 }

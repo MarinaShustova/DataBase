@@ -1,6 +1,8 @@
 package theater.dao
 
 import theater.model.Ticket
+import java.sql.PreparedStatement
+import java.sql.ResultSet
 import java.sql.Statement
 import javax.sql.DataSource
 
@@ -84,4 +86,78 @@ class TicketDao(private val dataSource: DataSource) {
         stmt.executeQuery()
     }
 
+    private fun buildTicket(res: ResultSet): Ticket {
+        return Ticket(
+                res.getInt("id"),
+                res.getInt("row"),
+                res.getInt("seat"),
+                res.getInt("price"),
+                res.getBoolean("presence"),
+                res.getBoolean("previously"),
+                null
+        )
+    }
+
+    private fun getTicketsBy(stmt: PreparedStatement): List<Ticket> {
+        val res = stmt.executeQuery()
+
+        var resultList = ArrayList<Ticket>()
+
+        while (res.next()) {
+            val ticket = buildTicket(res)
+            if (ticket == null) continue
+            resultList.add(ticket)
+        }
+
+        return resultList
+    }
+
+    fun getFreeTicketsByAllSpectacles(): List<Ticket> {
+        val stmt = dataSource.connection.prepareStatement(
+                "SELECT t.id, t.row, t.seat, t.price, t.previously FROM spectacles sp" +
+                        " JOIN performances p ON p.spectacle_id = sp.id " +
+                        "JOIN shows sh on sh.performance_id = p.id " +
+                        "JOIN tickets t on t.show_id = sh.id " +
+                        "WHERE t.presence"
+        )
+        return getTicketsBy(stmt)
+    }
+
+    fun getFreeTicketsBySpectacle(spectacleId: Int): List<Ticket> {
+        val stmt = dataSource.connection.prepareStatement(
+                "SELECT t.id, t.row, t.seat, t.price, t.previously " +
+                        "FROM (SELECT * FROM spectacles WHERE spectacles.id = ?) sp" +
+                        " JOIN performances p ON p.spectacle_id = sp.id " +
+                        "JOIN shows sh on sh.performance_id = p.id " +
+                        "JOIN tickets t on t.show_id = sh.id " +
+                        "WHERE t.presence"
+        )
+        stmt.setInt(1, spectacleId)
+        return getTicketsBy(stmt)
+    }
+
+    fun getFreeTicketsByShow(showId: Int): List<Ticket> {
+        val stmt = dataSource.connection.prepareStatement(
+                "SELECT t.id, t.row, t.seat, t.price, t.previously " +
+                        "FROM spectacles sp " +
+                        "JOIN performances p ON p.spectacle_id = sp.id " +
+                        "JOIN shows sh on sh.performance_id = p.id " +
+                        "JOIN tickets t on t.show_id = sh.id " +
+                        "WHERE t.presence AND sh.id = ?"
+        )
+        stmt.setInt(1, showId)
+        return getTicketsBy(stmt)
+    }
+
+    fun getFreeTicketsByPremieres(): List<Ticket> {
+        val stmt = dataSource.connection.prepareStatement(
+                "SELECT t.id, t.row, t.seat, t.price, t.previously " +
+                        "FROM spectacles sp" +
+                        "JOIN performances p ON p.spectacle_id = sp.id " +
+                        "JOIN shows sh on sh.performance_id = p.id " +
+                        "JOIN tickets t on t.show_id = sh.id " +
+                        "WHERE t.presence and sh.premiere"
+        )
+        return getTicketsBy(stmt)
+    }
 }

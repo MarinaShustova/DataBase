@@ -36,4 +36,29 @@ class TicketService(private val dataSource: DataSource, private val ticketDao: T
         }
     }
 
+    fun getFreeTicketsByAllSpectacles(): List<Ticket> {
+        return transaction(dataSource) {
+            ticketDao.getFreeTicketsByAllSpectacles()
+        }
+    }
+
+    fun getFreeTicketsBySpectacle(spectacleId: Int): List<Ticket> {
+        return transaction(dataSource) {
+            ticketDao.getFreeTicketsBySpectacle(spectacleId)
+        }
+    }
+
+    fun getFreeTicketsByShow(showId: Int): List<Ticket> {
+        return transaction(dataSource) {
+            ticketDao.getFreeTicketsByShow(showId)
+        }
+    }
+
+    fun getFreeTicketsByPremieres(spectacleId: Int): List<Ticket> {
+        return transaction(dataSource) {
+            ticketDao.getFreeTicketsByPremieres()
+        }
+    }
+
+
 }
