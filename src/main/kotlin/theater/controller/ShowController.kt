@@ -1,10 +1,12 @@
 package theater.controller
 
+import org.springframework.web.bind.annotation.RestController
 import theater.model.Show
 import theater.service.ShowService
 import java.sql.Date
 import java.sql.Timestamp
 
+@RestController
 class ShowController(private val showService: ShowService) {
 
     fun createShow(argsStr: String): String {

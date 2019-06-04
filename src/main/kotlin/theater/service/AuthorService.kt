@@ -38,9 +38,9 @@ class AuthorService(private val dataSource: DataSource, private val authorDao: A
         }
     }
 
-    fun getAuthorsOfCurCentury(century: Date): ArrayList<Author> {
+    fun getAuthorsOfCurCentury(startDate: Date, endDate: Date): ArrayList<Author> {
         return transaction(dataSource) {
-            authorDao.getAuthorsOfCurCentury(century)
+            authorDao.getAuthorsOfCurTimePeriod(startDate, endDate)
         }
     }
 

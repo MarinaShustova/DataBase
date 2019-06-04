@@ -1,6 +1,7 @@
 package theater
 
 import theater.controller.*
+import theater.controller.commandLineController.AuthorCommandLineController
 import theater.dao.*
 import theater.service.*
 
@@ -36,14 +37,17 @@ fun main() {
     val countryDao = CountryDao(db.dataSource)
     val authorDao = AuthorDao(db.dataSource)
     val spectacleDao = SpectacleDao(db.dataSource)
-    val authorController =
-        AuthorController(AuthorService(db.dataSource, authorDao), CountryService(db.dataSource, countryDao))
-    val spectacleController = SpectacleController(
-        SpectacleService(db.dataSource, spectacleDao),
-        GenreService(db.dataSource, GenreDao(db.dataSource)),
-        AuthorService(db.dataSource, authorDao),
-        CountryService(db.dataSource, countryDao)
-    )
+    val authorController = AuthorCommandLineController(AuthorService(db.dataSource, authorDao), CountryService(db.dataSource, countryDao))
+    val spectacleController = SpectacleController(SpectacleService(db.dataSource, spectacleDao),
+            GenreService(db.dataSource, GenreDao(db.dataSource)), AuthorService(db.dataSource, authorDao), CountryService(db.dataSource, countryDao))
+//    val authorController =
+//        AuthorController(AuthorService(db.dataSource, authorDao), CountryService(db.dataSource, countryDao))
+//    val spectacleController = SpectacleController(
+//        SpectacleService(db.dataSource, spectacleDao),
+//        GenreService(db.dataSource, GenreDao(db.dataSource)),
+//        AuthorService(db.dataSource, authorDao),
+//        CountryService(db.dataSource, countryDao)
+//    )
     val ticketController = TicketController(TicketService(db.dataSource, TicketDao(db.dataSource)))
     val showController = ShowController(ShowService(db.dataSource, ShowDao(db.dataSource)))
 
@@ -130,7 +134,8 @@ fun main() {
                     } else {
                         "Unknown command"
                     }
-                } else if (it.startsWith("get")) {
+                }
+                else if (it.startsWith("get")) {
                     if (it.contains("performances")) {
                         performanceController.getPerformances(it.substring("get performances".length).trim())
                     } else if (it.contains("tours")) {
@@ -144,8 +149,7 @@ fun main() {
                             spectacleController.getSpectacleOfGenre(it.substring("get spectacle of genre".length).trim())
                         } else if (it.contains("of author life period")) {
                             spectacleController.getSpectacleOfCurAuthorLifePeriod(
-                                it.substring("get spectacle of author life period".length).trim()
-                            )
+                                    it.substring("get spectacle of author life period".length).trim())
                         } else if (it.contains("of author")) {
                             spectacleController.getSpectacleOfAuthor(it.substring("get spectacle of author".length).trim())
                         } else if (it.contains("of country")) {
@@ -192,7 +196,8 @@ fun main() {
                     } else {
                         "Unknown command"
                     }
-                } else if (it.startsWith("update")) {
+                }
+                else if (it.startsWith("update")) {
                     if (it.contains("performance")) {
                         performanceController.updatePerformance(it.substring("update performance".length).trim())
                     } else if (it.contains("tour")) {
@@ -218,7 +223,8 @@ fun main() {
                     } else {
                         "Unknown command"
                     }
-                } else if (it.startsWith("delete")) {
+                }
+                else if (it.startsWith("delete")) {
                     if (it.contains("performance")) {
                         performanceController.deletePerformance(it.substring("delete performance".length).trim())
                     } else if (it.contains("tour")) {
@@ -244,7 +250,8 @@ fun main() {
                     } else {
                         "Unknown command"
                     }
-                } else if (it.startsWith("link")) {
+                }
+                else if (it.startsWith("link")){
                     if (it.contains("performance") && it.contains("tour")) {
                         performanceController.addConcertTourToPerformance(it.substring("link performance with tour".length).trim())
                     } else if (it.contains("role") && it.contains("performance")) {
@@ -254,7 +261,8 @@ fun main() {
                     } else {
                         "Unknown command"
                     }
-                } else {
+                }
+                else {
                     "Unknown command: $it"
                 }
             } catch (e: Exception) {

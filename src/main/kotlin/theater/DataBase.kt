@@ -1,4 +1,4 @@
-package main.kotlin.theater
+package theater
 
 import org.flywaydb.core.Flyway
 import org.postgresql.ds.PGSimpleDataSource
@@ -9,7 +9,7 @@ class DataBase {
         portNumber = 5432
         databaseName = "theater"
         user = "postgres"
-        password = "secret"
+        password = "mysecretpassword"
     }
 
     init {

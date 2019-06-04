@@ -1,8 +1,10 @@
 package theater.controller
 
+import org.springframework.web.bind.annotation.RestController
 import theater.model.Ticket
 import theater.service.TicketService
 
+@RestController
 class TicketController(private val ticketService: TicketService) {
 
     fun createTicket(argsStr: String): String {

@@ -1,11 +1,11 @@
 package theater.dao
 
-import theater.model.Author
-import theater.model.Country
-import theater.model.Genre
-import theater.model.Spectacle
+import theater.model.*
 import java.sql.Statement
 import java.sql.Timestamp
+import java.sql.Date
+import java.sql.ResultSet
+import java.util.*
 import javax.sql.DataSource
 
 class SpectacleDao(private val dataSource: DataSource) {
@@ -193,4 +193,35 @@ class SpectacleDao(private val dataSource: DataSource) {
         stmt.setInt(1, spectacleId)
         stmt.executeQuery()
     }
+
+    fun getSpectacleProfitByPeriod(spectacleId: Int, periodStart: Date, periodEnd: Date): Int {
+        val stmt = dataSource.connection.prepareStatement(
+                "SELECT COUNT(t.price) as profit " +
+                        "FROM (SELECT * FROM spectacles WHERE spectacles.id = ?) sp  " +
+                        "JOIN performances p ON p.spectacle_id = sp.id " +
+                        "JOIN shows sh on sh.performance_id = p.id  " +
+                        "JOIN tickets t on t.show_id = sh.id " +
+                        "WHERE sh.show_date > ? AND sh.show_date < ? AND NOT t.presence"
+        )
+        stmt.setInt(1, spectacleId)
+        stmt.setDate(2, periodStart)
+        stmt.setDate(3, periodEnd)
+        val res = stmt.executeQuery()
+        return res.getInt("profit")
+    }
+
+    fun getSpectacleProfit(spectacleId: Int): Int {
+        val stmt = dataSource.connection.prepareStatement(
+                "SELECT COUNT(t.price) as profit " +
+                        "FROM (SELECT * FROM spectacles WHERE spectacles.id = ?) sp  " +
+                        "JOIN performances p ON p.spectacle_id = sp.id " +
+                        "JOIN shows sh on sh.performance_id = p.id  " +
+                        "JOIN tickets t on t.show_id = sh.id " +
+                        "WHERE NOT t.presence"
+        )
+        stmt.setInt(1, spectacleId)
+        val res = stmt.executeQuery()
+        return res.getInt("profit")
+    }
+
 }

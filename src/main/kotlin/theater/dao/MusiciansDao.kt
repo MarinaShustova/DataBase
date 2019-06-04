@@ -4,6 +4,8 @@ import java.sql.Date
 import java.sql.Statement
 import javax.sql.DataSource
 import theater.model.*
+import java.sql.PreparedStatement
+import java.sql.ResultSet
 
 class MusiciansDao(private val dataSource: DataSource) {
     fun createMusician(toCreate: Musician): Long {
@@ -45,13 +47,13 @@ class MusiciansDao(private val dataSource: DataSource) {
 
         for (it in employeeProperties) {
             when (it.key) {
-                "fio", "sex", "origin" -> {
+                "fio", "sex" -> {
                     stmt.setString(count++, it.value)
                 }
                 "birth_date", "hire_date" -> {
                     stmt.setDate(count++, Date.valueOf(it.value))
                 }
-                "salary", "children_amount" -> {
+                "salary", "children_amount", "origin" -> {
                     stmt.setInt(count++, it.value.toInt())
                 }
             }
@@ -75,4 +77,167 @@ class MusiciansDao(private val dataSource: DataSource) {
         stmt.setLong(musicianProperties.toList().size + 1, id)
         stmt.executeUpdate()
     }
+
+    fun getMusicianById(id: Long): Musician? {
+        val stmt = dataSource.connection.prepareStatement(
+                "SELECT * FROM musicians WHERE id = ?"
+        )
+        stmt.setLong(1, id)
+        val res = stmt.executeQuery()
+
+        return if (res.next()) {
+            val employeesDao = EmployeesDao(dataSource)
+            val relatedEmployee = employeesDao.getEmployeeById(res.getLong("employee_id"))
+            return if (relatedEmployee == null) {
+                null
+            } else {
+                Musician(
+                        res.getLong("id"),
+                        relatedEmployee,
+                        res.getString("instrument")
+                )
+            }
+        } else {
+            null
+        }
+    }
+
+    fun getMusicianByName(fio: String): Musician? {
+        val employeesDao = EmployeesDao(dataSource)
+        val relatedEmployee = employeesDao.getEmployeeByName(fio)
+        return if (relatedEmployee != null) {
+
+            val stmt = dataSource.connection.prepareStatement(
+                    "SELECT * FROM musicians WHERE musicians.employee_id = ?")
+            stmt.setLong(1, relatedEmployee.id)
+            val res = stmt.executeQuery()
+
+            return if (res.next()) {
+                Musician(
+                        res.getLong("id"),
+                        relatedEmployee,
+                        res.getString("instrument")
+                )
+            } else {
+                null
+            }
+        } else {
+            null
+        }
+    }
+
+    fun buildMusician(res: ResultSet): Musician? {
+        val countryDao = CountryDao(dataSource)
+        val employeeCountry = countryDao.getCountry(res.getInt("origin"))
+        return if (employeeCountry != null) {
+            val relatedEmployee = Employee(res.getLong("employee_id"),
+                    res.getString("fio"),
+                    res.getString("sex"),
+                    res.getDate("birth_date"),
+                    res.getInt("children_amount"),
+                    res.getInt("salary"),
+                    employeeCountry.name,
+                    res.getDate("hire_date")
+            )
+            Musician(
+                    res.getLong("musician_id"),
+                    relatedEmployee,
+                    res.getString("instrument"))
+        } else {
+            null
+        }
+    }
+
+    fun getMusiciansBySex(sex: String): List<Musician?> {
+        val stmt = dataSource.connection.prepareStatement(
+                "SELECT musicians.id as musician_id, employee_id, fio, sex, birth_date, " +
+                        "children_amount, salary, origin, hire_date, instrument " +
+                        "FROM ((SELECT * FROM employees WHERE employees.sex = ?) e " +
+                        "JOIN musicians ON musicians.employee_id = e.id)"
+        )
+
+
+        stmt.setString(1, sex)
+        return getMusiciansBy(stmt)
+    }
+
+    fun getMusiciansByExperience(years: Int): List<Musician?> {
+        val stmt = dataSource.connection.prepareStatement(
+                "SELECT musicians.id as musician_id, employee_id, fio, sex, birth_date, " +
+                        "children_amount, salary, origin, hire_date, instrument " +
+                        "FROM (SELECT * FROM employees " +
+                        "WHERE date_part('year', age(current_date, hire_date)) >= ?) e " +
+                        "JOIN musicians ON musicians.employee_id = e.id)"
+        )
+
+        stmt.setInt(1, years)
+        return getMusiciansBy(stmt)
+    }
+
+    fun getMusiciansByBirthDate(birth: Date): List<Musician?> {
+        val stmt = dataSource.connection.prepareStatement(
+                "SELECT musicians.id as musician_id, employee_id, fio, sex, birth_date, " +
+                        "children_amount, salary, origin, hire_date, instrument " +
+                        "FROM (SELECT * FROM employees " +
+                        "WHERE birth_date = ?) e " +
+                        "JOIN musicians ON musicians.employee_id = e.id)"
+        )
+
+        stmt.setDate(1, birth)
+        return getMusiciansBy(stmt)
+    }
+
+    fun getMusiciansByAge(age: Int): List<Musician?> {
+        val stmt = dataSource.connection.prepareStatement(
+                "SELECT musicians.id as musician_id, employee_id, fio, sex, birth_date, " +
+                        "children_amount, salary, origin, hire_date, instrument " +
+                        "FROM (SELECT * FROM employees " +
+                        "WHERE date_part('year', age(current_date, birth_date)) = ?) e " +
+                        "JOIN musicians ON musicians.employee_id = e.id)"
+        )
+
+
+        stmt.setInt(1, age)
+        return getMusiciansBy(stmt)
+    }
+
+    fun getMusiciansByChildrenAmount(count: Int): List<Musician?> {
+        val stmt = dataSource.connection.prepareStatement(
+                "SELECT musicians.id as musician_id, employee_id, fio, sex, birth_date, " +
+                        "children_amount, salary, origin, hire_date, instrument " +
+                        "FROM (SELECT * FROM employees " +
+                        "WHERE children_count = ?) e " +
+                        "JOIN musicians ON musicians.employee_id = e.id)"
+        )
+
+        stmt.setInt(1, count)
+        return getMusiciansBy(stmt)
+    }
+
+    fun getMusiciansBySalary(salary: Int): List<Musician?> {
+        val stmt = dataSource.connection.prepareStatement(
+                "SELECT musicians.id as musician_id, employee_id, fio, sex, birth_date, " +
+                        "children_amount, salary, origin, hire_date, instrument " +
+                        "FROM (SELECT * FROM employees " +
+                        "WHERE salary >= ?) e " +
+                        "JOIN musicians ON musicians.employee_id = e.id)"
+        )
+        stmt.setInt(1, salary)
+        return getMusiciansBy(stmt)
+    }
+
+    private fun getMusiciansBy(stmt: PreparedStatement): List<Musician?> {
+        val res = stmt.executeQuery()
+
+        var resultList = ArrayList<Musician?>()
+
+        while (res.next()) {
+            val musician = buildMusician(res)
+            if (musician == null) continue
+            resultList.add(musician)
+        }
+
+        return resultList
+    }
+
 }
