@@ -95,7 +95,7 @@ class Config {
 
     @Bean
     fun authorService(): AuthorService {
-        return AuthorService(theatreDs(), authorDao())
+        return AuthorService(theatreDs(), authorDao(), countryDao())
     }
 
     @Bean

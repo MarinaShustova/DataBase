@@ -1,11 +1,8 @@
-package theater.controller
+package theater.controller.commandLineController
 
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import theater.model.Genre
 import theater.model.Spectacle
-import theater.model.data.SpectacleData
 import theater.service.AuthorService
 import theater.service.CountryService
 import theater.service.GenreService
@@ -13,20 +10,24 @@ import theater.service.SpectacleService
 import java.sql.Timestamp
 
 @RestController
-@RequestMapping("/spectacles")
-class SpectacleController(private val spectacleService: SpectacleService,
-                          private val genreService: GenreService,
-                          private val authorService: AuthorService,
-                          private val countryService: CountryService) {
+class SpectacleCommandLineController(private val spectacleService: SpectacleService,
+                                     private val genreService: GenreService,
+                                     private val authorService: AuthorService,
+                                     private val countryService: CountryService) {
 
-    @PostMapping("/create")
-//    fun createSpectacle(spectacleData: SpectacleData): String {
-////        val genre = genreService.getGenreByName(args[1]) ?: return "Genre with name ${args[1]} not found"
-////
-////        val spectacle = Spectacle(-1, args[0], genre, args[2].toInt())
-////        spectacle.id = spectacleService.createSpectacle(spectacle)
-////        return "Created spectacle ${spectacle.id}, \"${spectacle.name}\", ${spectacle.genre.name}, ${spectacle.ageCategory}"
-////    }
+    fun createSpectacle(argsStr: String): String {
+        val args = argsStr.split(",")
+                .map { it.trim() }
+        if (argsStr.isEmpty() || args.size != 3) {
+            return "3 arg expected"
+        }
+
+        val genre = genreService.getGenreByName(args[1]) ?: return "Genre with name ${args[1]} not found"
+
+        val spectacle = Spectacle(-1, args[0], genre, args[2].toInt())
+        spectacle.id = spectacleService.createSpectacle(spectacle)
+        return "Created spectacle ${spectacle.id}, \"${spectacle.name}\", ${spectacle.genre.name}, ${spectacle.ageCategory}"
+    }
 
     fun createGenre(name: String): Genre {
         return Genre(genreService.createGenre(Genre(-1, name)), name)

@@ -59,11 +59,11 @@ class CountryDao(private val dataSource: DataSource) {
         stmt.executeUpdate()
     }
 
-    fun deleteCountry(country: Country) {
+    fun deleteCountry(id: Int) {
         val stmt = dataSource.connection.prepareStatement(
                 "DELETE FROM countries WHERE id = ?"
         )
-        stmt.setInt(1, country.id)
+        stmt.setInt(1, id)
         stmt.executeUpdate()
     }
 
