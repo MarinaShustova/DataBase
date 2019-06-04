@@ -4,7 +4,6 @@ import theater.Info
 import theater.TheaterDataSource
 import theater.dao.*
 import theater.model.*
-import java.sql.Date
 import javax.sql.DataSource
 import theater.model.Actor
 import theater.model.Musician
@@ -300,7 +299,6 @@ class EmployeeService(
         return transaction(dataSource) {
             actorsDao.getActorsRolesByPeriod(actorId, periodStart, periodEnd)
         }
-    }
 
         servantsDao.updateServant(id, keysNValues)
     }
