@@ -1,5 +1,7 @@
 package theater.controller
 
+import theater.dao.CountryDao
+import theater.dao.SpectacleDao
 import theater.service.EmployeeService
 import theater.model.*
 import java.sql.Date
@@ -137,4 +139,45 @@ class EmployeeController(private val service: EmployeeService) {
         return "updated"
     }
 
+    //functions for selections
+
+    fun getActorWithRank():String {
+        return service.getActorsWithRanks()
+    }
+
+    fun getActorWithRankSex(argsStr: String): String {
+        return service.getActorsWithRanksSex(argsStr)
+    }
+
+    fun getActorWithRankAge(argsStr: String, flag : Int): String {
+        val age = argsStr.toInt().times(flag)
+        return  service.getActorsWithRanksAge(age)
+    }
+
+    fun getActorWithRankContests(argsStr: String): String {
+        val contests = argsStr.split(",").map { it.trim() }.toList()
+        return  service.getActorsWithRanksContests(contests)
+    }
+
+    fun getTourTroupe(argsStr: String, spectacleDao: SpectacleDao): String {
+        val args = argsStr.split(",")
+            .map { it.trim() }
+        if (argsStr.isEmpty() || args.size != 3) {
+            return "3 arg expected"
+        }
+        val spectacle =  spectacleDao.getSpectacleByName(args[0])!!.id
+        val start = Date.valueOf(args[1])
+        val finish = Date.valueOf(args[2])
+        return service.getTourTroupe(spectacle, start, finish)
+    }
+
+    fun getPerformanceInfo(argsStr: String, spectacleDao: SpectacleDao, countryDao: CountryDao): String {
+        val args = argsStr.split(",")
+            .map { it.trim() }
+        if (argsStr.isEmpty() || args.size != 1) {
+            return "1 arg expected"
+        }
+        val spectacle =  spectacleDao.getSpectacleByName(args[0])!!.id
+        return service.getPerformanceInfo(spectacle, countryDao).toString()
+    }
 }

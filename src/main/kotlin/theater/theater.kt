@@ -24,20 +24,26 @@ fun main() {
     val concertTourDao = ConcertTourDao(theaterDs)
     val roleDao = RoleDao(theaterDs)
     val featureDao = FeatureDao(theaterDs)
-    val performanceController = PerformanceController(PerformanceService(theaterDs, performanceDao, concertTourDao, roleDao, featureDao))
+    val performanceController =
+        PerformanceController(PerformanceService(theaterDs, performanceDao, concertTourDao, roleDao, featureDao))
     val employeesDao = EmployeesDao(db.dataSource)
     val producersDao = ProducersDao(db.dataSource)
     val actorsDao = ActorsDao(db.dataSource)
     val musiciansDao = MusiciansDao(db.dataSource)
     val servantsDao = ServantsDao(db.dataSource)
-    val employeeService = EmployeeService(employeesDao, producersDao, actorsDao, musiciansDao, servantsDao)
+    val employeeService = EmployeeService(theaterDs, employeesDao, producersDao, actorsDao, musiciansDao, servantsDao)
     val employeeController = EmployeeController(employeeService)
     val countryDao = CountryDao(db.dataSource)
     val authorDao = AuthorDao(db.dataSource)
     val spectacleDao = SpectacleDao(db.dataSource)
-    val authorController = AuthorController(AuthorService(db.dataSource, authorDao), CountryService(db.dataSource, countryDao))
-    val spectacleController = SpectacleController(SpectacleService(db.dataSource, spectacleDao),
-            GenreService(db.dataSource, GenreDao(db.dataSource)), AuthorService(db.dataSource, authorDao), CountryService(db.dataSource, countryDao))
+    val authorController =
+        AuthorController(AuthorService(db.dataSource, authorDao), CountryService(db.dataSource, countryDao))
+    val spectacleController = SpectacleController(
+        SpectacleService(db.dataSource, spectacleDao),
+        GenreService(db.dataSource, GenreDao(db.dataSource)),
+        AuthorService(db.dataSource, authorDao),
+        CountryService(db.dataSource, countryDao)
+    )
     val ticketController = TicketController(TicketService(db.dataSource, TicketDao(db.dataSource)))
     val showController = ShowController(ShowService(db.dataSource, ShowDao(db.dataSource)))
 
@@ -124,8 +130,7 @@ fun main() {
                     } else {
                         "Unknown command"
                     }
-                }
-                else if (it.startsWith("get")) {
+                } else if (it.startsWith("get")) {
                     if (it.contains("performances")) {
                         performanceController.getPerformances(it.substring("get performances".length).trim())
                     } else if (it.contains("tours")) {
@@ -139,7 +144,8 @@ fun main() {
                             spectacleController.getSpectacleOfGenre(it.substring("get spectacle of genre".length).trim())
                         } else if (it.contains("of author life period")) {
                             spectacleController.getSpectacleOfCurAuthorLifePeriod(
-                                    it.substring("get spectacle of author life period".length).trim())
+                                it.substring("get spectacle of author life period".length).trim()
+                            )
                         } else if (it.contains("of author")) {
                             spectacleController.getSpectacleOfAuthor(it.substring("get spectacle of author".length).trim())
                         } else if (it.contains("of country")) {
@@ -157,11 +163,36 @@ fun main() {
                         }
                     } else if (it.contains("show")) {
                         showController.getShow(it.substring("get spectacle".length).trim())
+                    } else if (it.contains("ranks")) {
+                        if (it.contains("sex:")) {
+                            employeeController.getActorWithRankSex(
+                                it.substring("get actors with ranks, sex:".length).trim()
+                            )
+                        } else if (it.contains("younger")) {
+                            employeeController.getActorWithRankAge(
+                                it.substring("get actors with ranks, younger then ".length).trim(), -1
+                            )
+                        } else if (it.contains("older")) {
+                            employeeController.getActorWithRankAge(
+                                it.substring("get actors with ranks, older then ".length).trim(), 1
+                            )
+                        } else if (it.contains("contests")) {
+                            employeeController.getActorWithRankContests(
+                                it.substring("get actors with ranks, given on contests ".length).trim()
+                            )
+                        } else {
+                            employeeController.getActorWithRank()
+                        }
+                    } else if (it.contains("troupe")) {
+                        employeeController.getTourTroupe(it.substring("get tour troupe".length).trim(),
+                            spectacleDao)
+                    } else if (it.contains("info")) {
+                        employeeController.getPerformanceInfo(it.substring("get spectacle info".length).trim(),
+                            spectacleDao, countryDao)
                     } else {
                         "Unknown command"
                     }
-                }
-                else if (it.startsWith("update")) {
+                } else if (it.startsWith("update")) {
                     if (it.contains("performance")) {
                         performanceController.updatePerformance(it.substring("update performance".length).trim())
                     } else if (it.contains("tour")) {
@@ -187,8 +218,7 @@ fun main() {
                     } else {
                         "Unknown command"
                     }
-                }
-                else if (it.startsWith("delete")) {
+                } else if (it.startsWith("delete")) {
                     if (it.contains("performance")) {
                         performanceController.deletePerformance(it.substring("delete performance".length).trim())
                     } else if (it.contains("tour")) {
@@ -214,8 +244,7 @@ fun main() {
                     } else {
                         "Unknown command"
                     }
-                }
-                else if (it.startsWith("link")){
+                } else if (it.startsWith("link")) {
                     if (it.contains("performance") && it.contains("tour")) {
                         performanceController.addConcertTourToPerformance(it.substring("link performance with tour".length).trim())
                     } else if (it.contains("role") && it.contains("performance")) {
@@ -225,8 +254,7 @@ fun main() {
                     } else {
                         "Unknown command"
                     }
-                }
-                else {
+                } else {
                     "Unknown command: $it"
                 }
             } catch (e: Exception) {
