@@ -1,16 +1,22 @@
 package theater.service
 
+import theater.Info
+import theater.TheaterDataSource
 import theater.dao.*
 import theater.model.Actor
 import theater.model.Musician
 import theater.model.Producer
 import theater.model.Servant
+import java.sql.Date
 
-class EmployeeService(private val employeesDao: EmployeesDao,
-                      private val producersDao: ProducersDao,
-                      private val actorsDao: ActorsDao,
-                      private val musiciansDao: MusiciansDao,
-                      private val servantsDao: ServantsDao) {
+class EmployeeService(
+    private val dataSource: TheaterDataSource,
+    private val employeesDao: EmployeesDao,
+    private val producersDao: ProducersDao,
+    private val actorsDao: ActorsDao,
+    private val musiciansDao: MusiciansDao,
+    private val servantsDao: ServantsDao
+) : Service() {
 
     fun createProducer(toCreate: Producer): Long {
         val employeeId = employeesDao.createEmployee(toCreate.employee)
@@ -63,7 +69,38 @@ class EmployeeService(private val employeesDao: EmployeesDao,
     fun updateMusician(id: Long, keysNValues: Map<String, String>) {
         musiciansDao.updateMusician(id, keysNValues)
     }
+
     fun updateServant(id: Long, keysNValues: Map<String, String>) {
         servantsDao.updateServant(id, keysNValues)
+    }
+
+    //functions for selections
+
+    fun getActorsWithRanks(): String {
+        return actorsDao.getActorsWithRanks(employeesDao).toString()
+    }
+
+    fun getActorsWithRanksSex(sex: String): String {
+        return actorsDao.getActorsWithRanksSex(employeesDao, sex).toString()
+    }
+
+    fun getActorsWithRanksAge(age: Int): String {
+        return actorsDao.getActorsWithRanksAge(employeesDao, age).toString()
+    }
+
+    fun getActorsWithRanksContests(contests: List<String>): String {
+        return actorsDao.getActorsWithRanksContests(employeesDao, contests).toString()
+    }
+
+    fun getTourTroupe(spectacleId: Int, start: Date, finish: Date): String {
+        val res = actorsDao.getTourTroupe(
+            employeesDao, spectacleId,
+            start, finish
+        )
+        return res.toString()
+    }
+
+    fun getPerformanceInfo(spectacleId: Int, countryDao: CountryDao): Info {
+        return actorsDao.getPerformanceInfo(employeesDao, spectacleId, countryDao)
     }
 }
