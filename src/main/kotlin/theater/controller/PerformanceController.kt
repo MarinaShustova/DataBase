@@ -1,5 +1,6 @@
 package theater.controller
 
+import org.springframework.web.bind.annotation.RestController
 import theater.dao.Page
 import theater.model.ConcertTour
 import theater.model.Feature
@@ -9,7 +10,7 @@ import theater.service.PerformanceService
 import theater.service.Service
 import java.sql.Date
 
-
+@RestController
 class PerformanceController(private val service: PerformanceService) {
 
     fun createPerformance(argsStr: String): String {
