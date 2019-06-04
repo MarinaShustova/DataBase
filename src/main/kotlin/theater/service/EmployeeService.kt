@@ -299,8 +299,6 @@ class EmployeeService(
         return transaction(dataSource) {
             actorsDao.getActorsRolesByPeriod(actorId, periodStart, periodEnd)
         }
-
-        servantsDao.updateServant(id, keysNValues)
     }
 
     //functions for selections
