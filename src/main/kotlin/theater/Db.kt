@@ -8,9 +8,9 @@ class Db {
     val dataSource = PGSimpleDataSource().apply {
         serverName = "localhost"
         portNumber = 5432
-        databaseName = "postgres"
+        databaseName = "theater"
         user = "postgres"
-        password = "mysecretpassword"
+        password = "secret"
     }
 
     init {

@@ -105,7 +105,7 @@ class Config {
 
     @Bean
     fun employeeService(): EmployeeService {
-        return EmployeeService(employeesDao(), producersDao(), actorsDao(), musiciansDao(), servantsDao())
+        return EmployeeService(theatreDs(), employeesDao(), producersDao(), actorsDao(), musiciansDao(), servantsDao())
     }
 
     @Bean

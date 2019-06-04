@@ -4,30 +4,43 @@ import java.sql.Date
 import java.sql.Statement
 import javax.sql.DataSource
 import theater.model.*
+import java.lang.IllegalArgumentException
 
 class ProducersDao(private val dataSource: DataSource) {
-    fun createProducer(toCreate: Producer): Long {
+    fun createProducer(toCreate: Producer): Int {
         val stmt = dataSource.connection.prepareStatement(
                 "INSERT INTO producers (employee_id, activity) VALUES (?, ?)",
                 Statement.RETURN_GENERATED_KEYS
         )
-        stmt.setLong(1, toCreate.employee.id)
+        stmt.setInt(1, toCreate.employee.id)
         stmt.setString(2, toCreate.activity)
 
         stmt.executeUpdate()
         val gk = stmt.generatedKeys
         gk.next()
 
-        return gk.getLong(1)
+        return gk.getInt(1)
     }
 
-    fun deleteProducer(id: Long) {
+    fun deleteProducer(id: Int) {
         val stmt = dataSource.connection.prepareStatement("DELETE FROM producers WHERE producers.id = ?")
         stmt.setInt(1, id.toInt())
         stmt.executeUpdate()
     }
 
-    fun updateProducer(id: Long, keysNValues: Map<String, String>) { //updating in two statements
+    fun updateProducer(toUpdate: Producer) {
+        val employeesDao = EmployeesDao(dataSource)
+        employeesDao.updateEmployee(toUpdate.employee)
+
+        val stmt = dataSource.connection.prepareStatement(
+                "UPDATE producers SET activity = ? WHERE " +
+                        "producers.id = ?"
+        )
+        stmt.setString(1, toUpdate.activity)
+        stmt.setInt(2, toUpdate.id!!)
+    }
+
+    fun updateProducer(id: Int, keysNValues: Map<String, String>) { //updating in two statements
         val employeeProperties = keysNValues.asSequence().filter {
             it.key.equals("fio") || it.key.equals("sex") || it.key.equals("origin")
                     || it.key.equals("birth_date") || it.key.equals("hire_date")
@@ -56,7 +69,7 @@ class ProducersDao(private val dataSource: DataSource) {
                 }
             }
         }
-        stmt.setLong(employeeProperties.toList().size + 1, id)
+        stmt.setInt(employeeProperties.toList().size + 1, id)
         stmt.executeUpdate()
 
         questionMarks = producerProperties.asSequence().map { "${it.key} = ?" }.joinToString(", ")
@@ -72,26 +85,26 @@ class ProducersDao(private val dataSource: DataSource) {
                 }
             }
         }
-        stmt.setLong(producerProperties.toList().size + 1, id)
+        stmt.setInt(producerProperties.toList().size + 1, id)
         stmt.executeUpdate()
     }
 
 
-    fun getProducerById(id: Long): Producer? {
+    fun getProducerById(id: Int): Producer? {
         val stmt = dataSource.connection.prepareStatement(
                 "SELECT * FROM producers WHERE id = ?"
         )
-        stmt.setLong(1, id)
+        stmt.setInt(1, id)
         val res = stmt.executeQuery()
 
         return if (res.next()) {
             val employeesDao = EmployeesDao(dataSource)
-            val relatedEmployee = employeesDao.getEmployeeById(res.getLong("employee_id"))
+            val relatedEmployee = employeesDao.getEmployeeById(res.getInt("employee_id"))
             return if (relatedEmployee == null) {
                 null
             } else {
                 Producer(
-                        res.getLong("id"),
+                        res.getInt("id"),
                         relatedEmployee,
                         res.getString("activity")
                 )
@@ -108,12 +121,12 @@ class ProducersDao(private val dataSource: DataSource) {
 
             val stmt = dataSource.connection.prepareStatement(
                     "SELECT * FROM producers WHERE producers.employee_id = ?")
-            stmt.setLong(1, relatedEmployee.id)
+            stmt.setInt(1, relatedEmployee.id)
             val res = stmt.executeQuery()
 
             return if (res.next()) {
                 Producer(
-                        res.getLong("id"),
+                        res.getInt("id"),
                         relatedEmployee,
                         res.getString("activity")
                 )
@@ -144,7 +157,7 @@ class ProducersDao(private val dataSource: DataSource) {
             val employeeCountry = countryDao.getCountry(res.getInt("origin"))
             if (employeeCountry == null) continue
 
-            val relatedEmployee = Employee(res.getLong("employee_id"),
+            val relatedEmployee = Employee(res.getInt("employee_id"),
                     res.getString("fio"),
                     res.getString("sex"),
                     res.getDate("birth_date"),
@@ -155,9 +168,9 @@ class ProducersDao(private val dataSource: DataSource) {
             )
 
             resultList.add(Producer(
-                    res.getLong("producer_id"),
+                    res.getInt("producer_id"),
                     relatedEmployee,
-                    res.getString("activity") ))
+                    res.getString("activity")))
         }
 
         return resultList

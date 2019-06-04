@@ -18,28 +18,28 @@ import theater.model.Producer
 
 
 class ActorsDao(private val dataSource: DataSource) {
-    fun createActor(toCreate: Actor): Long {
+    fun createActor(toCreate: Actor): Int {
         val stmt = dataSource.connection.prepareStatement(
-            "INSERT INTO actors (employee_id, is_student) VALUES (?, ?)",
-            Statement.RETURN_GENERATED_KEYS
+                "INSERT INTO actors (employee_id, is_student) VALUES (?, ?)",
+                Statement.RETURN_GENERATED_KEYS
         )
-        stmt.setLong(1, toCreate.employee.id)
+        stmt.setInt(1, toCreate.employee.id)
         stmt.setBoolean(2, toCreate.isStudent)
 
         stmt.executeUpdate()
         val gk = stmt.generatedKeys
         gk.next()
 
-        return gk.getLong(1)
+        return gk.getInt(1)
     }
 
-    fun deleteActor(id: Long) {
+    fun deleteActor(id: Int) {
         val stmt = dataSource.connection.prepareStatement("DELETE FROM actors WHERE actors.id = ?")
         stmt.setInt(1, id.toInt())
         stmt.executeUpdate()
     }
 
-    fun updateActor(id: Long, keysNValues: Map<String, String>) { //updating in two statements
+    fun updateActor(id: Int, keysNValues: Map<String, String>) { //updating in two statements
         val employeeProperties = keysNValues.asSequence().filter {
             it.key.equals("fio") || it.key.equals("sex") || it.key.equals("origin")
                     || it.key.equals("birth_date") || it.key.equals("hire_date")
@@ -68,7 +68,7 @@ class ActorsDao(private val dataSource: DataSource) {
                 }
             }
         }
-        stmt.setLong(employeeProperties.toList().size + 1, id)
+        stmt.setInt(employeeProperties.toList().size + 1, id)
         stmt.executeUpdate()
 
         questionMarks = actorProperties.asSequence().map { "${it.key} = ?" }.joinToString(", ")
@@ -84,25 +84,37 @@ class ActorsDao(private val dataSource: DataSource) {
                 }
             }
         }
-        stmt.setLong(actorProperties.toList().size + 1, id)
+        stmt.setInt(actorProperties.toList().size + 1, id)
         stmt.executeUpdate()
     }
 
-    fun getActorById(id: Long): Actor? {
+    fun updateActor(toUpdate: Actor) {
+        val employeesDao = EmployeesDao(dataSource)
+        employeesDao.updateEmployee(toUpdate.employee)
+
+        val stmt = dataSource.connection.prepareStatement(
+                "UPDATE actors SET is_student = ? WHERE " +
+                        "actors.id = ?"
+        )
+        stmt.setBoolean(1, toUpdate.isStudent)
+        stmt.setInt(2, toUpdate.id!!)
+    }
+
+    fun getActorById(id: Int): Actor? {
         val stmt = dataSource.connection.prepareStatement(
                 "SELECT * FROM actors WHERE id = ?"
         )
-        stmt.setLong(1, id)
+        stmt.setInt(1, id)
         val res = stmt.executeQuery()
 
         return if (res.next()) {
             val employeesDao = EmployeesDao(dataSource)
-            val relatedEmployee = employeesDao.getEmployeeById(res.getLong("employee_id"))
+            val relatedEmployee = employeesDao.getEmployeeById(res.getInt("employee_id"))
             return if (relatedEmployee == null) {
                 null
             } else {
                 Actor(
-                        res.getLong("id"),
+                        res.getInt("id"),
                         relatedEmployee,
                         res.getBoolean("is_student")
                 )
@@ -112,6 +124,7 @@ class ActorsDao(private val dataSource: DataSource) {
         }
     }
 
+
     fun getActorByName(fio: String): Actor? {
         val employeesDao = EmployeesDao(dataSource)
         val relatedEmployee = employeesDao.getEmployeeByName(fio)
@@ -119,12 +132,12 @@ class ActorsDao(private val dataSource: DataSource) {
 
             val stmt = dataSource.connection.prepareStatement(
                     "SELECT * FROM actors WHERE actors.employee_id = ?")
-            stmt.setLong(1, relatedEmployee.id)
+            stmt.setInt(1, relatedEmployee.id)
             val res = stmt.executeQuery()
 
             return if (res.next()) {
                 Actor(
-                        res.getLong("id"),
+                        res.getInt("id"),
                         relatedEmployee,
                         res.getBoolean("is_student")
                 )
@@ -140,7 +153,7 @@ class ActorsDao(private val dataSource: DataSource) {
         val countryDao = CountryDao(dataSource)
         val employeeCountry = countryDao.getCountry(res.getInt("origin"))
         return if (employeeCountry != null) {
-            val relatedEmployee = Employee(res.getLong("employee_id"),
+            val relatedEmployee = Employee(res.getInt("employee_id"),
                     res.getString("fio"),
                     res.getString("sex"),
                     res.getDate("birth_date"),
@@ -150,7 +163,7 @@ class ActorsDao(private val dataSource: DataSource) {
                     res.getDate("hire_date")
             )
             Actor(
-                    res.getLong("actor_id"),
+                    res.getInt("actor_id"),
                     relatedEmployee,
                     res.getBoolean("is_student"))
         } else {
@@ -158,11 +171,11 @@ class ActorsDao(private val dataSource: DataSource) {
         }
     }
 
-    fun getActorsBySex(sex: String): List<Actor?> {
+    fun getActorsBySex(sex: String): List<Actor> {
         val stmt = dataSource.connection.prepareStatement(
                 "SELECT actors.id as actor_id, employee_id, fio, sex, birth_date, " +
                         "children_amount, salary, origin, hire_date, is_student " +
-                        "FROM ((SELECT * FROM employees WHERE employees.sex = ?) e " +
+                        "FROM (SELECT * FROM employees WHERE employees.sex = ?) e " +
                         "JOIN actors ON actors.employee_id = e.id)"
         )
 
@@ -171,7 +184,7 @@ class ActorsDao(private val dataSource: DataSource) {
         return getActorsBy(stmt)
     }
 
-    fun getActorsByExperience(years: Int): List<Actor?> {
+    fun getActorsByExperience(years: Int): List<Actor> {
         val stmt = dataSource.connection.prepareStatement(
                 "SELECT actors.id as actor_id, employee_id, fio, sex, birth_date, " +
                         "children_amount, salary, origin, hire_date, instrument " +
@@ -185,7 +198,7 @@ class ActorsDao(private val dataSource: DataSource) {
         return getActorsBy(stmt)
     }
 
-    fun getActorsByBirthDate(birth: Date): List<Actor?> {
+    fun getActorsByBirthDate(birth: Date): List<Actor> {
         val stmt = dataSource.connection.prepareStatement(
                 "SELECT actors.id as actor_id, employee_id, fio, sex, birth_date, " +
                         "children_amount, salary, origin, hire_date, instrument " +
@@ -199,7 +212,7 @@ class ActorsDao(private val dataSource: DataSource) {
         return getActorsBy(stmt)
     }
 
-    fun getActorsByAge(age: Int): List<Actor?> {
+    fun getActorsByAge(age: Int): List<Actor> {
         val stmt = dataSource.connection.prepareStatement(
                 "SELECT actors.id as actor_id, employee_id, fio, sex, birth_date, " +
                         "children_amount, salary, origin, hire_date, instrument " +
@@ -213,7 +226,7 @@ class ActorsDao(private val dataSource: DataSource) {
         return getActorsBy(stmt)
     }
 
-    fun getActorsByChildrenAmount(count: Int): List<Actor?> {
+    fun getActorsByChildrenAmount(count: Int): List<Actor> {
         val stmt = dataSource.connection.prepareStatement(
                 "SELECT actors.id as actor_id, employee_id, fio, sex, birth_date, " +
                         "children_amount, salary, origin, hire_date, instrument " +
@@ -227,7 +240,7 @@ class ActorsDao(private val dataSource: DataSource) {
         return getActorsBy(stmt)
     }
 
-    fun getActorsBySalary(salary: Int): List<Actor?> {
+    fun getActorsBySalary(salary: Int): List<Actor> {
         val stmt = dataSource.connection.prepareStatement(
                 "SELECT actors.id as actor_id, employee_id, fio, sex, birth_date, " +
                         "children_amount, salary, origin, hire_date, instrument " +
@@ -240,10 +253,10 @@ class ActorsDao(private val dataSource: DataSource) {
         return getActorsBy(stmt)
     }
 
-    private fun getActorsBy(stmt: PreparedStatement): List<Actor?> {
+    private fun getActorsBy(stmt: PreparedStatement): List<Actor> {
         val res = stmt.executeQuery()
 
-        var resultList = ArrayList<Actor?>()
+        var resultList = ArrayList<Actor>()
 
         while (res.next()) {
             val actor = buildActor(res)
@@ -361,11 +374,11 @@ class ActorsDao(private val dataSource: DataSource) {
         val rs = stmt.executeQuery()
         while (rs.next()) {
             res.add(
-                Actor(
-                    rs.getLong("id"),
-                    employeesDao.getEmployee(rs.getLong("employee"))!!,
-                    rs.getBoolean("isStudent")
-                )
+                    Actor(
+                            rs.getInt("id"),
+                            employeesDao.getEmployeeById(rs.getInt("employee_id"))!!,
+                            rs.getBoolean("isStudent")
+                    )
             )
         }
         return res
@@ -383,29 +396,29 @@ class ActorsDao(private val dataSource: DataSource) {
         val rs = stmt.executeQuery()
         while (rs.next()) {
             res.add(
-                Actor(
-                    rs.getLong("id"),
-                    employeesDao.getEmployee(rs.getLong("employee"))!!,
-                    rs.getBoolean("isStudent")
-                )
+                    Actor(
+                            rs.getInt("id"),
+                            employeesDao.getEmployeeById(rs.getInt("employee_id"))!!,
+                            rs.getBoolean("isStudent")
+                    )
             )
         }
         return res
     }
 
-    fun getActorsWithRanksContests(employeesDao: EmployeesDao, contests : List<String>): List<Actor> {
+    fun getActorsWithRanksContests(employeesDao: EmployeesDao, contests: List<String>): List<Actor> {
         var questions = "("
-        for (contest in contests){
+        for (contest in contests) {
             questions += " ?"
         }
         questions += ")"
         val theQuery = "SELECT fio, r.name  FROM actors a " +
                 "JOIN actors_ranks ar ON a.id = ar.actor_id " +
-                "JOIN ranks r on ar.rank_id = r.id WHERE r.contest in"+ questions +"GROUP BY fio"
+                "JOIN ranks r on ar.rank_id = r.id WHERE r.contest in" + questions + "GROUP BY fio"
         val conn = dataSource.connection
         val stmt = conn.prepareStatement(theQuery)
         val i = 1;
-        for (contest in contests){
+        for (contest in contests) {
             stmt.setString(i, contest)
         }
 
@@ -413,11 +426,11 @@ class ActorsDao(private val dataSource: DataSource) {
         val rs = stmt.executeQuery()
         while (rs.next()) {
             res.add(
-                Actor(
-                    rs.getLong("id"),
-                    employeesDao.getEmployee(rs.getLong("employee"))!!,
-                    rs.getBoolean("isStudent")
-                )
+                    Actor(
+                            rs.getInt("id"),
+                            employeesDao.getEmployeeById(rs.getInt("employee_id"))!!,
+                            rs.getBoolean("isStudent")
+                    )
             )
         }
         return res
@@ -451,11 +464,11 @@ class ActorsDao(private val dataSource: DataSource) {
         val rs = stmt.executeQuery()
         while (rs.next()) {
             res.add(
-                Actor(
-                    rs.getLong("id"),
-                    employeesDao.getEmployee(rs.getLong("employee"))!!,
-                    rs.getBoolean("isStudent")
-                )
+                    Actor(
+                            rs.getInt("id"),
+                            employeesDao.getEmployeeById(rs.getInt("employee_id"))!!,
+                            rs.getBoolean("isStudent")
+                    )
             )
         }
         return res
@@ -478,11 +491,11 @@ class ActorsDao(private val dataSource: DataSource) {
         var rs = stmt.executeQuery()
         while (rs.next()) {
             act.add(
-                Actor(
-                    rs.getLong("id"),
-                    employeesDao.getEmployee(rs.getLong("employee"))!!,
-                    rs.getBoolean("isStudent")
-                )
+                    Actor(
+                            rs.getInt("id"),
+                            employeesDao.getEmployeeById(rs.getInt("employee_id"))!!,
+                            rs.getBoolean("isStudent")
+                    )
             )
         }
         theQuery = "select a.fio\n" +
@@ -505,18 +518,18 @@ class ActorsDao(private val dataSource: DataSource) {
         rs = stmt.executeQuery()
         while (rs.next()) {
             prod.add(
-                Producer(
-                    rs.getLong("id"),
-                    employeesDao.getEmployee(rs.getLong("employee"))!!, "prod"
-                    //TODO: producer's activity
-                )
+                    Producer(
+                            rs.getInt("id"),
+                            employeesDao.getEmployeeById(rs.getInt("employee_id"))!!, "prod"
+                            //TODO: producer's activity
+                    )
             )
         }
         return Pair(act, prod)
     }
 
     fun getPerformanceInfo(employeesDao: EmployeesDao,
-                      spectacleId: Int, countryDao: CountryDao): Info {
+                           spectacleId: Int, countryDao: CountryDao): Info {
         var theQuery = "with premiere as (select s.show_date, p.id " +
                 "                  from performances p " +
                 "                           join shows s on p.id = s.performance_id " +
@@ -537,11 +550,11 @@ class ActorsDao(private val dataSource: DataSource) {
         val prod = ArrayList<Producer>()
         while (rs.next()) {
             prod.add(
-                Producer(
-                    rs.getLong("id"),
-                    employeesDao.getEmployee(rs.getLong("employee"))!!, "prod"
-                    //TODO: producer's activity
-                )
+                    Producer(
+                            rs.getInt("id"),
+                            employeesDao.getEmployeeById(rs.getInt("employee_id"))!!, "prod"
+                            //TODO: producer's activity
+                    )
             )
         }
 
@@ -564,11 +577,11 @@ class ActorsDao(private val dataSource: DataSource) {
         rs = stmt.executeQuery()
         while (rs.next()) {
             act.add(
-                Actor(
-                    rs.getLong("id"),
-                    employeesDao.getEmployee(rs.getLong("employee"))!!,
-                    rs.getBoolean("isStudent")
-                )
+                    Actor(
+                            rs.getInt("id"),
+                            employeesDao.getEmployeeById(rs.getInt("employee_id"))!!,
+                            rs.getBoolean("isStudent")
+                    )
             )
         }
 
@@ -576,15 +589,14 @@ class ActorsDao(private val dataSource: DataSource) {
                 "on a.id = s.author_id where s.id = ?"
         stmt = conn.prepareStatement(theQuery)
         stmt.setInt(1, spectacleId)
-        val author : Author
+        val author: Author
         rs = stmt.executeQuery()
         if (rs.next()) {
             author = Author(rs.getInt("id"), rs.getString("name"),
-                rs.getString("surname"), rs.getDate("birthDare"),
-                rs.getDate("deathDate"), countryDao.getCountry(rs.getInt("country"))!!)
-        }
-        else author = Author(-1, "Default", "Default", Date(0),
-            Date(0), Country(-1, "Default")
+                    rs.getString("surname"), rs.getDate("birthDare"),
+                    rs.getDate("deathDate"), countryDao.getCountry(rs.getInt("country"))!!)
+        } else author = Author(-1, "Default", "Default", Date(0),
+                Date(0), Country(-1, "Default")
         )
         return Info(prod, act, author)
     }

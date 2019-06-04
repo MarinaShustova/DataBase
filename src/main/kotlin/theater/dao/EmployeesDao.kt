@@ -2,6 +2,7 @@ package theater.dao
 
 import theater.model.Country
 import theater.model.Employee
+import java.lang.IllegalArgumentException
 import java.sql.ResultSet
 import javax.sql.DataSource
 import java.sql.Statement
@@ -9,7 +10,7 @@ import java.sql.Date
 import java.sql.PreparedStatement
 
 class EmployeesDao(private val dataSource: DataSource) {
-    fun createEmployee(toCreate: Employee): Long {
+    fun createEmployee(toCreate: Employee): Int {
         // fio sex birth child salary origin hire
         val stmt = dataSource.connection.prepareStatement(
                 "INSERT INTO employees (fio, sex, birth_date, " +
@@ -34,14 +35,37 @@ class EmployeesDao(private val dataSource: DataSource) {
         val gk = stmt.generatedKeys
         gk.next()
 
-        return gk.getLong(1)
+        return gk.getInt(1)
+    }
+
+    fun updateEmployee(toUpdate: Employee) {
+        var stmt = dataSource.connection.prepareStatement(
+                "UPDATE employees SET (fio = ?, sex = ?, birth_date = ?," +
+                        "children_amount = ?, salary = ?, origin, hire_date) WHERE " +
+                        "employees.id = ?"
+        )
+
+        val relatedCountry = CountryDao(dataSource).getCountryByName(toUpdate.origin)
+        if (relatedCountry == null) throw IllegalArgumentException("No country with this name in database")
+
+        stmt.run {
+            setString(1, toUpdate.fio)
+            setString(2, toUpdate.sex)
+            setDate(3, toUpdate.birthDate)
+            setInt(4, toUpdate.childrenAmount)
+            setInt(5, toUpdate.salary)
+            setInt(6, relatedCountry.id)
+            setDate(7, toUpdate.hireDate)
+
+            executeUpdate()
+        }
     }
 
     private fun buildEmployee(queryResult: ResultSet): Employee? {
         val countryDao = CountryDao(dataSource)
         val employeeCountry = countryDao.getCountry(queryResult.getInt("origin"))
         return if (employeeCountry != null) {
-            Employee(queryResult.getLong("id"),
+            Employee(queryResult.getInt("id"),
                     queryResult.getString("fio"),
                     queryResult.getString("sex"),
                     queryResult.getDate("birth_date"),
@@ -56,11 +80,11 @@ class EmployeesDao(private val dataSource: DataSource) {
     }
 
 
-    fun getEmployeeById(id: Long): Employee? {
+    fun getEmployeeById(id: Int): Employee? {
         val stmt = dataSource.connection.prepareStatement(
                 "SELECT * FROM employees WHERE employees.id = ?"
         )
-        stmt.setLong(1, id)
+        stmt.setInt(1, id)
         val res = stmt.executeQuery()
 
 
@@ -86,7 +110,7 @@ class EmployeesDao(private val dataSource: DataSource) {
     }
 
 
-    fun getEmployeesBySex(sex: String): List<Employee?> {
+    fun getEmployeesBySex(sex: String): List<Employee> {
         val stmt = dataSource.connection.prepareStatement(
                 "SELECT * FROM employees WHERE employees.sex = ?"
         )
@@ -94,7 +118,7 @@ class EmployeesDao(private val dataSource: DataSource) {
         return getEmployeesBy(stmt)
     }
 
-    fun getEmployeesByExperience(years: Int): List<Employee?> {
+    fun getEmployeesByExperience(years: Int): List<Employee> {
         val stmt = dataSource.connection.prepareStatement(
                 "SELECT * FROM employees WHERE date_part('year', age(current_date, hire_date)) >= ?"
         )
@@ -103,7 +127,7 @@ class EmployeesDao(private val dataSource: DataSource) {
         return getEmployeesBy(stmt)
     }
 
-    fun getEmployeesByBirthDate(birth: Date): List<Employee?> {
+    fun getEmployeesByBirthDate(birth: Date): List<Employee> {
         val stmt = dataSource.connection.prepareStatement(
                 "SELECT * FROM employees WHERE birth_date = ?"
         )
@@ -112,7 +136,7 @@ class EmployeesDao(private val dataSource: DataSource) {
         return getEmployeesBy(stmt)
     }
 
-    fun getEmployeesByAge(age: Int): List<Employee?> {
+    fun getEmployeesByAge(age: Int): List<Employee> {
         val stmt = dataSource.connection.prepareStatement(
                 "SELECT * FROM employees WHERE date_part('year', age(current_date, birth_date)) = ?"
         )
@@ -121,7 +145,7 @@ class EmployeesDao(private val dataSource: DataSource) {
         return getEmployeesBy(stmt)
     }
 
-    fun getEmployeesByChildrenAmount(count: Int): List<Employee?> {
+    fun getEmployeesByChildrenAmount(count: Int): List<Employee> {
         val stmt = dataSource.connection.prepareStatement(
                 "SELECT * FROM employees WHERE children_amount >= ?"
         )
@@ -130,7 +154,7 @@ class EmployeesDao(private val dataSource: DataSource) {
         return getEmployeesBy(stmt)
     }
 
-    fun getEmployeesBySalary(salary: Int): List<Employee?> {
+    fun getEmployeesBySalary(salary: Int): List<Employee> {
         val stmt = dataSource.connection.prepareStatement(
                 "SELECT * FROM employees WHERE salary >= ?"
         )
@@ -141,10 +165,10 @@ class EmployeesDao(private val dataSource: DataSource) {
         return getEmployeesBy(stmt)
     }
 
-    private fun getEmployeesBy(stmt: PreparedStatement): List<Employee?> {
+    private fun getEmployeesBy(stmt: PreparedStatement): List<Employee> {
         val res = stmt.executeQuery()
 
-        var resultList = ArrayList<Employee?>()
+        var resultList = ArrayList<Employee>()
 
         while (res.next()) {
             val employee = buildEmployee(res)
@@ -154,20 +178,21 @@ class EmployeesDao(private val dataSource: DataSource) {
 
         return resultList
     }
-    fun getEmployee(id: Long): Employee? {
+    
+ /*   fun getEmployee(id: Int): Employee? {
         val stmt = dataSource.connection.prepareStatement(
             "SELECT * FROM employees WHERE employees.id = ?"
         )
-        stmt.setLong(1, id)
+        stmt.setInt(1, id)
         val rs = stmt.executeQuery()
         return if (rs.next()) {
             Employee(
-                rs.getLong("fid"), rs.getString("name"),
+                rs.getInt("id"), rs.getString("name"),
                 rs.getString("sex"), rs.getDate("birthDate"),
                 rs.getInt("childrenAmount"), rs.getInt("salary"),
                 rs.getString("origin"), rs.getDate("hireDate"))
         } else {
             null
         }
-    }
+    }*/
 }
