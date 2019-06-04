@@ -160,26 +160,4 @@ class EmployeeController(private val service: EmployeeService) {
         val contests = argsStr.split(",").map { it.trim() }.toList()
         return  service.getActorsWithRanksContests(contests)
     }
-
-    fun getTourTroupe(argsStr: String, spectacleDao: SpectacleDao): String {
-        val args = argsStr.split(",")
-            .map { it.trim() }
-        if (argsStr.isEmpty() || args.size != 3) {
-            return "3 arg expected"
-        }
-        val spectacle =  spectacleDao.getSpectacleByName(args[0])!!.id
-        val start = Date.valueOf(args[1])
-        val finish = Date.valueOf(args[2])
-        return service.getTourTroupe(spectacle, start, finish)
-    }
-
-    fun getPerformanceInfo(argsStr: String, spectacleDao: SpectacleDao, countryDao: CountryDao): String {
-        val args = argsStr.split(",")
-            .map { it.trim() }
-        if (argsStr.isEmpty() || args.size != 1) {
-            return "1 arg expected"
-        }
-        val spectacle =  spectacleDao.getSpectacleByName(args[0])!!.id
-        return service.getPerformanceInfo(spectacle, countryDao).toString()
-    }
 }
