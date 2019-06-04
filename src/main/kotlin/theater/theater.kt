@@ -1,6 +1,7 @@
 package theater
 
 import theater.controller.*
+import theater.controller.commandLineController.AuthorCommandLineController
 import theater.dao.*
 import theater.service.*
 
@@ -35,7 +36,7 @@ fun main() {
     val countryDao = CountryDao(db.dataSource)
     val authorDao = AuthorDao(db.dataSource)
     val spectacleDao = SpectacleDao(db.dataSource)
-    val authorController = AuthorController(AuthorService(db.dataSource, authorDao), CountryService(db.dataSource, countryDao))
+    val authorController = AuthorCommandLineController(AuthorService(db.dataSource, authorDao), CountryService(db.dataSource, countryDao))
     val spectacleController = SpectacleController(SpectacleService(db.dataSource, spectacleDao),
             GenreService(db.dataSource, GenreDao(db.dataSource)), AuthorService(db.dataSource, authorDao), CountryService(db.dataSource, countryDao))
     val ticketController = TicketController(TicketService(db.dataSource, TicketDao(db.dataSource)))

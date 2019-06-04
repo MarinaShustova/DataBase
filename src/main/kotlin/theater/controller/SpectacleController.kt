@@ -1,5 +1,6 @@
 package theater.controller
 
+import org.springframework.web.bind.annotation.RestController
 import theater.model.Genre
 import theater.model.Spectacle
 import theater.service.AuthorService
@@ -8,6 +9,7 @@ import theater.service.GenreService
 import theater.service.SpectacleService
 import java.sql.Timestamp
 
+@RestController
 class SpectacleController(private val spectacleService: SpectacleService,
                           private val genreService: GenreService,
                           private val authorService: AuthorService,

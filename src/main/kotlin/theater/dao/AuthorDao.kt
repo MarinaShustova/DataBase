@@ -126,16 +126,16 @@ class AuthorDao(private val dataSource: DataSource) {
         return authorsList
     }
 
-    fun getAuthorsOfCurCentury(century: Date): ArrayList<Author> {
+    fun getAuthorsOfCurTimePeriod(startDate: Date, endDate: Date): ArrayList<Author> {
         val stmt = dataSource.connection.prepareStatement(
                 "SELECT a.id author_id, a.surname surname, a.name author_name, a.birth_date birth_date, a.death_date death_date" +
                         ", c.id country_id, c.name country_name\n" +
                         "FROM authors AS a\n" +
                         "JOIN countries AS c ON a.country = c.id\n" +
-                        "WHERE (a.birth_date > ?) OR (a.death_date < ?)"
+                        "WHERE (a.birth_date > ?) AND (a.death_date < ?)"
         )
-        stmt.setDate(1, century)
-        stmt.setDate(2, century)
+        stmt.setDate(1, startDate)
+        stmt.setDate(2, endDate)
 
         val authorsList = ArrayList<Author>()
         val queryResult = stmt.executeQuery()

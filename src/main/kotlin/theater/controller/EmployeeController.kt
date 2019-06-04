@@ -1,9 +1,11 @@
 package theater.controller
 
+import org.springframework.web.bind.annotation.RestController
 import theater.service.EmployeeService
 import theater.model.*
 import java.sql.Date
 
+@RestController
 class EmployeeController(private val service: EmployeeService) {
 
     fun createProducer(argsStr: String): String {
@@ -120,7 +122,7 @@ class EmployeeController(private val service: EmployeeService) {
         service.updateActor(id, propertyMap)
         return "updated"
     }
-    
+
     fun updateMusician(argsStr: String): String { //arg format: <id> property_name:new_value property_name:new_value
         val args = argsStr.split(", ").map { it.trim() }
         val id = args[0].toLong()
@@ -128,7 +130,7 @@ class EmployeeController(private val service: EmployeeService) {
         service.updateMusician(id, propertyMap)
         return "updated"
     }
-    
+
     fun updateServant(argsStr: String): String { //arg format: <id> property_name:new_value property_name:new_value
         val args = argsStr.split(", ").map { it.trim() }
         val id = args[0].toLong()

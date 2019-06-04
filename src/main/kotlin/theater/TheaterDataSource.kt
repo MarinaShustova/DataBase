@@ -8,7 +8,7 @@ class TheaterDataSource(private val delegate: DataSource) : DataSource by delega
 
    private val conn = ThreadLocal<Connection>()
 
-    fun realGetConnection(): Connection {
+    private fun realGetConnection(): Connection {
         return delegate.connection
     }
 
@@ -17,10 +17,18 @@ class TheaterDataSource(private val delegate: DataSource) : DataSource by delega
     }
 
     override fun getConnection(): Connection {
-        return conn.get()
+        return if (conn.get() != null) {
+            conn.get()
+        } else {
+            realGetConnection()
+        }
     }
 
     override fun getConnection(username: String?, password: String?): Connection {
-        return conn.get()
+        return if (conn.get() != null) {
+            conn.get()
+        } else {
+            realGetConnection()
+        }
     }
 }
