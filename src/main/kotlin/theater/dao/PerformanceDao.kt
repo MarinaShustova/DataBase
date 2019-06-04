@@ -1,8 +1,10 @@
 package theater.dao
 
+import theater.Info
 import java.sql.Statement
 import javax.sql.DataSource
 import theater.model.*
+import java.sql.Date
 
 data class Page(val num: Int, val size: Int)
 
@@ -129,6 +131,80 @@ class PerformanceDao(private val dataSource: DataSource) {
         stmt.setLong(1, performanceId)
         stmt.setLong(2, roleId)
         stmt.executeUpdate()
+    }
+
+    fun getPerformanceInfo(employeesDao: EmployeesDao,
+                           spectacleId: Int, countryDao: CountryDao): Info {
+        var theQuery = "with premiere as (select s.show_date, p.id " +
+                "                  from performances p " +
+                "                           join shows s on p.id = s.performance_id " +
+                "                  where s.premiere = true " +
+                "                    and p.spectacle_id = ?)" +
+                "select fio, show_date " +
+                "from performances p " +
+                "         join premiere pr on pr.id = p.id " +
+                "         join producers p2 on p.production_conductor = p2.id " +
+                "    or p.production_designer = p2.id " +
+                "    or p.production_director = p2.id " +
+                "         join employees e on p2.employee_id = e.id"
+        val conn = dataSource.connection
+        var stmt = conn.prepareStatement(theQuery)
+        stmt.setInt(1, spectacleId)
+        var rs = stmt.executeQuery()
+
+        val prod = ArrayList<Producer>()
+        while (rs.next()) {
+            prod.add(
+                Producer(
+                    rs.getLong("id"),
+                    employeesDao.getEmployee(rs.getLong("employee"))!!, "prod"
+                    //TODO: producer's activity
+                )
+            )
+        }
+
+        theQuery = "with premiere as (select s.show_date, p.id\n" +
+                "                  from performances p\n" +
+                "                           join shows s on p.id = s.performance_id\n" +
+                "                  where s.premiere = true\n" +
+                "                    and p.spectacle_id = ?)\n" +
+                "select fio, show_date\n" +
+                "from performances p\n" +
+                "         join premiere pr on pr.id = p.id\n" +
+                "         join roles_performances rp on p.id = rp.performance_id\n" +
+                "         join roles r on rp.role_id = r.id\n" +
+                "         join actors_roles ar on r.id = ar.role_id\n" +
+                "         join actors a on ar.actor_id = a.id\n" +
+                "         join employees e on a.employee_id = e.id"
+        stmt = conn.prepareStatement(theQuery)
+        stmt.setInt(1, spectacleId)
+        val act = ArrayList<Actor>()
+        rs = stmt.executeQuery()
+        while (rs.next()) {
+            act.add(
+                Actor(
+                    rs.getLong("id"),
+                    employeesDao.getEmployee(rs.getLong("employee"))!!,
+                    rs.getBoolean("isStudent")
+                )
+            )
+        }
+
+        theQuery = "select * from authors a join spectacles s " +
+                "on a.id = s.author_id where s.id = ?"
+        stmt = conn.prepareStatement(theQuery)
+        stmt.setInt(1, spectacleId)
+        val author : Author
+        rs = stmt.executeQuery()
+        if (rs.next()) {
+            author = Author(rs.getInt("id"), rs.getString("name"),
+                rs.getString("surname"), rs.getDate("birthDare"),
+                rs.getDate("deathDate"), countryDao.getCountry(rs.getInt("country"))!!)
+        }
+        else author = Author(-1, "Default", "Default", Date(0),
+            Date(0), Country(-1, "Default")
+        )
+        return Info(prod, act, author)
     }
 
 }

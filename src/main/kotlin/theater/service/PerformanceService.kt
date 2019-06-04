@@ -1,10 +1,12 @@
 package theater.service
 
+import theater.Info
 import theater.model.Role
 import theater.dao.RoleDao
 import theater.TheaterDataSource
 import theater.dao.*
 import theater.model.*
+import java.sql.Date
 
 
 class PerformanceService(
@@ -12,7 +14,9 @@ class PerformanceService(
         private val performanceDao: PerformanceDao,
         private val concertTourDao: ConcertTourDao,
         private val roleDao: RoleDao,
-        private val featureDao: FeatureDao
+        private val featureDao: FeatureDao,
+        private val employeesDao: EmployeesDao,
+        private val countryDao: CountryDao
 ) : Service() {
 
     fun createPerformance(toCreate: Performance): Long {
@@ -195,5 +199,17 @@ class PerformanceService(
         return transaction(dataSource) {
             roleDao.addFeatureToRole(roleId, featureId)
         }
+    }
+
+    fun getTourTroupe(spectacleId: Int, start: Date, finish: Date): String {
+        val res = concertTourDao.getTourTroupe(
+            employeesDao, spectacleId,
+            start, finish
+        )
+        return res.toString()
+    }
+
+    fun getPerformanceInfo(spectacleId: Int): Info {
+        return performanceDao.getPerformanceInfo(employeesDao, spectacleId, countryDao)
     }
 }

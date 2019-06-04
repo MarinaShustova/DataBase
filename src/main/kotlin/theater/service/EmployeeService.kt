@@ -299,8 +299,6 @@ class EmployeeService(
         return transaction(dataSource) {
             actorsDao.getActorsRolesByPeriod(actorId, periodStart, periodEnd)
         }
-
-        servantsDao.updateServant(id, keysNValues)
     }
 
     //functions for selections
@@ -321,15 +319,4 @@ class EmployeeService(
         return actorsDao.getActorsWithRanksContests(employeesDao, contests).toString()
     }
 
-    fun getTourTroupe(spectacleId: Int, start: Date, finish: Date): String {
-        val res = actorsDao.getTourTroupe(
-            employeesDao, spectacleId,
-            start, finish
-        )
-        return res.toString()
-    }
-
-    fun getPerformanceInfo(spectacleId: Int, countryDao: CountryDao): Info {
-        return actorsDao.getPerformanceInfo(employeesDao, spectacleId, countryDao)
-    }
 }

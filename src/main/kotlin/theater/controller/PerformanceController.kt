@@ -1,7 +1,10 @@
 package theater.controller
 
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
+import theater.dao.CountryDao
+import theater.dao.EmployeesDao
 import theater.dao.Page
+import theater.dao.SpectacleDao
 import theater.model.ConcertTour
 import theater.model.Feature
 import theater.model.Performance
@@ -13,18 +16,17 @@ import java.sql.Date
 @RestController
 class PerformanceController(private val service: PerformanceService) {
 
-    fun createPerformance(argsStr: String): String {
-        val args = argsStr.split(",")
-            .map { it.trim() }
-        if (argsStr.isEmpty() || args.size != 4) {
-            return "4 arg expected"
-        }
-
-        //val group = service.getGroupByNumber(args[1]) ?: return "Group with number ${args[1]} not found"
-        val toCreate = Performance(null, args[0], args[1], args[2], Integer.parseInt(args[3]))
+    @RequestMapping("/performances")
+    @PostMapping("/create")
+    fun createPerformance(@RequestParam pr_des : String,
+                          @RequestParam pr_dir : String, @RequestParam pr_cond : String,
+                          @RequestParam season : Int): String {
+        val toCreate = Performance(null, pr_des, pr_dir, pr_cond, season)
         return service.createPerformance(toCreate).toString()
     }
 
+    @RequestMapping("/performances")
+    @PostMapping("/create")
     fun createPerformances(argsStr: String): String {
         val args = argsStr.split(",")
             .map { it.trim() }
@@ -34,23 +36,22 @@ class PerformanceController(private val service: PerformanceService) {
 
         val toCreate = ArrayList<Performance>()
         for (i in 0 until args.size step 4) {
-            //val group = service.getGroupByNumber(args[i + 1]) ?: return "Group with number ${args[i + 1]} not found"
             toCreate.add(Performance(null, args[i], args[i + 1], args[i + 2], Integer.parseInt(args[i + 3])))
 
         }
         return service.createPerformances(toCreate).toString()
     }
 
-    fun createConcertTour(argsStr: String): String {
-        val args = argsStr.split(",")
-            .map { it.trim() }
-        if (argsStr.isEmpty() || args.size != 3) {
-            return "3 arg expected"
-        }
-        val toCreate = ConcertTour(null, args[0], Date.valueOf(args[1]), Date.valueOf(args[2]))
+    @RequestMapping("/concert_tours")
+    @PostMapping("/create")
+    fun createConcertTour(@RequestParam city : String,
+                          @RequestParam start : String, @RequestParam finish : String): String {
+        val toCreate = ConcertTour(null, city, Date.valueOf(start), Date.valueOf(finish))
         return service.createConcertTour(toCreate).toString()
     }
 
+    @RequestMapping("/concert_tours")
+    @PostMapping("/create")
     fun createConcertTours(argsStr: String): String {
         val args = argsStr.split(",")
             .map { it.trim() }
@@ -66,16 +67,15 @@ class PerformanceController(private val service: PerformanceService) {
         return service.createConcertTours(toCreate).toString()
     }
 
-    fun createRole(argsStr: String): String {
-        val args = argsStr.split(",")
-            .map { it.trim() }
-        if (argsStr.isEmpty() || args.size != 1) {
-            return "1 arg expected"
-        }
-        val toCreate = Role(null, args[0])
+    @RequestMapping("/roles")
+    @PostMapping("/create")
+    fun createRole(@RequestParam name : String): String {
+        val toCreate = Role(null, name)
         return service.createRole(toCreate).toString()
     }
 
+    @RequestMapping("/roles")
+    @PostMapping("/create")
     fun createRoles(argsStr: String): String {
         val args = argsStr.split(",")
             .map { it.trim() }
@@ -91,16 +91,15 @@ class PerformanceController(private val service: PerformanceService) {
         return service.createRoles(toCreate).toString()
     }
 
-    fun createFeature(argsStr: String): String {
-        val args = argsStr.split(",")
-            .map { it.trim() }
-        if (argsStr.isEmpty() || args.size != 2) {
-            return "2 arg expected"
-        }
-        val toCreate = Feature(null, args[0], args[1])
+    @RequestMapping("/features")
+    @PostMapping("/create")
+    fun createFeature(@RequestParam name : String, @RequestParam value : String): String {
+        val toCreate = Feature(null, name, value)
         return service.createFeature(toCreate).toString()
     }
 
+    @RequestMapping("/features")
+    @PostMapping("/create")
     fun createFeatures(argsStr: String): String {
         val args = argsStr.split(",")
             .map { it.trim() }
@@ -116,199 +115,158 @@ class PerformanceController(private val service: PerformanceService) {
         return service.createFeatures(toCreate).toString()
     }
 
-    fun getPerformances(argsStr: String): String {
-        val args = argsStr.split(",")
-            .map { it.trim() }
-        if (argsStr.isEmpty() || args.size != 2) {
-            return "2 arg expected"
-        }
-
-        val from = args[0].toInt()
-        val size = args[1].toInt()
+    @RequestMapping("/performances")
+    @GetMapping
+    fun getPerformances(@RequestParam from : Int,
+                        @RequestParam size : Int): String {
         return service.getPerformances(Page(from, size)).map { "${it.production_designer} ${it.production_director}" +
                 " ${it.production_conductor} ${it.season}"}.joinToString("\n")
     }
 
-    fun getConcertTours(argsStr: String): String {
-        val args = argsStr.split(",")
-            .map { it.trim() }
-        if (argsStr.isEmpty() || args.size != 2) {
-            return "2 arg expected"
-        }
-
-        val from = args[0].toInt()
-        val size = args[1].toInt()
+    @RequestMapping("/concert_tours")
+    @GetMapping
+    fun getConcertTours(@RequestParam from : Int,
+                        @RequestParam size : Int): String {
         return service.getConcertTours(Page(from, size)).map { "${it.city} ${it.start_date}" +
                 " ${it.finish_date}"}.joinToString("\n")
     }
 
-    fun getRoles(argsStr: String): String {
-        val args = argsStr.split(",")
-            .map { it.trim() }
-        if (argsStr.isEmpty() || args.size != 2) {
-            return "2 arg expected"
-        }
-
-        val from = args[0].toInt()
-        val size = args[1].toInt()
+    @RequestMapping("/roles")
+    @GetMapping
+    fun getRoles(@RequestParam from : Int,
+                 @RequestParam size : Int): String {
         return service.getRoles(Page(from, size)).map { "${it.name}" }.joinToString("\n")
     }
 
-    fun getFeatures(argsStr: String): String {
-        val args = argsStr.split(",")
-            .map { it.trim() }
-        if (argsStr.isEmpty() || args.size != 2) {
-            return "2 arg expected"
-        }
-
-        val from = args[0].toInt()
-        val size = args[1].toInt()
+    @RequestMapping("/features")
+    @GetMapping
+    fun getFeatures(@RequestParam from : Int,
+                    @RequestParam size : Int): String {
         return service.getFeatures(Page(from, size)).map { "${it.name} ${it.value}"}.joinToString("\n")
     }
 
-    fun updatePerformance(argsStr: String):String{
-        val args = argsStr.split(",")
-            .map { it.trim() }
-        if (argsStr.isEmpty() || args.size != 5) {
-            return "5 arg expected"
-        }
-        val toCreate = Performance(Integer.parseInt(args[0]).toLong(),
-            args[1], args[2], args[3], Integer.parseInt(args[4]))
-        val performance = service.findPerformance(toCreate.id!!) ?: return "Performance with id ${args[0]} not found"
+    @RequestMapping("/performances")
+    @PostMapping("/update/{id}")
+    fun updatePerformance(@PathVariable id: Int, @RequestParam pr_des : String,
+                          @RequestParam pr_dir : String, @RequestParam pr_cond : String,
+                          @RequestParam season : Int):String{
+        val toCreate = Performance(id.toLong(),
+            pr_des, pr_dir, pr_cond, season)
+        val performance = service.findPerformance(toCreate.id!!) ?: return "Performance with id $id not found"
         return service.updatePerformance(toCreate).toString()
     }
 
-    fun updateConcertTour(argsStr: String): String {
-        val args = argsStr.split(",")
-            .map { it.trim() }
-        if (argsStr.isEmpty() || args.size != 4) {
-            return "4 arg expected"
-        }
-        val toCreate = ConcertTour(Integer.parseInt(args[0]).toLong(), args[1], Date.valueOf(args[2]), Date.valueOf(args[3]))
-        val concertTour = service.findConcertTour(toCreate.id!!) ?: return "Concert tour with id ${args[0]} not found"
+    @RequestMapping("/concert_tours")
+    @PostMapping("/update/{id}")
+    fun updateConcertTour(@PathVariable id: Int, @RequestParam city : String,
+                          @RequestParam start : String, @RequestParam finish : String): String {
+        val toCreate = ConcertTour(id.toLong(), city, Date.valueOf(start), Date.valueOf(finish))
+        val concertTour = service.findConcertTour(toCreate.id!!) ?: return "Concert tour with id $id not found"
         return service.updateConcertTour(toCreate).toString()
     }
 
-    fun updateRole(argsStr: String): String {
-        val args = argsStr.split(",")
-            .map { it.trim() }
-        if (argsStr.isEmpty() || args.size != 2) {
-            return "2 arg expected"
-        }
-        val toCreate = Role(Integer.parseInt(args[0]).toLong(), args[1])
-        val role = service.findRole(toCreate.id!!) ?: return "Role with id ${args[0]} not found"
+    @RequestMapping("/roles")
+    @PostMapping("/update/{id}")
+    fun updateRole(@PathVariable id: Int, @RequestParam name : String): String {
+        val toCreate = Role(id.toLong(), name)
+        val role = service.findRole(toCreate.id!!) ?: return "Role with id $id not found"
         return service.updateRole(toCreate).toString()
     }
 
-    fun updateFeature(argsStr: String): String {
-        val args = argsStr.split(",")
-            .map { it.trim() }
-        if (argsStr.isEmpty() || args.size != 3) {
-            return "3 arg expected"
-        }
-        val toCreate = Feature(Integer.parseInt(args[0]).toLong(), args[1], args[2])
-        val feature = service.findFeature(toCreate.id!!) ?: return "Feature with id ${args[0]} not found"
+    @RequestMapping("/features")
+    @PostMapping("/update/{id}")
+    fun updateFeature(@PathVariable id: Int, @RequestParam name : String, @RequestParam value : String): String {
+        val toCreate = Feature(id.toLong(), name, value)
+        val feature = service.findFeature(toCreate.id!!) ?: return "Feature with id $id not found"
         return service.updateFeature(toCreate).toString()
     }
 
-    fun deletePerformance(argsStr: String): String {
-        val args = argsStr.split(",")
-            .map { it.trim() }
-        if (argsStr.isEmpty() || args.size != 1) {
-            return "1 arg expected"
-        }
-        return service.deletePerformance(Integer.parseInt(args[0]).toLong()).toString()
+    @RequestMapping("/performances")
+    @PostMapping("/delete/{id}")
+    fun deletePerformance(@PathVariable id: Int): String {
+        return service.deletePerformance(id.toLong()).toString()
     }
 
-    fun deleteConcertTour(argsStr: String): String {
-        val args = argsStr.split(",")
-            .map { it.trim() }
-        if (argsStr.isEmpty() || args.size != 1) {
-            return "1 arg expected"
-        }
-        return service.deleteConcertTour(Integer.parseInt(args[0]).toLong()).toString()
+    @RequestMapping("/concert_tours")
+    @PostMapping("/delete/{id}")
+    fun deleteConcertTour(@PathVariable id: Int): String {
+        return service.deleteConcertTour(id.toLong()).toString()
     }
 
-    fun deleteRole(argsStr: String): String {
-        val args = argsStr.split(",")
-            .map { it.trim() }
-        if (argsStr.isEmpty() || args.size != 1) {
-            return "1 arg expected"
-        }
-        return service.deleteRole(Integer.parseInt(args[0]).toLong()).toString()
+    @RequestMapping("/roles")
+    @PostMapping("/delete/{id}")
+    fun deleteRole(@PathVariable id: Int): String {
+        return service.deleteRole(id.toLong()).toString()
     }
 
-    fun deleteFeature(argsStr: String): String {
-        val args = argsStr.split(",")
-            .map { it.trim() }
-        if (argsStr.isEmpty() || args.size != 1) {
-            return "1 arg expected"
-        }
-        return service.deleteFeature(Integer.parseInt(args[0]).toLong()).toString()
+    @RequestMapping("/features")
+    @PostMapping("/delete/{id}")
+    fun deleteFeature(@PathVariable id: Int): String {
+        return service.deleteFeature(id.toLong()).toString()
     }
 
-    fun addConcertTourToPerformance(argsStr: String): String{
-        val args = argsStr.split(",")
-            .map { it.trim() }
-        if (argsStr.isEmpty() || args.size != 2) {
-            return "2 arg expected"
-        }
-        val performanceId = Integer.parseInt(args[0]).toLong()
-        val concertTourId = Integer.parseInt(args[1]).toLong();
-        val performance = service.findPerformance(performanceId) ?: return "Performance with id ${args[0]} not found"
-        val concertTour = service.findConcertTour(concertTourId) ?: return "Concert tour with id ${args[1]} not found"
+    @RequestMapping("/concert_tours")
+    @PostMapping("/link/{id}")
+    fun addConcertTourToPerformance(@PathVariable id: Int, @RequestParam id2 : Int): String{
+        val performanceId = id.toLong()
+        val concertTourId = id2.toLong();
+        val performance = service.findPerformance(performanceId) ?: return "Performance with id $id not found"
+        val concertTour = service.findConcertTour(concertTourId) ?: return "Concert tour with id $id2 not found"
         return service.addConcertTourToPerformance(performanceId, concertTourId).toString()
     }
 
-    fun addRoleToPerformance(argsStr: String): String{
-        val args = argsStr.split(",")
-            .map { it.trim() }
-        if (argsStr.isEmpty() || args.size != 2) {
-            return "2 arg expected"
-        }
-        val performanceId = Integer.parseInt(args[0]).toLong()
-        val roleId = Integer.parseInt(args[1]).toLong();
-        val performance = service.findPerformance(performanceId) ?: return "Performance with id ${args[0]} not found"
-        val role = service.findRole(roleId) ?: return "Role with id ${args[1]} not found"
+    @RequestMapping("/performances")
+    @PostMapping("/link/{id}")
+    fun addRoleToPerformance(@PathVariable id: Int, @RequestParam id2 : Int): String{
+        val performanceId = id.toLong()
+        val roleId = id2.toLong();
+        val performance = service.findPerformance(performanceId) ?: return "Performance with id $id not found"
+        val role = service.findRole(roleId) ?: return "Role with id $id2 not found"
         return service.addRoleToPerformance(performanceId, roleId).toString()
     }
 
-    fun addFeatureToRole(argsStr: String): String{
-        val args = argsStr.split(",")
-            .map { it.trim() }
-        if (argsStr.isEmpty() || args.size != 2) {
-            return "2 arg expected"
-        }
-        val featureId = Integer.parseInt(args[1]).toLong()
-        val roleId = Integer.parseInt(args[0]).toLong();
-        val feature = service.findFeature(featureId) ?: return "Feature with id ${args[1]} not found"
-        val role = service.findRole(roleId) ?: return "Role with id ${args[0]} not found"
+    @RequestMapping("/roles")
+    @PostMapping("/link/{id}")
+    fun addFeatureToRole(@PathVariable id: Int, @RequestParam id2 : Int): String{
+        val featureId = id.toLong()
+        val roleId = id2.toLong();
+        val feature = service.findFeature(featureId) ?: return "Feature with id $id not found"
+        val role = service.findRole(roleId) ?: return "Role with id $id2 not found"
         return service.addFeatureToRole(roleId, featureId).toString()
     }
 
-    //    fun moveStudent(argsStr: String): String {
+//    fun getTourTroupe(argsStr: String, spectacleDao: SpectacleDao): String {
 //        val args = argsStr.split(",")
 //            .map { it.trim() }
-//        if (argsStr.isEmpty() || args.size != 2) {
-//            return "2 arg expected"
+//        if (argsStr.isEmpty() || args.size != 3) {
+//            return "3 arg expected"
 //        }
-//
-//        val id = args[0].toLong()
-//
-//        val toMove = service.findStudent(id) ?: return "Performance with $id does not exist"
-//        val targetGroup = service.getGroupByNumber(args[1]) ?: return "Group with number ${args[1]} does not exist"
-//        service.move(toMove, targetGroup)
-//        return "Moved"
+//        val spectacle =  spectacleDao.getSpectacleByName(args[0])!!.id
+//        val start = Date.valueOf(args[1])
+//        val finish = Date.valueOf(args[2])
+//        return service.getTourTroupe(spectacle, start, finish)
 //    }
-//    fun createGroup(argsStr: String): String {
+    @RequestMapping("/concert_tours")
+    @GetMapping("/spectacle/{id}")
+    fun getTourTroupe(@PathVariable id: Int,
+                      @RequestParam start : String, @RequestParam finish : String): String {
+        val startD = Date.valueOf(start)
+        val finishD = Date.valueOf(finish)
+        return service.getTourTroupe(id, startD, finishD)
+    }
+
+//    fun getPerformanceInfo(argsStr: String, spectacleDao: SpectacleDao): String {
 //        val args = argsStr.split(",")
 //            .map { it.trim() }
 //        if (argsStr.isEmpty() || args.size != 1) {
 //            return "1 arg expected"
 //        }
-//
-//        val toCreate = ActualGroup(null, args[0])
-//        return service.createGroup(toCreate).toString()
+//        val spectacle =  spectacleDao.getSpectacleByName(args[0])!!.id
+//        return service.getPerformanceInfo(spectacle).toString()
 //    }
-
+    @RequestMapping("/performances")
+    @GetMapping("/spectacle/{id}")
+    fun getPerformanceInfo(@PathVariable id: Int): String {
+        return service.getPerformanceInfo(id).toString()
+    }
 }

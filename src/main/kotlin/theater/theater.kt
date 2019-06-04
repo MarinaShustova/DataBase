@@ -25,8 +25,6 @@ fun main() {
     val concertTourDao = ConcertTourDao(theaterDs)
     val roleDao = RoleDao(theaterDs)
     val featureDao = FeatureDao(theaterDs)
-    val performanceController =
-        PerformanceController(PerformanceService(theaterDs, performanceDao, concertTourDao, roleDao, featureDao))
     val employeesDao = EmployeesDao(db.dataSource)
     val producersDao = ProducersDao(db.dataSource)
     val actorsDao = ActorsDao(db.dataSource)
@@ -37,6 +35,9 @@ fun main() {
     val countryDao = CountryDao(db.dataSource)
     val authorDao = AuthorDao(db.dataSource)
     val spectacleDao = SpectacleDao(db.dataSource)
+    val performanceController =
+        PerformanceController(PerformanceService(theaterDs, performanceDao, concertTourDao, roleDao,
+            featureDao, employeesDao, countryDao))
     val authorController = AuthorCommandLineController(AuthorService(db.dataSource, authorDao), CountryService(db.dataSource, countryDao))
     val spectacleController = SpectacleController(SpectacleService(db.dataSource, spectacleDao),
             GenreService(db.dataSource, GenreDao(db.dataSource)), AuthorService(db.dataSource, authorDao), CountryService(db.dataSource, countryDao))
@@ -96,11 +97,11 @@ fun main() {
             try {
                 if (it.startsWith("create")) {
                     if (it.contains("performance")) {
-                        performanceController.createPerformance(it.substring("create performance".length).trim())
+//                        performanceController.createPerformance(it.substring("create performance".length).trim())
                     } else if (it.contains("performances")) {
                         performanceController.createPerformances(it.substring("create performances".length).trim())
                     } else if (it.contains("tour")) {
-                        performanceController.createConcertTour(it.substring("create tour".length).trim())
+//                        performanceController.createConcertTour(it.substring("create tour".length).trim())
                     } else if (it.contains("tours")) {
                         performanceController.createConcertTours(it.substring("create tours".length).trim())
                     } else if (it.contains("role")) {
@@ -108,7 +109,7 @@ fun main() {
                     } else if (it.contains("roles")) {
                         performanceController.createRoles(it.substring("create roles".length).trim())
                     } else if (it.contains("feature")) {
-                        performanceController.createFeature(it.substring("create feature".length).trim())
+//                        performanceController.createFeature(it.substring("create feature".length).trim())
                     } else if (it.contains("features")) {
                         performanceController.createFeatures(it.substring("create features".length).trim())
                     } else if (it.contains("producer")) {
@@ -137,13 +138,13 @@ fun main() {
                 }
                 else if (it.startsWith("get")) {
                     if (it.contains("performances")) {
-                        performanceController.getPerformances(it.substring("get performances".length).trim())
+//                        performanceController.getPerformances(it.substring("get performances".length).trim())
                     } else if (it.contains("tours")) {
-                        performanceController.getConcertTours(it.substring("get tours".length).trim())
+//                        performanceController.getConcertTours(it.substring("get tours".length).trim())
                     } else if (it.contains("roles")) {
-                        performanceController.getRoles(it.substring("get roles".length).trim())
+//                        performanceController.getRoles(it.substring("get roles".length).trim())
                     } else if (it.contains("features")) {
-                        performanceController.getFeatures(it.substring("get features".length).trim())
+//                        performanceController.getFeatures(it.substring("get features".length).trim())
                     } else if (it.contains("spectacle")) {
                         if (it.contains("of genre")) {
                             spectacleController.getSpectacleOfGenre(it.substring("get spectacle of genre".length).trim())
@@ -188,24 +189,24 @@ fun main() {
                             employeeController.getActorWithRank()
                         }
                     } else if (it.contains("troupe")) {
-                        employeeController.getTourTroupe(it.substring("get tour troupe".length).trim(),
-                            spectacleDao)
+//                        employeeController.getTourTroupe(it.substring("get tour troupe".length).trim(),
+//                            spectacleDao)
                     } else if (it.contains("info")) {
-                        employeeController.getPerformanceInfo(it.substring("get spectacle info".length).trim(),
-                            spectacleDao, countryDao)
+//                        employeeController.getPerformanceInfo(it.substring("get spectacle info".length).trim(),
+//                            spectacleDao, countryDao)
                     } else {
                         "Unknown command"
                     }
                 }
                 else if (it.startsWith("update")) {
                     if (it.contains("performance")) {
-                        performanceController.updatePerformance(it.substring("update performance".length).trim())
+//                        performanceController.updatePerformance(it.substring("update performance".length).trim())
                     } else if (it.contains("tour")) {
-                        performanceController.updateConcertTour(it.substring("update tour".length).trim())
+//                        performanceController.updateConcertTour(it.substring("update tour".length).trim())
                     } else if (it.contains("role")) {
-                        performanceController.updateRole(it.substring("update role".length).trim())
+//                        performanceController.updateRole(it.substring("update role".length).trim())
                     } else if (it.contains("feature")) {
-                        performanceController.updateFeature(it.substring("update feature".length).trim())
+//                        performanceController.updateFeature(it.substring("update feature".length).trim())
                     } else if (it.contains("producer")) {
                         employeeController.updateProducer(it.substring("update producer".length).trim());
                     } else if (it.contains("actor")) {
@@ -226,13 +227,13 @@ fun main() {
                 }
                 else if (it.startsWith("delete")) {
                     if (it.contains("performance")) {
-                        performanceController.deletePerformance(it.substring("delete performance".length).trim())
+//                        performanceController.deletePerformance(it.substring("delete performance".length).trim())
                     } else if (it.contains("tour")) {
-                        performanceController.deleteConcertTour(it.substring("delete tour".length).trim())
+//                        performanceController.deleteConcertTour(it.substring("delete tour".length).trim())
                     } else if (it.contains("role")) {
-                        performanceController.deleteRole(it.substring("delete role".length).trim())
+//                        performanceController.deleteRole(it.substring("delete role".length).trim())
                     } else if (it.contains("feature")) {
-                        performanceController.deleteFeature(it.substring("delete feature".length).trim())
+//                        performanceController.deleteFeature(it.substring("delete feature".length).trim())
                     } else if (it.contains("producer")) {
                         employeeController.deleteProducer(it.substring("delete producer".length).trim());
                     } else if (it.contains("actor")) {
