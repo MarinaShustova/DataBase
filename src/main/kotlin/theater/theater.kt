@@ -254,11 +254,11 @@ fun main() {
                 }
                 else if (it.startsWith("link")){
                     if (it.contains("performance") && it.contains("tour")) {
-                        performanceController.addConcertTourToPerformance(it.substring("link performance with tour".length).trim())
+//                        performanceController.addConcertTourToPerformance(it.substring("link performance with tour".length).trim())
                     } else if (it.contains("role") && it.contains("performance")) {
-                        performanceController.addRoleToPerformance(it.substring("link performance with role".length).trim())
+//                        performanceController.addRoleToPerformance(it.substring("link performance with role".length).trim())
                     } else if (it.contains("feature") && it.contains("role")) {
-                        performanceController.addFeatureToRole(it.substring("link role with feature".length).trim())
+//                        performanceController.addFeatureToRole(it.substring("link role with feature".length).trim())
                     } else {
                         "Unknown command"
                     }

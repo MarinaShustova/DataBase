@@ -75,7 +75,7 @@ class PerformanceDao(private val dataSource: DataSource) {
         val rs = stmt.executeQuery()
         return if (rs.next()) {
             Performance(
-                rs.getLong("pid"), rs.getString("production_designer"),
+                rs.getInt("pid"), rs.getString("production_designer"),
                 rs.getString("production_director"), rs.getString("production_conductor"),
                 rs.getInt("season")
             )
@@ -91,7 +91,7 @@ class PerformanceDao(private val dataSource: DataSource) {
         stmt.setString(2, performance.production_director)
         stmt.setString(3, performance.production_conductor)
         stmt.setInt(4, performance.season)
-        stmt.setLong(5, performance.id!!)
+        stmt.setInt(5, performance.id!!)
         stmt.executeUpdate()
     }
 
@@ -108,7 +108,7 @@ class PerformanceDao(private val dataSource: DataSource) {
         while (rs.next()) {
             res.add(
                 Performance(
-                    rs.getLong("id"), rs.getString("production_designer"),
+                    rs.getInt("id"), rs.getString("production_designer"),
                     rs.getString("production_director"), rs.getString("production_conductor"),
                     rs.getInt("season")
                 )
@@ -135,17 +135,17 @@ class PerformanceDao(private val dataSource: DataSource) {
 
     fun getPerformanceInfo(employeesDao: EmployeesDao,
                            spectacleId: Int, countryDao: CountryDao): Info {
-        var theQuery = "with premiere as (select s.show_date, p.id " +
-                "                  from performances p " +
-                "                           join shows s on p.id = s.performance_id " +
-                "                  where s.premiere = true " +
-                "                    and p.spectacle_id = ?)" +
-                "select fio, show_date " +
-                "from performances p " +
-                "         join premiere pr on pr.id = p.id " +
-                "         join producers p2 on p.production_conductor = p2.id " +
-                "    or p.production_designer = p2.id " +
-                "    or p.production_director = p2.id " +
+        var theQuery = "with premiere as (select s.show_date, p.id\n" +
+                "                  from performances p\n" +
+                "                           join shows s on p.id = s.performance_id\n" +
+                "                  where s.premiere = true\n" +
+                "                    and p.spectacle_id = ?)\n" +
+                "select fio, p2.id, activity\n" +
+                "from performances p\n" +
+                "         join premiere pr on pr.id = p.id\n" +
+                "         join producers p2 on p.production_conductor = p2.id\n" +
+                "    or p.production_designer = p2.id\n" +
+                "    or p.production_director = p2.id\n" +
                 "         join employees e on p2.employee_id = e.id"
         val conn = dataSource.connection
         var stmt = conn.prepareStatement(theQuery)
@@ -157,8 +157,7 @@ class PerformanceDao(private val dataSource: DataSource) {
             prod.add(
                 Producer(
                     rs.getLong("id"),
-                    employeesDao.getEmployee(rs.getLong("employee"))!!, "prod"
-                    //TODO: producer's activity
+                    employeesDao.getEmployee(rs.getLong("employee"))!!, rs.getString("activity")
                 )
             )
         }
@@ -168,19 +167,21 @@ class PerformanceDao(private val dataSource: DataSource) {
                 "                           join shows s on p.id = s.performance_id\n" +
                 "                  where s.premiere = true\n" +
                 "                    and p.spectacle_id = ?)\n" +
-                "select fio, show_date\n" +
+                "select fio, show_date, e.id as \"employee\", a.id, is_student\n" +
                 "from performances p\n" +
                 "         join premiere pr on pr.id = p.id\n" +
                 "         join roles_performances rp on p.id = rp.performance_id\n" +
                 "         join roles r on rp.role_id = r.id\n" +
                 "         join actors_roles ar on r.id = ar.role_id\n" +
                 "         join actors a on ar.actor_id = a.id\n" +
-                "         join employees e on a.employee_id = e.id"
+                "         join employees e on a.employee_id = e.id;"
         stmt = conn.prepareStatement(theQuery)
         stmt.setInt(1, spectacleId)
         val act = ArrayList<Actor>()
+        var date = Date(0)
         rs = stmt.executeQuery()
         while (rs.next()) {
+            date = rs.getDate("show_date")
             act.add(
                 Actor(
                     rs.getLong("id"),
@@ -190,8 +191,8 @@ class PerformanceDao(private val dataSource: DataSource) {
             )
         }
 
-        theQuery = "select * from authors a join spectacles s " +
-                "on a.id = s.author_id where s.id = ?"
+        theQuery = "select a.id, a.name, surname, birth_date,\n" +
+                "       death_date, country from authors a join spectacles s on a.id = s.author_id where s.id = ?"
         stmt = conn.prepareStatement(theQuery)
         stmt.setInt(1, spectacleId)
         val author : Author
@@ -204,7 +205,7 @@ class PerformanceDao(private val dataSource: DataSource) {
         else author = Author(-1, "Default", "Default", Date(0),
             Date(0), Country(-1, "Default")
         )
-        return Info(prod, act, author)
+        return Info(prod, act, author, date)
     }
 
 }
