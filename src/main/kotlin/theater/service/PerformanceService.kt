@@ -106,7 +106,7 @@ class PerformanceService(
     fun getPerformances(page: Page): List<Performance> {
         return transaction(dataSource) {
             val res = performanceDao.getPerformances(page)
-            res.map { it.season }.forEach({}) //?
+//            res.map { it.season }.forEach({}) //?
             res
         }
     }

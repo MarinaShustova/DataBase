@@ -97,11 +97,11 @@ class PerformanceDao(private val dataSource: DataSource) {
 
     fun getPerformances(page: Page): List<Performance> {
         val theQuery =
-            "SELECT id, production_designer, production_director, production_conductor, season  FROM performances ORDER BY season LIMIT ? OFFSET ?"
+            "SELECT id, production_designer, production_director, production_conductor, season  FROM performances LIMIT ? OFFSET ?"
         val conn = dataSource.connection
         val stmt = conn.prepareStatement(theQuery)
         stmt.setInt(1, page.size)
-        stmt.setInt(2, page.size * page.num)
+        stmt.setInt(2, page.size * (page.num-1))
 
         val res = ArrayList<Performance>()
         val rs = stmt.executeQuery()

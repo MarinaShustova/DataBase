@@ -29,10 +29,10 @@ class PerformanceController(private val service: PerformanceService) {
 
     @GetMapping
     fun getPerformances(
-        @RequestParam from: Int,
+        @RequestParam num: Int,
         @RequestParam size: Int
     ): String {
-        return service.getPerformances(Page(from, size)).map {
+        return service.getPerformances(Page(num, size)).map {
             "${it.production_designer} ${it.production_director}" +
                     " ${it.production_conductor} ${it.season}"
         }.joinToString("\n")

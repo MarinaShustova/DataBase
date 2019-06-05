@@ -82,7 +82,7 @@ class RoleDao(private val dataSource: DataSource) {
         val conn = dataSource.connection
         val stmt = conn.prepareStatement(theQuery)
         stmt.setInt(1, page.size)
-        stmt.setInt(2, page.size * page.num)
+        stmt.setInt(2, page.size * (page.num-1))
 
         val res = ArrayList<Role>()
         val rs = stmt.executeQuery()
