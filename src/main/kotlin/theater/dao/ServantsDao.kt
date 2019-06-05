@@ -7,28 +7,28 @@ import javax.sql.DataSource
 import theater.model.*
 
 class ServantsDao(private val dataSource: DataSource) {
-    fun createServant(toCreate: Servant): Long {
+    fun createServant(toCreate: Servant): Int {
         val stmt = dataSource.connection.prepareStatement(
                 "INSERT INTO servants (employee_id, activity) VALUES (?, ?)",
                 Statement.RETURN_GENERATED_KEYS
         )
-        stmt.setLong(1, toCreate.employee.id)
+        stmt.setInt(1, toCreate.employee.id)
         stmt.setString(2, toCreate.activity)
 
         stmt.executeUpdate()
         val gk = stmt.generatedKeys
         gk.next()
 
-        return gk.getLong(1)
+        return gk.getInt(1)
     }
 
-    fun deleteServant(id: Long) {
+    fun deleteServant(id: Int) {
         val stmt = dataSource.connection.prepareStatement("DELETE FROM servants WHERE servants.id = ?")
-        stmt.setInt(1, id.toInt())
+        stmt.setInt(1, id)
         stmt.executeUpdate()
     }
 
-    fun updateServant(id: Long, keysNValues: Map<String, String>) { //updating in two statements
+    fun updateServant(id: Int, keysNValues: Map<String, String>) { //updating in two statements
         val employeeProperties = keysNValues.asSequence().filter {
             it.key.equals("fio") || it.key.equals("sex") || it.key.equals("origin")
                     || it.key.equals("birth_date") ||  it.key.equals("hire_date")
@@ -57,7 +57,7 @@ class ServantsDao(private val dataSource: DataSource) {
                 }
             }
         }
-        stmt.setLong(employeeProperties.toList().size + 1, id)
+        stmt.setInt(employeeProperties.toList().size + 1, id)
         stmt.executeUpdate()
 
         questionMarks = servantProperties.asSequence().map{ "${it.key} = ?" }.joinToString(", ")
@@ -73,25 +73,37 @@ class ServantsDao(private val dataSource: DataSource) {
                 }
             }
         }
-        stmt.setLong(servantProperties.toList().size + 1, id)
+        stmt.setInt(servantProperties.toList().size + 1, id)
         stmt.executeUpdate()
     }
 
-    fun getServantById(id: Long): Servant? {
+    fun updateServant(toUpdate: Servant) {
+        val employeesDao = EmployeesDao(dataSource)
+        employeesDao.updateEmployee(toUpdate.employee)
+
+        val stmt = dataSource.connection.prepareStatement(
+                "UPDATE servants SET activity = ? WHERE " +
+                        "servants.id = ?"
+        )
+        stmt.setString(1, toUpdate.activity)
+        stmt.setInt(2, toUpdate.id)
+    }
+
+    fun getServantById(id: Int): Servant? {
         val stmt = dataSource.connection.prepareStatement(
                 "SELECT * FROM servants WHERE id = ?"
         )
-        stmt.setLong(1, id)
+        stmt.setInt(1, id)
         val res = stmt.executeQuery()
 
         return if (res.next()) {
             val employeesDao = EmployeesDao(dataSource)
-            val relatedEmployee = employeesDao.getEmployeeById(res.getLong("employee_id"))
+            val relatedEmployee = employeesDao.getEmployeeById(res.getInt("employee_id"))
             return if (relatedEmployee == null) {
                 null
             } else {
                 Servant(
-                        res.getLong("id"),
+                        res.getInt("id"),
                         relatedEmployee,
                         res.getString("activity")
                 )
@@ -108,12 +120,12 @@ class ServantsDao(private val dataSource: DataSource) {
 
             val stmt = dataSource.connection.prepareStatement(
                     "SELECT * FROM servants WHERE servants.employee_id = ?")
-            stmt.setLong(1, relatedEmployee.id)
+            stmt.setInt(1, relatedEmployee.id)
             val res = stmt.executeQuery()
 
             return if (res.next()) {
                 Servant(
-                        res.getLong("id"),
+                        res.getInt("id"),
                         relatedEmployee,
                         res.getString("activity")
                 )
@@ -123,6 +135,42 @@ class ServantsDao(private val dataSource: DataSource) {
         } else {
             null
         }
+    }
+
+    fun getServants(): List<Servant> {
+        val stmt = dataSource.connection.prepareStatement(
+                "SELECT servants.id as servant_id, employee_id, fio, sex, birth_date, " +
+                        "children_amount, salary, origin, hire_date, activity " +
+                        "FROM employees e " +
+                        "JOIN servants ON servants.employee_id = e.id)"
+        )
+        val res = stmt.executeQuery()
+
+
+        val resultList = ArrayList<Servant>()
+
+        while (res.next()) {
+            val countryDao = CountryDao(dataSource)
+            val employeeCountry = countryDao.getCountry(res.getInt("origin"))
+            if (employeeCountry == null) continue
+
+            val relatedEmployee = Employee(res.getInt("employee_id"),
+                    res.getString("fio"),
+                    res.getString("sex"),
+                    res.getDate("birth_date"),
+                    res.getInt("children_amount"),
+                    res.getInt("salary"),
+                    employeeCountry.name,
+                    res.getDate("hire_date")
+            )
+
+            resultList.add(Servant(
+                    res.getInt("servant_id"),
+                    relatedEmployee,
+                    res.getString("activity")))
+        }
+
+        return resultList
     }
     
 }
