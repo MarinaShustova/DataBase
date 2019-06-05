@@ -260,7 +260,7 @@ class ActorsDao(private val dataSource: DataSource) {
         var resultList = ArrayList<Role?>()
 
         while (res.next()) {
-            val role = Role(res.getLong("id"), res.getString("name"))
+            val role = Role(res.getInt("id"), res.getString("name"))
             resultList.add(role)
         }
 
@@ -350,15 +350,17 @@ class ActorsDao(private val dataSource: DataSource) {
     }
     //functions for selections
 
-    fun getActorsWithRanks(employeesDao: EmployeesDao): List<Actor> {
-        val theQuery = "SELECT fio, r.name  FROM actors a " +
-                "JOIN actors_ranks ar ON a.id = ar.actor_id " +
-                "JOIN ranks r on ar.rank_id = r.id GROUP BY fio"
+    fun getActorsWithRanks(employeesDao: EmployeesDao): Pair<List<Actor>, Int> {
+        var theQuery = "SELECT fio, a.id, is_student FROM actors a\n" +
+                "                    JOIN actors_ranks ar ON a.id = ar.actor_id\n" +
+                "                    JOIN ranks r on ar.rank_id = r.id\n" +
+                "                    JOIN employees e on e.id = a.employee_id\n" +
+                "GROUP BY fio"
         val conn = dataSource.connection
-        val stmt = conn.prepareStatement(theQuery)
+        var stmt = conn.prepareStatement(theQuery)
 
         val res = ArrayList<Actor>()
-        val rs = stmt.executeQuery()
+        var rs = stmt.executeQuery()
         while (rs.next()) {
             res.add(
                 Actor(
@@ -368,19 +370,32 @@ class ActorsDao(private val dataSource: DataSource) {
                 )
             )
         }
-        return res
+        theQuery = "SELECT count(*) from (select fio FROM actors a\n" +
+                "                    JOIN actors_ranks ar ON a.id = ar.actor_id\n" +
+                "                    JOIN ranks r on ar.rank_id = r.id\n" +
+                "                    JOIN employees e on e.id = a.employee_id\n" +
+                "GROUP BY fio) as \"count\""
+        stmt = conn.prepareStatement(theQuery)
+        rs = stmt.executeQuery()
+        var count : Int = 0
+        if (rs.next()){
+            count = rs.getInt("count")
+        }
+        return Pair(res, count)
     }
 
-    fun getActorsWithRanksSex(employeesDao: EmployeesDao, sex: String): List<Actor> {
-        val theQuery = "SELECT fio, r.name  FROM actors a " +
-                "JOIN actors_ranks ar ON a.id = ar.actor_id " +
-                "JOIN ranks r on ar.rank_id = r.id WHERE a.sex = ? GROUP BY fio"
+    fun getActorsWithRanksSex(employeesDao: EmployeesDao, sex: String): Pair<List<Actor>, Int> {
+        var theQuery = "SELECT fio, r.name, a.id, is_student FROM actors a\n" +
+                "                JOIN actors_ranks ar ON a.id = ar.actor_id\n" +
+                "                JOIN ranks r on ar.rank_id = r.id\n" +
+                "                JOIN employees e on a.employee_id = e.id\n" +
+                "                WHERE e.sex = ? GROUP BY fio, r.name"
         val conn = dataSource.connection
-        val stmt = conn.prepareStatement(theQuery)
+        var stmt = conn.prepareStatement(theQuery)
         stmt.setString(1, sex)
 
         val res = ArrayList<Actor>()
-        val rs = stmt.executeQuery()
+        var rs = stmt.executeQuery()
         while (rs.next()) {
             res.add(
                 Actor(
@@ -390,27 +405,82 @@ class ActorsDao(private val dataSource: DataSource) {
                 )
             )
         }
-        return res
+        theQuery = "select  count(*) from (SELECT fio FROM actors a\n" +
+                "                JOIN actors_ranks ar ON a.id = ar.actor_id\n" +
+                "                JOIN ranks r on ar.rank_id = r.id\n" +
+                "                JOIN employees e on a.employee_id = e.id\n" +
+                "                WHERE e.sex = ? GROUP BY fio) as \"count\""
+        stmt = conn.prepareStatement(theQuery)
+        rs = stmt.executeQuery()
+        var count = 0
+        if (rs.next()){
+            count = rs.getInt("count")
+        }
+        return Pair(res, count)
     }
 
-    fun getActorsWithRanksContests(employeesDao: EmployeesDao, contests : List<String>): List<Actor> {
+    fun getActorsWithRanksPeriod(employeesDao: EmployeesDao, start: Date, finish: Date): Pair<List<Actor>, Int> {
+        var theQuery = "SELECT fio, r.name, a.id, is_student\n" +
+                "FROM actors a\n" +
+                "         JOIN actors_ranks ar ON a.id = ar.actor_id\n" +
+                "         JOIN ranks r on ar.rank_id = r.id\n" +
+                "         JOIN employees e on a.employee_id = e.id\n" +
+                "WHERE ar.date_of_giving >= ? and ar.date_of_giving <= ?\n" +
+                "GROUP BY fio, r.name"
+        val conn = dataSource.connection
+        var stmt = conn.prepareStatement(theQuery)
+        stmt.setDate(1, start)
+        stmt.setDate(2, finish)
+
+        val res = ArrayList<Actor>()
+        var rs = stmt.executeQuery()
+        while (rs.next()) {
+            res.add(
+                Actor(
+                    rs.getLong("id"),
+                    employeesDao.getEmployee(rs.getLong("employee"))!!,
+                    rs.getBoolean("isStudent")
+                )
+            )
+        }
+        theQuery = "select  count(*) from (SELECT fio\n" +
+                "FROM actors a\n" +
+                "         JOIN actors_ranks ar ON a.id = ar.actor_id\n" +
+                "         JOIN ranks r on ar.rank_id = r.id\n" +
+                "         JOIN employees e on a.employee_id = e.id\n" +
+                "WHERE ar.date_of_giving >= ? and ar.date_of_giving <= ?\n" +
+                "GROUP BY fio) as \"count\""
+        stmt = conn.prepareStatement(theQuery)
+        rs = stmt.executeQuery()
+        var count = 0
+        if (rs.next()){
+            count = rs.getInt("count")
+        }
+        return Pair(res, count)
+    }
+
+    fun getActorsWithRanksContests(employeesDao: EmployeesDao, contests : List<String>): Pair<List<Actor>, Int> {
         var questions = "("
         for (contest in contests){
+            if (questions != "(")
+                questions += ","
             questions += " ?"
         }
         questions += ")"
-        val theQuery = "SELECT fio, r.name  FROM actors a " +
-                "JOIN actors_ranks ar ON a.id = ar.actor_id " +
-                "JOIN ranks r on ar.rank_id = r.id WHERE r.contest in"+ questions +"GROUP BY fio"
+        var theQuery = "SELECT fio, r.name, a.id, is_student FROM actors a\n" +
+                "                JOIN actors_ranks ar ON a.id = ar.actor_id\n" +
+                "                JOIN ranks r on ar.rank_id = r.id\n" +
+                "                JOIN employees e on a.employee_id = e.id\n" +
+                "WHERE r.contest in" + questions + " GROUP BY r.name, fio"
         val conn = dataSource.connection
-        val stmt = conn.prepareStatement(theQuery)
+        var stmt = conn.prepareStatement(theQuery)
         val i = 1;
         for (contest in contests){
             stmt.setString(i, contest)
         }
 
         val res = ArrayList<Actor>()
-        val rs = stmt.executeQuery()
+        var rs = stmt.executeQuery()
         while (rs.next()) {
             res.add(
                 Actor(
@@ -420,32 +490,96 @@ class ActorsDao(private val dataSource: DataSource) {
                 )
             )
         }
-        return res
+        theQuery = "select count(*) from (SELECT fio FROM actors a\n" +
+                "                JOIN actors_ranks ar ON a.id = ar.actor_id\n" +
+                "                JOIN ranks r on ar.rank_id = r.id\n" +
+                "                JOIN employees e on a.employee_id = e.id\n" +
+                "WHERE r.contest in (?,?) GROUP BY fio) as \"count\""
+        stmt = conn.prepareStatement(theQuery)
+        rs = stmt.executeQuery()
+        var count = 0
+        if (rs.next()){
+            count = rs.getInt("count")
+        }
+        return Pair(res, count)
     }
 
-    fun getActorsWithRanksAge(employeesDao: EmployeesDao, age: Int): List<Actor> {
-        val theQuery: String
+    fun getActorsWithRanksAge(employeesDao: EmployeesDao, age: Int): Pair<List<Actor>, Int> {
+        var theQuery: String
         if (age > 0) {
-            theQuery = "SELECT fio, r.name  FROM actors a " +
-                    "JOIN actors_ranks ar ON a.id = ar.actor_id " +
-                    "JOIN ranks r on ar.rank_id = r.id " +
-                    "WHERE (SELECT DATE_PART('year', e.birthDate) - DATE_PART('year', ?)) >= ? GROUP BY fio"
+            theQuery = "SELECT fio, a.id, is_student FROM actors a\n" +
+                    "                    JOIN actors_ranks ar ON a.id = ar.actor_id\n" +
+                    "                    JOIN ranks r on ar.rank_id = r.id\n" +
+                    "                    JOIN employees e on a.employee_id = e.id\n" +
+                    "                    WHERE (extract(year from age(e.birth_date))) >= ? GROUP BY fio"
         } else {
-            theQuery = "SELECT fio, r.name  FROM actors a " +
-                    "JOIN actors_ranks ar ON a.id = ar.actor_id " +
-                    "JOIN ranks r on ar.rank_id = r.id " +
-                    "WHERE (SELECT DATE_PART('year', e.birthDate) - DATE_PART('year', ?)) <= ? GROUP BY fio"
+            theQuery = "SELECT fio, a.id, is_student FROM actors a\n" +
+                    "                    JOIN actors_ranks ar ON a.id = ar.actor_id\n" +
+                    "                    JOIN ranks r on ar.rank_id = r.id\n" +
+                    "                    JOIN employees e on a.employee_id = e.id\n" +
+                    "                    WHERE (extract(year from age(e.birth_date))) <= ? GROUP BY fio"
         }
         val conn = dataSource.connection
-        val stmt = conn.prepareStatement(theQuery)
-        val sqlDate = Date(Calendar.getInstance().getTime().getTime())
-        stmt.setDate(1, sqlDate)
+        var stmt = conn.prepareStatement(theQuery)
         if (age > 0) {
-            stmt.setInt(2, age)
+            stmt.setInt(1, age)
         } else {
             val age1 = (age).times(-1);
-            stmt.setInt(2, age1)
+            stmt.setInt(1, age1)
         }
+
+        val res = ArrayList<Actor>()
+        var rs = stmt.executeQuery()
+        while (rs.next()) {
+            res.add(
+                Actor(
+                    rs.getLong("id"),
+                    employeesDao.getEmployee(rs.getLong("employee"))!!,
+                    rs.getBoolean("isStudent")
+                )
+            )
+        }
+        if (age > 0) {
+            theQuery = "select count(*) from (SELECT fio FROM actors a\n" +
+                    "                    JOIN actors_ranks ar ON a.id = ar.actor_id\n" +
+                    "                    JOIN ranks r on ar.rank_id = r.id\n" +
+                    "                    JOIN employees e on a.employee_id = e.id\n" +
+                    "                    WHERE (extract(year from age(e.birth_date))) >= ? GROUP BY fio) as \"count\""
+            stmt = conn.prepareStatement(theQuery)
+            rs = stmt.executeQuery()
+            var count = 0
+            if (rs.next()) {
+                count = rs.getInt("count")
+            }
+            return Pair(res, count)
+        }
+        else{
+            theQuery = "select count(*) from (SELECT fio FROM actors a\n" +
+                    "                    JOIN actors_ranks ar ON a.id = ar.actor_id\n" +
+                    "                    JOIN ranks r on ar.rank_id = r.id\n" +
+                    "                    JOIN employees e on a.employee_id = e.id\n" +
+                    "                    WHERE (extract(year from age(e.birth_date))) <= ? GROUP BY fio) as \"count\""
+            stmt = conn.prepareStatement(theQuery)
+            rs = stmt.executeQuery()
+            var count = 0
+            if (rs.next()) {
+                count = rs.getInt("count")
+            }
+            return Pair(res, count)
+        }
+    }
+
+    fun getActorsForRole(employeesDao: EmployeesDao, roleId: Int): List<Actor> {
+        val theQuery = "select fio, count(fio), is_student, employee_id as \"employee\", a.id from actors a join employees e on a.employee_id = e.id\n" +
+                "                       join actors_features af on a.id = af.actor_id\n" +
+                "                       join features f on af.feature_id = f.id\n" +
+                "                       join roles_features r on f.id = r.feature_id\n" +
+                "where role_id = ? group by fio, is_student, employee_id, a.id having count(fio) = (select count(*) as val from roles join roles_features rf on roles.id = rf.role_id\n" +
+                "                                                    where role_id = ?);"
+        val conn = dataSource.connection
+        val stmt = conn.prepareStatement(theQuery)
+        stmt.setInt(1, roleId)
+        stmt.setInt(2, roleId)
 
         val res = ArrayList<Actor>()
         val rs = stmt.executeQuery()
