@@ -15,9 +15,9 @@ class PerformanceDao(private val dataSource: DataSource) {
             "INSERT INTO performances (production_designer, production_director, production_conductor, season) VALUES (?, ?, ?, ?)",
             Statement.RETURN_GENERATED_KEYS
         )
-        stmt.setString(1, toCreate.production_designer)
-        stmt.setString(2, toCreate.production_director)
-        stmt.setString(3, toCreate.production_conductor)
+        stmt.setInt(1, toCreate.production_designer)
+        stmt.setInt(2, toCreate.production_director)
+        stmt.setInt(3, toCreate.production_conductor)
         stmt.setInt(4, toCreate.season)
         stmt.executeUpdate()
         val gk = stmt.generatedKeys
@@ -33,9 +33,9 @@ class PerformanceDao(private val dataSource: DataSource) {
 
         )
         for (performance in toCreate) {
-            stmt.setString(1, performance.production_designer)
-            stmt.setString(2, performance.production_director)
-            stmt.setString(3, performance.production_conductor)
+            stmt.setInt(1, performance.production_designer)
+            stmt.setInt(2, performance.production_director)
+            stmt.setInt(3, performance.production_conductor)
             stmt.setInt(4, performance.season)
             stmt.addBatch()
         }
@@ -75,8 +75,8 @@ class PerformanceDao(private val dataSource: DataSource) {
         val rs = stmt.executeQuery()
         return if (rs.next()) {
             Performance(
-                rs.getInt("pid"), rs.getString("production_designer"),
-                rs.getString("production_director"), rs.getString("production_conductor"),
+                rs.getInt("pid"), rs.getInt("production_designer"),
+                rs.getInt("production_director"), rs.getInt("production_conductor"),
                 rs.getInt("season")
             )
         } else {
@@ -87,9 +87,9 @@ class PerformanceDao(private val dataSource: DataSource) {
     fun updatePerformance(performance: Performance) {
         val stmt =
             dataSource.connection.prepareStatement("UPDATE performances SET production_designer = ?, production_director = ?, production_conductor = ?, season = ? WHERE id = ?")
-        stmt.setString(1, performance.production_designer)
-        stmt.setString(2, performance.production_director)
-        stmt.setString(3, performance.production_conductor)
+        stmt.setInt(1, performance.production_designer)
+        stmt.setInt(2, performance.production_director)
+        stmt.setInt(3, performance.production_conductor)
         stmt.setInt(4, performance.season)
         stmt.setInt(5, performance.id!!)
         stmt.executeUpdate()
@@ -97,19 +97,19 @@ class PerformanceDao(private val dataSource: DataSource) {
 
     fun getPerformances(page: Page): List<Performance> {
         val theQuery =
-            "SELECT id, production_designer, production_director, production_conductor, season  FROM performances ORDER BY season LIMIT ? OFFSET ?"
+            "SELECT id, production_designer, production_director, production_conductor, season  FROM performances LIMIT ? OFFSET ?"
         val conn = dataSource.connection
         val stmt = conn.prepareStatement(theQuery)
         stmt.setInt(1, page.size)
-        stmt.setInt(2, page.size * page.num)
+        stmt.setInt(2, page.size * (page.num-1))
 
         val res = ArrayList<Performance>()
         val rs = stmt.executeQuery()
         while (rs.next()) {
             res.add(
                 Performance(
-                    rs.getInt("id"), rs.getString("production_designer"),
-                    rs.getString("production_director"), rs.getString("production_conductor"),
+                    rs.getInt("id"), rs.getInt("production_designer"),
+                    rs.getInt("production_director"), rs.getInt("production_conductor"),
                     rs.getInt("season")
                 )
             )
@@ -157,7 +157,7 @@ class PerformanceDao(private val dataSource: DataSource) {
             prod.add(
                 Producer(
                     rs.getLong("id"),
-                    employeesDao.getEmployee(rs.getLong("employee"))!!, rs.getString("activity")
+                    employeesDao.getEmployeeById(rs.getLong("employee"))!!, rs.getString("activity")
                 )
             )
         }
@@ -185,7 +185,7 @@ class PerformanceDao(private val dataSource: DataSource) {
             act.add(
                 Actor(
                     rs.getLong("id"),
-                    employeesDao.getEmployee(rs.getLong("employee"))!!,
+                    employeesDao.getEmployeeById(rs.getLong("employee"))!!,
                     rs.getBoolean("isStudent")
                 )
             )

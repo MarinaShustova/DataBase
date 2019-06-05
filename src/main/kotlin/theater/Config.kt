@@ -115,7 +115,7 @@ class Config {
 
     @Bean
     fun performanceService(): PerformanceService {
-        return PerformanceService(theatreDs(), performanceDao(), concertTourDao(), roleDao(), featureDao())
+        return PerformanceService(theatreDs(), performanceDao(), concertTourDao(), roleDao(), featureDao(), employeesDao(), countryDao())
     }
 
     @Bean

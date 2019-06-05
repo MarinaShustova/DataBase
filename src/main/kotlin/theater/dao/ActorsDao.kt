@@ -381,7 +381,7 @@ class ActorsDao(private val dataSource: DataSource) {
     //functions for selections
 
     fun getActorsWithRanks(employeesDao: EmployeesDao): Pair<List<Actor>, Int> {
-        var theQuery = "SELECT fio, a.id, is_student FROM actors a\n" +
+        var theQuery = "SELECT fio, a.id, is_student, a.employee_id FROM actors a\n" +
                 "                    JOIN actors_ranks ar ON a.id = ar.actor_id\n" +
                 "                    JOIN ranks r on ar.rank_id = r.id\n" +
                 "                    JOIN employees e on e.id = a.employee_id\n" +
@@ -430,7 +430,7 @@ class ActorsDao(private val dataSource: DataSource) {
             res.add(
                 Actor(
                     rs.getInt("id"),
-                    employeesDao.getEmployee(rs.getInt("employee"))!!,
+                    employeesDao.getEmployeeById(rs.getInt("employee"))!!,
                     rs.getBoolean("is_student")
                 )
             )
