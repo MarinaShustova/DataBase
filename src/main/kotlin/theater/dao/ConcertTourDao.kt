@@ -9,7 +9,7 @@ import javax.sql.DataSource
 
 class ConcertTourDao(private val dataSource: DataSource) {
 
-    fun createConcertTour(toCreate: ConcertTour): Long {
+    fun createConcertTour(toCreate: ConcertTour): Int {
         val stmt = dataSource.connection.prepareStatement(
             "INSERT INTO tours (city, start_date, finish_date) VALUES (?, ?, ?)",
             Statement.RETURN_GENERATED_KEYS
@@ -21,10 +21,10 @@ class ConcertTourDao(private val dataSource: DataSource) {
         val gk = stmt.generatedKeys
         gk.next()
 
-        return gk.getLong(1)
+        return gk.getInt(1)
     }
 
-    fun createConcertTours(toCreate: Iterable<ConcertTour>): List<Long> {
+    fun createConcertTours(toCreate: Iterable<ConcertTour>): List<Int> {
         val stmt = dataSource.connection.prepareStatement(
             "INSERT INTO tours (city, start_date, finish_date) VALUES (?, ?, ?)",
             Statement.RETURN_GENERATED_KEYS
@@ -39,22 +39,22 @@ class ConcertTourDao(private val dataSource: DataSource) {
 
         stmt.executeBatch()
         val gk = stmt.generatedKeys
-        val res = ArrayList<Long>()
+        val res = ArrayList<Int>()
         while (gk.next()) {
-            res += gk.getLong(1)
+            res += gk.getInt(1)
         }
 
         return res
     }
 
-    fun findConcertTour(id: Long): ConcertTour? {
+    fun findConcertTour(id: Int): ConcertTour? {
         val stmt = dataSource.connection.prepareStatement(
             "SELECT " +
                     "ct.id ctid, ct.city, ct.start_date, ct.finish_date " +
                     "FROM tours AS ct " +
                     "WHERE ct.id = ?"
         )
-        stmt.setLong(1, id)
+        stmt.setInt(1, id)
         val rs = stmt.executeQuery()
         return if (rs.next()) {
             ConcertTour(
@@ -76,17 +76,17 @@ class ConcertTourDao(private val dataSource: DataSource) {
         stmt.executeUpdate()
     }
 
-    fun deleteConcertTour(id: Long): Long {
+    fun deleteConcertTour(id: Int): Int {
         val stmt = dataSource.connection.prepareStatement(
             "DELETE FROM tours WHERE id = ?",
             Statement.RETURN_GENERATED_KEYS
         )
-        stmt.setLong(1, id)
+        stmt.setInt(1, id)
         stmt.executeUpdate()
         val gk = stmt.generatedKeys
         gk.next()
 
-        return gk.getLong(1)
+        return gk.getInt(1)
     }
 
     fun getConcertTours(page: Page): List<ConcertTour> {

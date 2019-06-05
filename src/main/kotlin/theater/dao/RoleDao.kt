@@ -6,7 +6,7 @@ import theater.model.*
 
 class RoleDao(private val dataSource: DataSource) {
 
-    fun createRole(toCreate: Role): Long {
+    fun createRole(toCreate: Role): Int {
         val stmt = dataSource.connection.prepareStatement(
             "INSERT INTO roles (name) VALUES (?)",
             Statement.RETURN_GENERATED_KEYS
@@ -16,10 +16,10 @@ class RoleDao(private val dataSource: DataSource) {
         val gk = stmt.generatedKeys
         gk.next()
 
-        return gk.getLong(1)
+        return gk.getInt(1)
     }
 
-    fun createRoles(toCreate: Iterable<Role>): List<Long> {
+    fun createRoles(toCreate: Iterable<Role>): List<Int> {
         val stmt = dataSource.connection.prepareStatement(
             "INSERT INTO roles (name) VALUES (?)",
             Statement.RETURN_GENERATED_KEYS
@@ -32,48 +32,48 @@ class RoleDao(private val dataSource: DataSource) {
 
         stmt.executeBatch()
         val gk = stmt.generatedKeys
-        val res = ArrayList<Long>()
+        val res = ArrayList<Int>()
         while (gk.next()) {
-            res += gk.getLong(1)
+            res += gk.getInt(1)
         }
 
         return res
     }
 
-    fun findRole(id: Long): Role? {
+    fun findRole(id: Int): Role? {
         val stmt = dataSource.connection.prepareStatement(
             "SELECT " +
                     "r.id rid, r.name "+
                     "FROM roles AS r " +
                     "WHERE r.id = ?"
         )
-        stmt.setLong(1, id)
+        stmt.setInt(1, id)
         val rs = stmt.executeQuery()
         return if (rs.next()) {
             Role(
-                rs.getLong("rid"), rs.getString("name"))
+                rs.getInt("rid"), rs.getString("name"))
         } else {
             null
         }
     }
 
-    fun deleteRole(id: Long): Long {
+    fun deleteRole(id: Int): Int {
         val stmt = dataSource.connection.prepareStatement(
             "DELETE FROM roles WHERE id = ?",
             Statement.RETURN_GENERATED_KEYS
         )
-        stmt.setLong(1, id)
+        stmt.setInt(1, id)
         stmt.executeUpdate()
         val gk = stmt.generatedKeys
         gk.next()
 
-        return gk.getLong(1)
+        return gk.getInt(1)
     }
 
     fun updateRole(role: Role) {
         val stmt = dataSource.connection.prepareStatement("UPDATE roles SET name = ? WHERE id = ?")
         stmt.setString(1, role.name)
-        stmt.setLong(2, role.id!!)
+        stmt.setInt(2, role.id!!)
         stmt.executeUpdate()
     }
 
@@ -88,17 +88,17 @@ class RoleDao(private val dataSource: DataSource) {
         val rs = stmt.executeQuery()
         while (rs.next()) {
             res.add(Role(
-                rs.getLong("id"), rs.getString("name"))
+                rs.getInt("id"), rs.getString("name"))
             )
         }
         return res
     }
 
-    fun addFeatureToRole(roleId: Long, featureId: Long) {
+    fun addFeatureToRole(roleId: Int, featureId: Int) {
         val stmt =
             dataSource.connection.prepareStatement("INSERT INTO roles_features (role_id, feature_id) VALUES (?,?)")
-        stmt.setLong(1, roleId)
-        stmt.setLong(2, featureId)
+        stmt.setInt(1, roleId)
+        stmt.setInt(2, featureId)
         stmt.executeUpdate()
     }
 

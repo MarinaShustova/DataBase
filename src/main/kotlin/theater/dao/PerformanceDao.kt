@@ -10,7 +10,7 @@ data class Page(val num: Int, val size: Int)
 
 class PerformanceDao(private val dataSource: DataSource) {
 
-    fun createPerformance(toCreate: Performance): Long {
+    fun createPerformance(toCreate: Performance): Int {
         val stmt = dataSource.connection.prepareStatement(
             "INSERT INTO performances (production_designer, production_director, production_conductor, season) VALUES (?, ?, ?, ?)",
             Statement.RETURN_GENERATED_KEYS
@@ -23,10 +23,10 @@ class PerformanceDao(private val dataSource: DataSource) {
         val gk = stmt.generatedKeys
         gk.next()
 
-        return gk.getLong(1)
+        return gk.getInt(1)
     }
 
-    fun createPerformances(toCreate: Iterable<Performance>): List<Long> {
+    fun createPerformances(toCreate: Iterable<Performance>): List<Int> {
         val stmt = dataSource.connection.prepareStatement(
             "INSERT INTO performances (production_designer, production_director, production_conductor, season) VALUES (?, ?, ?, ?)",
             Statement.RETURN_GENERATED_KEYS
@@ -42,28 +42,28 @@ class PerformanceDao(private val dataSource: DataSource) {
 
         stmt.executeBatch()
         val gk = stmt.generatedKeys
-        val res = ArrayList<Long>()
+        val res = ArrayList<Int>()
         while (gk.next()) {
-            res += gk.getLong(1)
+            res += gk.getInt(1)
         }
 
         return res
     }
 
-    fun deletePerformance(id: Long): Long {
+    fun deletePerformance(id: Int): Int {
         val stmt = dataSource.connection.prepareStatement(
             "DELETE FROM performances WHERE id = ?",
             Statement.RETURN_GENERATED_KEYS
         )
-        stmt.setLong(1, id)
+        stmt.setInt(1, id)
         stmt.executeUpdate()
         val gk = stmt.generatedKeys
         gk.next()
 
-        return gk.getLong(1)
+        return gk.getInt(1)
     }
 
-    fun findPerformance(id: Long): Performance? {
+    fun findPerformance(id: Int): Performance? {
         val stmt = dataSource.connection.prepareStatement(
             "SELECT " +
                     "p.id pid, p.production_designer, p.production_director, p.production_conductor, " +
@@ -71,7 +71,7 @@ class PerformanceDao(private val dataSource: DataSource) {
                     "FROM performances AS p " +
                     "WHERE p.id = ?"
         )
-        stmt.setLong(1, id)
+        stmt.setInt(1, id)
         val rs = stmt.executeQuery()
         return if (rs.next()) {
             Performance(
@@ -117,19 +117,19 @@ class PerformanceDao(private val dataSource: DataSource) {
         return res
     }
 
-    fun addConcertTourToPerformance(performanceId: Long, concertTourId: Long) {
+    fun addConcertTourToPerformance(performanceId: Int, concertTourId: Int) {
         val stmt =
             dataSource.connection.prepareStatement("INSERT INTO tours_performances (performance_id, tour_id) VALUES (?,?)")
-        stmt.setLong(1, performanceId)
-        stmt.setLong(2, concertTourId)
+        stmt.setInt(1, performanceId)
+        stmt.setInt(2, concertTourId)
         stmt.executeUpdate()
     }
 
-    fun addRoleToPerformance(performanceId: Long, roleId: Long) {
+    fun addRoleToPerformance(performanceId: Int, roleId: Int) {
         val stmt =
             dataSource.connection.prepareStatement("INSERT INTO roles_performances (performance_id, role_id) VALUES (?,?)")
-        stmt.setLong(1, performanceId)
-        stmt.setLong(2, roleId)
+        stmt.setInt(1, performanceId)
+        stmt.setInt(2, roleId)
         stmt.executeUpdate()
     }
 

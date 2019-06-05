@@ -19,14 +19,14 @@ class PerformanceService(
         private val countryDao: CountryDao
 ) : Service() {
 
-    fun createPerformance(toCreate: Performance): Long {
+    fun createPerformance(toCreate: Performance): Int {
         return transaction(dataSource) {
             val performanceId = performanceDao.createPerformance(toCreate)
             performanceId
         }
     }
 
-    fun createPerformances(toCreate: Iterable<Performance>): List<Long> {
+    fun createPerformances(toCreate: Iterable<Performance>): List<Int> {
         return transaction(dataSource) {
 
             val performanceIds = performanceDao.createPerformances(toCreate)
@@ -34,14 +34,14 @@ class PerformanceService(
         }
     }
 
-    fun createConcertTour(toCreate: ConcertTour): Long {
+    fun createConcertTour(toCreate: ConcertTour): Int {
         return transaction(dataSource) {
             val concertTourId = concertTourDao.createConcertTour(toCreate)
             concertTourId
         }
     }
 
-    fun createConcertTours(toCreate: Iterable<ConcertTour>): List<Long> {
+    fun createConcertTours(toCreate: Iterable<ConcertTour>): List<Int> {
         return transaction(dataSource) {
 
             val concertTourIds = concertTourDao.createConcertTours(toCreate)
@@ -49,14 +49,14 @@ class PerformanceService(
         }
     }
 
-    fun createRole(toCreate: Role): Long {
+    fun createRole(toCreate: Role): Int {
         return transaction(dataSource) {
             val roleId = roleDao.createRole(toCreate)
             roleId
         }
     }
 
-    fun createRoles(toCreate: Iterable<Role>): List<Long> {
+    fun createRoles(toCreate: Iterable<Role>): List<Int> {
         return transaction(dataSource) {
 
             val roleIds = roleDao.createRoles(toCreate)
@@ -64,14 +64,14 @@ class PerformanceService(
         }
     }
 
-    fun createFeature(toCreate: Feature): Long {
+    fun createFeature(toCreate: Feature): Int {
         return transaction(dataSource) {
             val featureId = featureDao.createFeature(toCreate)
             featureId
         }
     }
 
-    fun createFeatures(toCreate: Iterable<Feature>): List<Long> {
+    fun createFeatures(toCreate: Iterable<Feature>): List<Int> {
         return transaction(dataSource) {
 
             val featureIds = featureDao.createFeatures(toCreate)
@@ -79,25 +79,25 @@ class PerformanceService(
         }
     }
 
-    fun findPerformance(id: Long): Performance? {
+    fun findPerformance(id: Int): Performance? {
         return transaction(dataSource) {
             performanceDao.findPerformance(id)
         }
     }
 
-    fun findConcertTour(id: Long): ConcertTour? {
+    fun findConcertTour(id: Int): ConcertTour? {
         return transaction(dataSource) {
             concertTourDao.findConcertTour(id)
         }
     }
 
-    fun findRole(id: Long): Role? {
+    fun findRole(id: Int): Role? {
         return transaction(dataSource) {
             roleDao.findRole(id)
         }
     }
 
-    fun findFeature(id: Long): Feature? {
+    fun findFeature(id: Int): Feature? {
         return transaction(dataSource) {
             featureDao.findFeature(id)
         }
@@ -159,43 +159,43 @@ class PerformanceService(
         }
     }
 
-    fun deletePerformance(id: Long): Long {
+    fun deletePerformance(id: Int): Int {
         return transaction(dataSource) {
             performanceDao.deletePerformance(id)
         }
     }
 
-    fun deleteConcertTour(id: Long): Long {
+    fun deleteConcertTour(id: Int): Int {
         return transaction(dataSource) {
             concertTourDao.deleteConcertTour(id)
         }
     }
 
-    fun deleteRole(id: Long): Long {
+    fun deleteRole(id: Int): Int {
         return transaction(dataSource) {
             roleDao.deleteRole(id)
         }
     }
 
-    fun deleteFeature(id: Long): Long {
+    fun deleteFeature(id: Int): Int {
         return transaction(dataSource) {
             featureDao.deleteFeature(id)
         }
     }
 
-    fun addConcertTourToPerformance(performanceId: Long, concertTourId: Long) {
+    fun addConcertTourToPerformance(performanceId: Int, concertTourId: Int) {
         return transaction(dataSource) {
             performanceDao.addConcertTourToPerformance(performanceId, concertTourId)
         }
     }
 
-    fun addRoleToPerformance(performanceId: Long, roleId: Long) {
+    fun addRoleToPerformance(performanceId: Int, roleId: Int) {
         return transaction(dataSource) {
             performanceDao.addRoleToPerformance(performanceId, roleId)
         }
     }
 
-    fun addFeatureToRole(roleId: Long, featureId: Long) {
+    fun addFeatureToRole(roleId: Int, featureId: Int) {
         return transaction(dataSource) {
             roleDao.addFeatureToRole(roleId, featureId)
         }

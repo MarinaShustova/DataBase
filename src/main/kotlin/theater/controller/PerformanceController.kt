@@ -21,7 +21,7 @@ class PerformanceController(private val service: PerformanceService) {
     fun createPerformance(@RequestParam pr_des : String,
                           @RequestParam pr_dir : String, @RequestParam pr_cond : String,
                           @RequestParam season : Int): String {
-        val toCreate = Performance(null, pr_des, pr_dir, pr_cond, season)
+        val toCreate = Performance(-1, pr_des, pr_dir, pr_cond, season)
         return service.createPerformance(toCreate).toString()
     }
 
@@ -36,7 +36,7 @@ class PerformanceController(private val service: PerformanceService) {
 
         val toCreate = ArrayList<Performance>()
         for (i in 0 until args.size step 4) {
-            toCreate.add(Performance(null, args[i], args[i + 1], args[i + 2], Integer.parseInt(args[i + 3])))
+            toCreate.add(Performance(-1, args[i], args[i + 1], args[i + 2], Integer.parseInt(args[i + 3])))
 
         }
         return service.createPerformances(toCreate).toString()
@@ -46,7 +46,7 @@ class PerformanceController(private val service: PerformanceService) {
     @PostMapping("/create")
     fun createConcertTour(@RequestParam city : String,
                           @RequestParam start : String, @RequestParam finish : String): String {
-        val toCreate = ConcertTour(null, city, Date.valueOf(start), Date.valueOf(finish))
+        val toCreate = ConcertTour(-1, city, Date.valueOf(start), Date.valueOf(finish))
         return service.createConcertTour(toCreate).toString()
     }
 
@@ -61,7 +61,7 @@ class PerformanceController(private val service: PerformanceService) {
 
         val toCreate = ArrayList<ConcertTour>()
         for (i in 0 until args.size step 3) {
-            toCreate.add(ConcertTour(null, args[i], Date.valueOf(args[i + 1]), Date.valueOf(args[i + 2])))
+            toCreate.add(ConcertTour(-1, args[i], Date.valueOf(args[i + 1]), Date.valueOf(args[i + 2])))
 
         }
         return service.createConcertTours(toCreate).toString()
@@ -70,7 +70,7 @@ class PerformanceController(private val service: PerformanceService) {
     @RequestMapping("/roles")
     @PostMapping("/create")
     fun createRole(@RequestParam name : String): String {
-        val toCreate = Role(null, name)
+        val toCreate = Role(-1, name)
         return service.createRole(toCreate).toString()
     }
 
@@ -85,7 +85,7 @@ class PerformanceController(private val service: PerformanceService) {
 
         val toCreate = ArrayList<Role>()
         for (i in 0 until args.size step 1) {
-            toCreate.add(Role(null, args[i]))
+            toCreate.add(Role(-1, args[i]))
 
         }
         return service.createRoles(toCreate).toString()
@@ -94,7 +94,7 @@ class PerformanceController(private val service: PerformanceService) {
     @RequestMapping("/features")
     @PostMapping("/create")
     fun createFeature(@RequestParam name : String, @RequestParam value : String): String {
-        val toCreate = Feature(null, name, value)
+        val toCreate = Feature(-1, name, value)
         return service.createFeature(toCreate).toString()
     }
 
@@ -109,7 +109,7 @@ class PerformanceController(private val service: PerformanceService) {
 
         val toCreate = ArrayList<Feature>()
         for (i in 0 until args.size step 2) {
-            toCreate.add(Feature(null, args[i], args[i + 1]))
+            toCreate.add(Feature(-1, args[i], args[i + 1]))
 
         }
         return service.createFeatures(toCreate).toString()
@@ -150,7 +150,7 @@ class PerformanceController(private val service: PerformanceService) {
     fun updatePerformance(@PathVariable id: Int, @RequestParam pr_des : String,
                           @RequestParam pr_dir : String, @RequestParam pr_cond : String,
                           @RequestParam season : Int):String{
-        val toCreate = Performance(id.toLong(),
+        val toCreate = Performance(id,
             pr_des, pr_dir, pr_cond, season)
         val performance = service.findPerformance(toCreate.id!!) ?: return "Performance with id $id not found"
         return service.updatePerformance(toCreate).toString()
@@ -160,7 +160,7 @@ class PerformanceController(private val service: PerformanceService) {
     @PostMapping("/update/{id}")
     fun updateConcertTour(@PathVariable id: Int, @RequestParam city : String,
                           @RequestParam start : String, @RequestParam finish : String): String {
-        val toCreate = ConcertTour(id.toLong(), city, Date.valueOf(start), Date.valueOf(finish))
+        val toCreate = ConcertTour(id, city, Date.valueOf(start), Date.valueOf(finish))
         val concertTour = service.findConcertTour(toCreate.id!!) ?: return "Concert tour with id $id not found"
         return service.updateConcertTour(toCreate).toString()
     }
@@ -168,7 +168,7 @@ class PerformanceController(private val service: PerformanceService) {
     @RequestMapping("/roles")
     @PostMapping("/update/{id}")
     fun updateRole(@PathVariable id: Int, @RequestParam name : String): String {
-        val toCreate = Role(id.toLong(), name)
+        val toCreate = Role(id, name)
         val role = service.findRole(toCreate.id!!) ?: return "Role with id $id not found"
         return service.updateRole(toCreate).toString()
     }
@@ -176,7 +176,7 @@ class PerformanceController(private val service: PerformanceService) {
     @RequestMapping("/features")
     @PostMapping("/update/{id}")
     fun updateFeature(@PathVariable id: Int, @RequestParam name : String, @RequestParam value : String): String {
-        val toCreate = Feature(id.toLong(), name, value)
+        val toCreate = Feature(id, name, value)
         val feature = service.findFeature(toCreate.id!!) ?: return "Feature with id $id not found"
         return service.updateFeature(toCreate).toString()
     }
@@ -184,32 +184,32 @@ class PerformanceController(private val service: PerformanceService) {
     @RequestMapping("/performances")
     @PostMapping("/delete/{id}")
     fun deletePerformance(@PathVariable id: Int): String {
-        return service.deletePerformance(id.toLong()).toString()
+        return service.deletePerformance(id).toString()
     }
 
     @RequestMapping("/concert_tours")
     @PostMapping("/delete/{id}")
     fun deleteConcertTour(@PathVariable id: Int): String {
-        return service.deleteConcertTour(id.toLong()).toString()
+        return service.deleteConcertTour(id).toString()
     }
 
     @RequestMapping("/roles")
     @PostMapping("/delete/{id}")
     fun deleteRole(@PathVariable id: Int): String {
-        return service.deleteRole(id.toLong()).toString()
+        return service.deleteRole(id).toString()
     }
 
     @RequestMapping("/features")
     @PostMapping("/delete/{id}")
     fun deleteFeature(@PathVariable id: Int): String {
-        return service.deleteFeature(id.toLong()).toString()
+        return service.deleteFeature(id).toString()
     }
 
     @RequestMapping("/concert_tours")
     @PostMapping("/link/{id}")
     fun addConcertTourToPerformance(@PathVariable id: Int, @RequestParam id2 : Int): String{
-        val performanceId = id.toLong()
-        val concertTourId = id2.toLong();
+        val performanceId = id
+        val concertTourId = id2
         val performance = service.findPerformance(performanceId) ?: return "Performance with id $id not found"
         val concertTour = service.findConcertTour(concertTourId) ?: return "Concert tour with id $id2 not found"
         return service.addConcertTourToPerformance(performanceId, concertTourId).toString()
@@ -218,8 +218,8 @@ class PerformanceController(private val service: PerformanceService) {
     @RequestMapping("/performances")
     @PostMapping("/link/{id}")
     fun addRoleToPerformance(@PathVariable id: Int, @RequestParam id2 : Int): String{
-        val performanceId = id.toLong()
-        val roleId = id2.toLong();
+        val performanceId = id
+        val roleId = id2
         val performance = service.findPerformance(performanceId) ?: return "Performance with id $id not found"
         val role = service.findRole(roleId) ?: return "Role with id $id2 not found"
         return service.addRoleToPerformance(performanceId, roleId).toString()
@@ -228,8 +228,8 @@ class PerformanceController(private val service: PerformanceService) {
     @RequestMapping("/roles")
     @PostMapping("/link/{id}")
     fun addFeatureToRole(@PathVariable id: Int, @RequestParam id2 : Int): String{
-        val featureId = id.toLong()
-        val roleId = id2.toLong();
+        val featureId = id
+        val roleId = id2
         val feature = service.findFeature(featureId) ?: return "Feature with id $id not found"
         val role = service.findRole(roleId) ?: return "Role with id $id2 not found"
         return service.addFeatureToRole(roleId, featureId).toString()
