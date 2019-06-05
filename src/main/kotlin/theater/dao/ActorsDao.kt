@@ -568,4 +568,30 @@ class ActorsDao(private val dataSource: DataSource) {
             return Pair(res, count)
         }
     }
+
+    fun getActorsForRole(employeesDao: EmployeesDao, roleId: Int): List<Actor> {
+        val theQuery = "select fio, count(fio), is_student, employee_id as \"employee\", a.id from actors a join employees e on a.employee_id = e.id\n" +
+                "                       join actors_features af on a.id = af.actor_id\n" +
+                "                       join features f on af.feature_id = f.id\n" +
+                "                       join roles_features r on f.id = r.feature_id\n" +
+                "where role_id = ? group by fio, is_student, employee_id, a.id having count(fio) = (select count(*) as val from roles join roles_features rf on roles.id = rf.role_id\n" +
+                "                                                    where role_id = ?);"
+        val conn = dataSource.connection
+        val stmt = conn.prepareStatement(theQuery)
+        stmt.setInt(1, roleId)
+        stmt.setInt(2, roleId)
+
+        val res = ArrayList<Actor>()
+        val rs = stmt.executeQuery()
+        while (rs.next()) {
+            res.add(
+                Actor(
+                    rs.getLong("id"),
+                    employeesDao.getEmployee(rs.getLong("employee"))!!,
+                    rs.getBoolean("isStudent")
+                )
+            )
+        }
+        return res
+    }
 }
