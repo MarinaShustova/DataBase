@@ -11,13 +11,19 @@ import javax.sql.DataSource
 class SpectacleDao(private val dataSource: DataSource) {
 
     fun createSpectacle(spectacle: Spectacle): Int {
-        val stmt = dataSource.connection.prepareStatement(
-                "INSERT INTO spectacles(genre, name, age_category) VALUES (?, ?, ?)",
-                Statement.RETURN_GENERATED_KEYS
-        )
+        val statement = if (spectacle.author != null) {
+            "INSERT INTO spectacles(genre, name, age_category, author_id) VALUES (?, ?, ?, ?)"
+        } else {
+            "INSERT INTO spectacles(genre, name, age_category) VALUES (?, ?, ?)"
+        }
+        val stmt = dataSource.connection.prepareStatement(statement, Statement.RETURN_GENERATED_KEYS)
         stmt.setInt(1, spectacle.genre.id)
         stmt.setString(2, spectacle.name)
         stmt.setInt(3, spectacle.ageCategory)
+        val author = spectacle.author
+        if (author != null) {
+            stmt.setInt(4, author)
+        }
         stmt.executeUpdate()
 
         val generatedKeys = stmt.generatedKeys
@@ -28,12 +34,12 @@ class SpectacleDao(private val dataSource: DataSource) {
 
     fun createAuthorOfSpectacle(spectacle: Spectacle, author: Author): Int {
         val stmt = dataSource.connection.prepareStatement(
-                "INSERT INTO authors_spectacles(spectacle_id, author_id) VALUES (?, ?)",
+                "UPDATE spectacles SET author_id = ? WHERE id = ?",
                 Statement.RETURN_GENERATED_KEYS
         )
 
-        stmt.setInt(1, spectacle.id)
-        stmt.setInt(2, author.id)
+        stmt.setInt(1, author.id)
+        stmt.setInt(2, spectacle.id)
 
         stmt.executeUpdate()
 
@@ -45,124 +51,188 @@ class SpectacleDao(private val dataSource: DataSource) {
 
     fun getSpectacle(id: Int): Spectacle? {
         val stmt = dataSource.connection.prepareStatement(
-                "SELECT s.id, s.name, s.genre, s.age_category, g.name" +
-                        "FROM spectacles AS s" +
-                        "JOIN genres AS g ON s.genre = g.id" +
+                "SELECT s.id spect_id, s.name spect_name, s.genre spect_g_id, " +
+                        "s.age_category spect_age, g.name g_name, s.author_id\n" +
+                        "FROM spectacles AS s\n" +
+                        "JOIN genres AS g ON s.genre = g.id\n" +
+                        "LEFT JOIN authors AS a ON a.id = s.author_id\n" +
                         "WHERE s.id = ?"
         )
         stmt.setInt(1, id)
-        stmt.executeQuery()
 
         val queryResult = stmt.executeQuery()
         return if (queryResult.next()) {
-            Spectacle(queryResult.getInt("s.id"),
-                    queryResult.getString("s.name"),
-                    Genre(queryResult.getInt("s.genre"), queryResult.getString("g.name")),
-                    queryResult.getInt("s.age_category"))
+            val spectacle = Spectacle(queryResult.getInt("spect_id"),
+                    queryResult.getString("spect_name"),
+                    Genre(queryResult.getInt("spect_g_id"), queryResult.getString("g_name")),
+                    queryResult.getInt("spect_age"))
+            val author: Int = queryResult.getInt("author_id")
+            return if (author == 0) {
+                spectacle
+            } else {
+                spectacle.author = author
+                spectacle
+            }
         } else {
             null
         }
     }
 
+    fun getSpectacles(): ArrayList<Spectacle> {
+        val stmt = dataSource.connection.prepareStatement(
+                "SELECT s.id spect_id, s.name spect_name, s.genre spect_g_id, " +
+                        "s.age_category spect_age, g.name g_name, s.author_id\n" +
+                        "FROM spectacles AS s\n" +
+                        "JOIN genres AS g ON s.genre = g.id\n" +
+                        "LEFT JOIN authors AS a ON a.id = s.author_id"
+        )
+        val queryResult = stmt.executeQuery()
+
+        val res = ArrayList<Spectacle>()
+        while (queryResult.next()) {
+            val spectacle = Spectacle(queryResult.getInt("spect_id"),
+                    queryResult.getString("spect_name"),
+                    Genre(queryResult.getInt("spect_genre"), queryResult.getString("genre_name")),
+                    queryResult.getInt("spect_age"))
+            val authorId: Int = queryResult.getInt("author_id")
+            if (authorId != 0) {
+                spectacle.author = authorId
+            }
+            res.add(spectacle)
+        }
+        return res
+    }
+
     fun getSpectacleByName(name: String): Spectacle? {
         val stmt = dataSource.connection.prepareStatement(
-                "SELECT s.id spect_id, s.name spect_name, s.genre spect_genre, s.age_category spect_age, g.name genre_name " +
-                        "FROM spectacles AS s " +
-                        "JOIN genres AS g ON s.genre = g.id " +
+                "SELECT s.id spect_id, s.name spect_name, s.genre spect_genre, s.age_category spect_age," +
+                        " g.name genre_name, s.author_id\n" +
+                        "FROM spectacles AS s \n" +
+                        "\tJOIN genres AS g ON s.genre = g.id \n" +
                         "WHERE s.name = ?"
         )
         stmt.setString(1, name)
 
         val queryResult = stmt.executeQuery()
         return if (queryResult.next()) {
-            Spectacle(queryResult.getInt("spect_id"),
+            val spectacle = Spectacle(queryResult.getInt("spect_id"),
                     queryResult.getString("spect_name"),
                     Genre(queryResult.getInt("spect_genre"), queryResult.getString("genre_name")),
                     queryResult.getInt("spect_age"))
+            val author: Int = queryResult.getInt("author_id")
+            return if (author == 0) {
+                spectacle
+            } else {
+                spectacle.author = author
+                spectacle
+            }
         } else {
             null
         }
     }
 
-    fun getSpectacleOfGenre(genre: Genre): ArrayList<Spectacle> {
+    fun getSpectaclesOfGenre(genre: Genre): ArrayList<Spectacle> {
         val stmt = dataSource.connection.prepareStatement(
-                "SELECT s.id spect_id, s.name spect_name, s.age_category spect_age, s.genre spect_genre, g.name genre_name \n" +
+                "SELECT s.id spect_id, s.name spect_name, s.age_category spect_age, s.genre spect_genre," +
+                        " g.name genre_name, s.author_id\n" +
                         "FROM spectacles AS s\n" +
                         "\tJOIN genres AS g ON g.id = s.genre\n" +
-                        "WHERE g.name = ?"
+                        " WHERE g.name = ?"
         )
         stmt.setString(1, genre.name)
         val res = ArrayList<Spectacle>()
         val queryResult = stmt.executeQuery()
         while (queryResult.next()) {
-            res.add(Spectacle(queryResult.getInt("spect_id"),
+            val spectacle = Spectacle(queryResult.getInt("spect_id"),
                     queryResult.getString("spect_name"),
                     Genre(queryResult.getInt("spect_genre"), queryResult.getString("genre_name")),
-                    queryResult.getInt("spect_age")))
+                    queryResult.getInt("spect_age"))
+            val authorId: Int = queryResult.getInt("author_id")
+            if (authorId != 0) {
+                spectacle.author = authorId
+            }
+            res.add(spectacle)
         }
         return res
     }
 
-    fun getSpectacleOfAuthor(author: Author): ArrayList<Spectacle> {
+    fun getSpectaclesOfAuthor(author: Author): ArrayList<Spectacle> {
         val stmt = dataSource.connection.prepareStatement(
-                "SELECT s.id spect_id, s.name spect_name, s.age_category spect_age, s.genre spect_genre, g.name genre_name\n" +
+                "SELECT s.id spect_id, s.name spect_name, s.age_category spect_age, " +
+                        "s.genre spect_genre, g.name genre_name, s.author_id\n" +
                         "FROM spectacles AS s\n" +
-                        "\tJOIN authors_spectacles ON spectacles.id = authors_spectacles.spectacle_id\n" +
-                        "\tJOIN authors ON authors_spectacles.author_id = authors.id\n" +
                         "\tJOIN genres AS g ON g.id = s.genre\n" +
-                        "WHERE authors.name = ?"
+                        "WHERE author_id = ?"
         )
-        stmt.setString(1, author.name)
+        stmt.setInt(1, author.id)
         val res = ArrayList<Spectacle>()
         val queryResult = stmt.executeQuery()
         while (queryResult.next()) {
-            res.add(Spectacle(queryResult.getInt("s.id"),
-                    queryResult.getString("s.name"),
-                    Genre(queryResult.getInt("s.genre"), queryResult.getString("g.name")),
-                    queryResult.getInt("s.age_category")))
+            val spectacle = Spectacle(queryResult.getInt("spect_id"),
+                    queryResult.getString("spect_name"),
+                    Genre(queryResult.getInt("spect_genre"), queryResult.getString("genre_name")),
+                    queryResult.getInt("spect_age"))
+            val authorId: Int = queryResult.getInt("author_id")
+            if (authorId != 0) {
+                spectacle.author = authorId
+            }
+            res.add(spectacle)
         }
         return res
     }
 
-    fun getSpectacleOfCountry(country: Country): ArrayList<Spectacle> {
+    fun getSpectaclesOfCountry(country: Country): ArrayList<Spectacle> {
         val stmt = dataSource.connection.prepareStatement(
-                "SELECT s.id spect_id, s.name spect_name, s.age_category spect_age, s.genre spect_genre, g.name genre_name\n" +
+                "SELECT s.id spect_id, s.name spect_name, s.age_category spect_age, " +
+                        "s.genre spect_genre, g.name genre_name, s.author_id\n" +
                         "FROM spectacles AS s\n" +
-                        "\tJOIN authors_spectacles ON s.id = authors_spectacles.spectacle_id\n" +
-                        "\tJOIN authors ON authors_spectacles.author_id = authors.id\n" +
                         "\tJOIN genres AS g ON g.id = s.genre\n" +
-                        "WHERE authors.country = ?"
+                        "\tLEFT JOIN authors AS a ON a.id = s.author_id\n" +
+                        "WHERE a.country = ?"
         )
         stmt.setInt(1, country.id)
         val res = ArrayList<Spectacle>()
         val queryResult = stmt.executeQuery()
         while (queryResult.next()) {
-            res.add(Spectacle(queryResult.getInt("spect_id"),
+            val spectacle = Spectacle(queryResult.getInt("spect_id"),
                     queryResult.getString("spect_name"),
                     Genre(queryResult.getInt("spect_genre"), queryResult.getString("genre_name")),
-                    queryResult.getInt("spect_age")))
+                    queryResult.getInt("spect_age"))
+            val author: Int = queryResult.getInt("author_id")
+            if (author != 0) {
+                spectacle.author = author
+            }
+            res.add(spectacle)
         }
         return res
     }
 
-    fun getSpectacleOfCurAuthorLifePeriod(dateFrom: Timestamp, dateTo: Timestamp): ArrayList<Spectacle> {
+    fun getSpectaclesOfCurAuthorLifePeriod(dateFrom: Timestamp, dateTo: Timestamp): ArrayList<Spectacle> {
         val stmt = dataSource.connection.prepareStatement(
-                "SELECT s.id spect_id, s.name spect_name, s.age_category spect_age, s.genre spect_genre, g.name genre_name\n" +
+                "SELECT s.id spect_id, s.name spect_name, s.age_category spect_age, " +
+                        "s.genre spect_genre, g.name genre_name, s.author_id\n" +
                         "FROM spectacles AS s\n" +
-                        "\tJOIN authors_spectacles ON s.id = authors_spectacles.spectacle_id\n" +
-                        "\tJOIN authors ON authors_spectacles.author_id = authors.id\n" +
+                        "\tLEFT JOIN authors AS a ON s.author_id = a.id\n" +
                         "\tJOIN genres AS g ON g.id = s.genre\n" +
-                        "WHERE (authors.birth_date > ?) OR (authors.death_date < ?)"
+                        "WHERE ((a.birth_date > ?) AND (a.birth_date < ?)) " +
+                        "OR ((a.death_date > ?) AND (a.death_date < ?))"
         )
         stmt.setTimestamp(1, dateFrom)
         stmt.setTimestamp(2, dateTo)
+        stmt.setTimestamp(3, dateFrom)
+        stmt.setTimestamp(4, dateTo)
         val res = ArrayList<Spectacle>()
         val queryResult = stmt.executeQuery()
         while (queryResult.next()) {
-            res.add(Spectacle(queryResult.getInt("spect_id"),
+            val spectacle = Spectacle(queryResult.getInt("spect_id"),
                     queryResult.getString("spect_name"),
                     Genre(queryResult.getInt("spect_genre"), queryResult.getString("genre_name")),
-                    queryResult.getInt("spect_age")))
+                    queryResult.getInt("spect_age"))
+            val author: Int = queryResult.getInt("author_id")
+            if (author != 0) {
+                spectacle.author = author
+            }
+            res.add(spectacle)
         }
         return res
     }
@@ -183,7 +253,7 @@ class SpectacleDao(private val dataSource: DataSource) {
                 "DELETE FROM spectacles WHERE id = ?"
         )
         stmt.setInt(1, spectacle.id)
-        stmt.executeQuery()
+        stmt.executeUpdate()
     }
 
     fun deleteSpectacle(spectacleId: Int) {
@@ -191,6 +261,6 @@ class SpectacleDao(private val dataSource: DataSource) {
                 "DELETE FROM spectacles WHERE id = ?"
         )
         stmt.setInt(1, spectacleId)
-        stmt.executeQuery()
+        stmt.executeUpdate()
     }
 }

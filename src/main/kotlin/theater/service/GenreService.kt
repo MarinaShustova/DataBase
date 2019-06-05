@@ -1,6 +1,7 @@
 package theater.service
 
 import theater.dao.GenreDao
+import theater.exception.GenreNotFoundException
 import theater.model.Genre
 import javax.sql.DataSource
 
@@ -14,6 +15,10 @@ class GenreService(private val dataSource: DataSource, private val genreDao: Gen
         return genreDao.getGenre(id)
     }
 
+    fun getGenres(): ArrayList<Genre> {
+        return genreDao.getGenres()
+    }
+
     fun getGenreByName(name: String): Genre? {
         return genreDao.getGenreByName(name)
     }
@@ -22,8 +27,15 @@ class GenreService(private val dataSource: DataSource, private val genreDao: Gen
         genreDao.updateGenre(genre)
     }
 
-    fun deleteGenre(genre: Genre) {
-        genreDao.deleteGenre(genre)
+    fun deleteGenre(name: String) {
+        transaction(dataSource) {
+            val genre = getGenreByName(name) ?: throw GenreNotFoundException()
+            genreDao.deleteGenre(genre)
+        }
+    }
+
+    fun deleteGenre(id: Int) {
+        genreDao.deleteGenre(id)
     }
 
 }

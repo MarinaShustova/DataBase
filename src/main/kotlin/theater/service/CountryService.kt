@@ -3,6 +3,7 @@ package theater.service
 import theater.dao.CountryDao
 import theater.exception.CountryNotFoundException
 import theater.model.Country
+import java.sql.SQLException
 import javax.sql.DataSource
 
 class CountryService(private val dataSource: DataSource, private val countryDao: CountryDao) : Service() {
@@ -19,8 +20,17 @@ class CountryService(private val dataSource: DataSource, private val countryDao:
         return countryDao.getCountry(id)
     }
 
+    fun getCountries(): ArrayList<Country> {
+        return countryDao.getCountries()
+    }
+
     fun updateCountry(country: Country) {
-        countryDao.updateCountry(country)
+        try {
+            countryDao.updateCountry(country)
+        } catch (ex: SQLException) {
+            println(ex.sqlState)
+            throw CountryNotFoundException()
+        }
     }
 
     fun deleteCountry(name: String) {

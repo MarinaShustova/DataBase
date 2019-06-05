@@ -1,6 +1,8 @@
 package theater.controller
 
 import org.springframework.web.bind.annotation.*
+import theater.exception.AuthorNotFoundException
+import theater.model.Author
 import theater.model.data.AuthorData
 import theater.service.AuthorService
 import java.sql.Date
@@ -21,9 +23,14 @@ class AuthorController(private val authorService: AuthorService) {
 //    }
 
     @GetMapping("/{id}")
-    fun getAuthor(@PathVariable id: Int): AuthorData? {
-        val author = authorService.getAuthor(id) ?: return null
+    fun getAuthor(@PathVariable id: Int): AuthorData {
+        val author = authorService.getAuthor(id) ?: throw AuthorNotFoundException()
         return AuthorData(author)
+    }
+
+    @GetMapping("/get")
+    fun getAuthors(): ArrayList<AuthorData> {
+        return authorService.getAuthors()
     }
 
     @GetMapping("/country")
@@ -52,10 +59,16 @@ class AuthorController(private val authorService: AuthorService) {
         }
     }
 
-    @PostMapping("/update")
-    fun updateAuthor(@RequestBody authorData: AuthorData): String {
-        authorService.updateAuthor(authorData)
+    @PostMapping("/update/{id}")
+    fun updateAuthor(@PathVariable id: Int, @RequestBody authorData: AuthorData): String {
+        authorService.updateAuthor(id, authorData)
         return "author updated"
+    }
+
+    @PostMapping("/update")
+    fun updateAuthor(@RequestBody author: Author): String {
+        authorService.updateAuthor(author)
+        return "author ${author.id} updated"
     }
 
     @PostMapping("/delete")
@@ -65,7 +78,7 @@ class AuthorController(private val authorService: AuthorService) {
                 "${author.birthDate}, ${author.deathDate}, ${author.country.name}"
     }
 
-    @PostMapping("/delete/{id}")
+    @GetMapping("/delete/{id}")
     fun deleteAuthor(@PathVariable id: Int) {
         authorService.deleteAuthor(id)
     }

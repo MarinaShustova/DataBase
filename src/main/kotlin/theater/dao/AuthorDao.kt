@@ -2,6 +2,7 @@ package theater.dao
 
 import theater.model.Author
 import theater.model.Country
+import theater.model.data.AuthorData
 import java.sql.Date
 import java.sql.Statement
 import javax.sql.DataSource
@@ -75,13 +76,33 @@ class AuthorDao(private val dataSource: DataSource) {
 
         val queryResult = stmt.executeQuery()
         return if (queryResult.next()) {
-            Author(queryResult.getInt("author_id"), queryResult.getString("surname"),
-                    queryResult.getString("author_name"), queryResult.getDate("birth_date"),
+            Author(queryResult.getInt("author_id"), queryResult.getString("author_name"),
+                    queryResult.getString("surname"), queryResult.getDate("birth_date"),
                     queryResult.getDate("death_date"), Country(queryResult.getInt("country_id"),
                     queryResult.getString("country_name")))
         } else {
             null
         }
+    }
+
+    fun getAuthors(): ArrayList<AuthorData> {
+        val stmt = dataSource.connection.prepareStatement(
+                "SELECT a.id author_id, a.surname surname, a.name author_name, a.birth_date birth_date, a.death_date death_date" +
+                        ", c.id country_id, c.name country_name "
+                        + "FROM authors AS a "
+                        + "JOIN countries AS c ON a.country = c.id "
+        )
+        val queryResult = stmt.executeQuery()
+
+        val authorsList = ArrayList<AuthorData>()
+        while (queryResult.next()) {
+            authorsList.add(AuthorData(queryResult.getString("author_name"),
+                    queryResult.getString("surname"),
+                    queryResult.getDate("birth_date"),
+                    queryResult.getDate("death_date"),
+                    queryResult.getString("country_name")))
+        }
+        return authorsList
     }
 
     fun getAuthorByFullName(name: String, surname: String): Author? {
@@ -97,8 +118,8 @@ class AuthorDao(private val dataSource: DataSource) {
 
         val queryResult = stmt.executeQuery()
         return if (queryResult.next()) {
-            Author(queryResult.getInt("author_id"), queryResult.getString("surname"),
-                    queryResult.getString("author_name"), queryResult.getDate("birth_date"),
+            Author(queryResult.getInt("author_id"), queryResult.getString("author_name"),
+                    queryResult.getString("surname"), queryResult.getDate("birth_date"),
                     queryResult.getDate("death_date"), Country(queryResult.getInt("country_id"),
                     queryResult.getString("country_name")))
         } else {

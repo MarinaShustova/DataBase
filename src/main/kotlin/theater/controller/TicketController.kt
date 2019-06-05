@@ -21,6 +21,11 @@ class TicketController(private val ticketService: TicketService) {
         return "Created ticket for show"
     }
 
+    @GetMapping("/get/show")
+    fun getTicketsOfShow(@RequestParam showId: Int): ArrayList<TicketData> {
+        return ticketService.getTicketsOfShow(showId)
+    }
+
     @GetMapping("/buy")
     fun buyTicket(@RequestParam row: Int, @RequestParam seat: Int, @RequestParam price: Int, @RequestParam showId: Int,
                   @RequestParam previously: Boolean) {

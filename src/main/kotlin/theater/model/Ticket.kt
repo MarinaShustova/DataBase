@@ -6,4 +6,4 @@ data class Ticket(val id: Int,
                   val price: Int,
                   var presence: Boolean,
                   var previously: Boolean,
-                  val showId: Int?)
+                  val showId: Int)

@@ -125,7 +125,7 @@ class Config {
 
     @Bean
     fun spectacleService(): SpectacleService {
-        return SpectacleService(theatreDs(), spectacleDao())
+        return SpectacleService(theatreDs(), spectacleDao(), genreDao(), authorDao(), countryDao())
     }
 
     @Bean

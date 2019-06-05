@@ -1,50 +1,39 @@
 package theater.controller
 
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
+import theater.exception.ShowNotFoundException
 import theater.model.Show
+import theater.model.data.ShowData
 import theater.service.ShowService
-import java.sql.Date
-import java.sql.Timestamp
 
 @RestController
+@RequestMapping("/shows")
 class ShowController(private val showService: ShowService) {
 
-    fun createShow(argsStr: String): String {
-        val args = argsStr.split(",")
-                .map { it.trim() }
-        if (argsStr.isEmpty() || args.size != 2) {
-            return "2 arg expected: $args"
-        }
-
-        val show = Show(-1, Timestamp.valueOf(args[0]), args[1].toBoolean())
-        val showId = showService.createShow(show)
-        return "Created show: $showId, date = ${show.date}, is premiere = ${show.premiere}"
+    @PostMapping("/create")
+    fun createShow(@RequestBody showData: ShowData) {
+        showService.createShow(showData)
     }
 
-    fun updateShow(argsStr: String): String {
-        val args = argsStr.split(",")
-                .map { it.trim() }
-        if (argsStr.isEmpty() || args.size != 3) {
-            return "3 arg expected: $args"
-        }
-
-        val show = Show(args[0].toInt(), Timestamp.valueOf(args[1]), args[2].toBoolean())
-        showService.updateShow(show)
+    @PostMapping("/update/{id}")
+    fun updateShow(@PathVariable id: Int, @RequestBody showData: ShowData): String {
+        showService.updateShow(id, showData)
         return "Show updated"
     }
 
-    fun getShow(argsStr: String): String {
-        try {
-            val id = argsStr.toInt()
-            val show = showService.getShow(id) ?: return "Can't find show with id $id"
-            return "Show: date = ${show.date}, is premiere = ${show.premiere}"
-        } catch (ex: NumberFormatException) {
-            return "argument should be integer"
-        }
+    @GetMapping("/{id}")
+    fun getShow(@PathVariable id: Int): Show {
+        return showService.getShow(id) ?: throw ShowNotFoundException()
     }
 
-    fun deleteShow(argsStr: String): String {
-        showService.deleteShow(argsStr.toInt())
+    @GetMapping("/get")
+    fun getShows(): ArrayList<Show> {
+        return showService.getShows()
+    }
+
+    @PostMapping("/delete/{id}")
+    fun deleteShow(@PathVariable id: Int): String {
+        showService.deleteShow(id)
         return "Deleted show argsStr"
     }
 }

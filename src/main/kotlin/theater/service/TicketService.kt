@@ -26,6 +26,12 @@ class TicketService(private val dataSource: DataSource, private val ticketDao: T
         }
     }
 
+    fun getTicketsOfShow(showId: Int): ArrayList<TicketData> {
+        return transaction(dataSource) {
+            ticketDao.getTicketsOfShow(showId)
+        }
+    }
+
     fun updateTicket(ticket: Ticket) {
         transaction(dataSource) {
             ticketDao.updateTicket(ticket)

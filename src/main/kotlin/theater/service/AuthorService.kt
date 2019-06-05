@@ -34,6 +34,12 @@ class AuthorService(private val dataSource: DataSource, private val authorDao: A
         }
     }
 
+    fun getAuthors(): ArrayList<AuthorData> {
+        return transaction(dataSource) {
+            authorDao.getAuthors()
+        }
+    }
+
     fun getAuthorByFullName(name: String, surname: String): Author? {
         return transaction(dataSource) {
             authorDao.getAuthorByFullName(name, surname)
@@ -53,11 +59,17 @@ class AuthorService(private val dataSource: DataSource, private val authorDao: A
         }
     }
 
-    fun updateAuthor(authorData: AuthorData) {
+    fun updateAuthor(id: Int, authorData: AuthorData) {
         return transaction(dataSource) {
             val country = countryDao.getCountryByName(authorData.countryName) ?: throw CountryNotFoundException()
-            val author = Author(-1, authorData.name, authorData.surname,
+            val author = Author(id, authorData.name, authorData.surname,
                     authorData.birthDate, authorData.deathDate, country)
+            authorDao.updateAuthor(author)
+        }
+    }
+
+    fun updateAuthor(author: Author) {
+        return transaction(dataSource) {
             authorDao.updateAuthor(author)
         }
     }

@@ -35,6 +35,19 @@ class GenreDao(private val dataSource: DataSource) {
         }
     }
 
+    fun getGenres(): ArrayList<Genre> {
+        val stmt = dataSource.connection.prepareStatement(
+                "SELECT id, name FROM genres"
+        )
+        val queryResult = stmt.executeQuery()
+
+        val res = ArrayList<Genre>()
+        while (queryResult.next()) {
+            res.add(Genre(queryResult.getInt("id"), queryResult.getString("name")))
+        }
+        return res
+    }
+
     fun getGenreByName(name: String): Genre? {
         val stmt = dataSource.connection.prepareStatement(
                 "SELECT id, name FROM genres WHERE name = ?"
@@ -64,6 +77,14 @@ class GenreDao(private val dataSource: DataSource) {
                 "DELETE FROM genres WHERE id = ?"
         )
         stmt.setInt(1, genre.id)
+        stmt.executeUpdate()
+    }
+
+    fun deleteGenre(id: Int) {
+        val stmt = dataSource.connection.prepareStatement(
+                "DELETE FROM genres WHERE id = ?"
+        )
+        stmt.setInt(1, id)
         stmt.executeUpdate()
     }
 

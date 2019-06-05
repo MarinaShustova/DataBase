@@ -75,7 +75,7 @@ class SpectacleCommandLineController(private val spectacleService: SpectacleServ
         }
 
         val author = authorService.getAuthorByFullName(args[0], args[1]) ?: return "Unknown author"
-        val spectaclesList = spectacleService.getSpectacleOfAuthor(author)
+        val spectaclesList = spectacleService.getSpectaclesOfAuthor(author)
         var res = ""
         for (spectacle in spectaclesList) {
             res += "${spectacle.id}, \"${spectacle.name}\", ${spectacle.genre.name}, ${spectacle.ageCategory} \n"

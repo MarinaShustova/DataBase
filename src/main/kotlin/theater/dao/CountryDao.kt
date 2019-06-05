@@ -1,6 +1,5 @@
 package theater.dao
 
-import theater.model.Author
 import theater.model.Country
 import java.sql.Statement
 import javax.sql.DataSource
@@ -23,7 +22,7 @@ class CountryDao(private val dataSource: DataSource) {
 
     fun getCountry(id: Int): Country? {
         val stmt = dataSource.connection.prepareStatement(
-                "SELECT id, name FROM countries"
+                "SELECT id, name FROM countries WHERE id = ?"
         )
         stmt.setInt(1, id)
         val queryResult = stmt.executeQuery()
@@ -33,6 +32,19 @@ class CountryDao(private val dataSource: DataSource) {
         } else {
             null
         }
+    }
+
+    fun getCountries(): ArrayList<Country> {
+        val stmt = dataSource.connection.prepareStatement(
+                "SELECT id, name FROM countries"
+        )
+        val queryResult = stmt.executeQuery()
+
+        val res = ArrayList<Country>()
+        while (queryResult.next()) {
+            res.add(Country(queryResult.getInt("id"), queryResult.getString("name")))
+        }
+        return res
     }
 
     fun getCountryByName(name: String): Country? {
@@ -52,7 +64,7 @@ class CountryDao(private val dataSource: DataSource) {
 
     fun updateCountry(country: Country) {
         val stmt = dataSource.connection.prepareStatement(
-                "UPDATE authors SET name=? WHERE id = ? "
+                "UPDATE countries SET name=? WHERE id = ? "
         )
         stmt.setString(1, country.name)
         stmt.setInt(2, country.id)
