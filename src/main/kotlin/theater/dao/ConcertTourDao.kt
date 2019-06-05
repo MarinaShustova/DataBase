@@ -113,11 +113,17 @@ class ConcertTourDao(private val dataSource: DataSource) {
     fun getTourTroupe(employeesDao: EmployeesDao,
                       spectacleId: Int, start: Date, finish: Date
     ): Pair<List<Actor>, List<Producer>> {
-        var theQuery = "select a.fio from (select * from employees join actors on employees.id = actors.employee_id\n" +
-                "    join actors_roles ar on actors.id = ar.actor_id join roles_performances rp on rp.role_id = ar.role_id\n" +
-                "    join tours_performances tp on tp.performance_id = rp.performance_id join performances p2 on rp.performance_id = p2.id\n" +
-                "join tours t on p2.id = t.performance_id\n" +
-                "where p2.spectacle_id = ? and t.start_date >= ? and t.finish_date <= ?) as a"
+        var theQuery = "select a.fio, employee_id, is_student\n" +
+                "from (select *\n" +
+                "      from employees\n" +
+                "               join actors on employees.id = actors.employee_id\n" +
+                "               join actors_roles ar on actors.id = ar.actor_id\n" +
+                "               join roles_performances rp on rp.role_id = ar.role_id\n" +
+                "               join performances p2 on rp.performance_id = p2.id\n" +
+                "               join tours t on p2.id = t.performance_id\n" +
+                "      where p2.spectacle_id = ?\n" +
+                "        and t.start_date >= ?\n" +
+                "        and t.finish_date <= ?) as a"
         val conn = dataSource.connection
         var stmt = conn.prepareStatement(theQuery)
         stmt.setInt(1, spectacleId)
@@ -135,17 +141,16 @@ class ConcertTourDao(private val dataSource: DataSource) {
                 )
             )
         }
-        theQuery = "select a.fio\n" +
-                "from (select *\n" +
+        theQuery = "select *\n" +
+                "from (select fio, employee_id as \"employee\", activity, producers.id\n" +
                 "      from employees\n" +
                 "               join producers on employees.id = producers.employee_id\n" +
                 "               join performances p on producers.id = p.production_conductor or producers.id = p.production_designer\n" +
                 "          or producers.id = p.production_director\n" +
-                "               join tours_performances tp on tp.performance_id = p.id\n" +
                 "               join tours t on p.id = t.performance_id\n" +
                 "      where p.spectacle_id = ?\n" +
                 "        and t.start_date >= ?\n" +
-                "        and t.finish_date <= ?) as a\n"
+                "        and t.finish_date <= ?) as a"
         stmt = conn.prepareStatement(theQuery)
         stmt.setInt(1, spectacleId)
         stmt.setDate(2, start)
@@ -157,8 +162,8 @@ class ConcertTourDao(private val dataSource: DataSource) {
             prod.add(
                 Producer(
                     rs.getLong("id"),
-                    employeesDao.getEmployee(rs.getLong("employee"))!!, "prod"
-                    //TODO: producer's activity
+                    employeesDao.getEmployee(rs.getLong("employee"))!!,
+                    rs.getString("activity")
                 )
             )
         }
