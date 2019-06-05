@@ -2,6 +2,7 @@ package theater.dao
 
 import theater.model.Author
 import theater.model.Country
+import theater.model.data.AuthorData
 import java.sql.Date
 import java.sql.Statement
 import javax.sql.DataSource
@@ -66,8 +67,8 @@ class AuthorDao(private val dataSource: DataSource) {
     fun getAuthor(id: Int): Author? {
         val stmt = dataSource.connection.prepareStatement(
                 "SELECT a.id author_id, a.surname surname, a.name author_name, a.birth_date birth_date, a.death_date death_date" +
-                        ", c.id country_id, c.name country_name"
-                        + "FROM authors AS a"
+                        ", c.id country_id, c.name country_name "
+                        + "FROM authors AS a "
                         + "JOIN countries AS c ON a.country = c.id "
                         + "WHERE a.id = ?"
         )
@@ -75,13 +76,33 @@ class AuthorDao(private val dataSource: DataSource) {
 
         val queryResult = stmt.executeQuery()
         return if (queryResult.next()) {
-            Author(queryResult.getInt("author_id"), queryResult.getString("surname"),
-                    queryResult.getString("author_name"), queryResult.getDate("birth_date"),
+            Author(queryResult.getInt("author_id"), queryResult.getString("author_name"),
+                    queryResult.getString("surname"), queryResult.getDate("birth_date"),
                     queryResult.getDate("death_date"), Country(queryResult.getInt("country_id"),
                     queryResult.getString("country_name")))
         } else {
             null
         }
+    }
+
+    fun getAuthors(): ArrayList<AuthorData> {
+        val stmt = dataSource.connection.prepareStatement(
+                "SELECT a.id author_id, a.surname surname, a.name author_name, a.birth_date birth_date, a.death_date death_date" +
+                        ", c.id country_id, c.name country_name "
+                        + "FROM authors AS a "
+                        + "JOIN countries AS c ON a.country = c.id "
+        )
+        val queryResult = stmt.executeQuery()
+
+        val authorsList = ArrayList<AuthorData>()
+        while (queryResult.next()) {
+            authorsList.add(AuthorData(queryResult.getString("author_name"),
+                    queryResult.getString("surname"),
+                    queryResult.getDate("birth_date"),
+                    queryResult.getDate("death_date"),
+                    queryResult.getString("country_name")))
+        }
+        return authorsList
     }
 
     fun getAuthorByFullName(name: String, surname: String): Author? {
@@ -97,8 +118,8 @@ class AuthorDao(private val dataSource: DataSource) {
 
         val queryResult = stmt.executeQuery()
         return if (queryResult.next()) {
-            Author(queryResult.getInt("author_id"), queryResult.getString("surname"),
-                    queryResult.getString("author_name"), queryResult.getDate("birth_date"),
+            Author(queryResult.getInt("author_id"), queryResult.getString("author_name"),
+                    queryResult.getString("surname"), queryResult.getDate("birth_date"),
                     queryResult.getDate("death_date"), Country(queryResult.getInt("country_id"),
                     queryResult.getString("country_name")))
         } else {
@@ -132,10 +153,12 @@ class AuthorDao(private val dataSource: DataSource) {
                         ", c.id country_id, c.name country_name\n" +
                         "FROM authors AS a\n" +
                         "JOIN countries AS c ON a.country = c.id\n" +
-                        "WHERE (a.birth_date > ?) AND (a.death_date < ?)"
+                        "WHERE ((a.birth_date > ?) AND (a.birth_date < ?)) OR ((a.death_date > ?) AND (a.death_date < ?))"
         )
         stmt.setDate(1, startDate)
         stmt.setDate(2, endDate)
+        stmt.setDate(3, startDate)
+        stmt.setDate(4, endDate)
 
         val authorsList = ArrayList<Author>()
         val queryResult = stmt.executeQuery()
@@ -148,11 +171,11 @@ class AuthorDao(private val dataSource: DataSource) {
         return authorsList
     }
 
-    fun deleteAuthor(author: Author) {
+    fun deleteAuthor(authorId: Int) {
         val stmt = dataSource.connection.prepareStatement(
                 "DELETE FROM authors WHERE id = ?"
         )
-        stmt.setInt(1, author.id)
+        stmt.setInt(1, authorId)
         stmt.executeUpdate()
     }
 }

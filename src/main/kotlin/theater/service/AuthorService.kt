@@ -1,15 +1,23 @@
 package theater.service
 
 import theater.dao.AuthorDao
+import theater.dao.CountryDao
+import theater.exception.AuthorNotFoundException
+import theater.exception.CountryNotFoundException
 import theater.model.Author
 import theater.model.Country
+import theater.model.data.AuthorData
 import java.sql.Date
 import javax.sql.DataSource
 
-class AuthorService(private val dataSource: DataSource, private val authorDao: AuthorDao) : Service() {
+class AuthorService(private val dataSource: DataSource, private val authorDao: AuthorDao,
+                    private val countryDao: CountryDao) : Service() {
 
-    fun createAuthor(author: Author): Int {
+    fun createAuthor(authorData: AuthorData): Int {
         return transaction(dataSource) {
+            val country = countryDao.getCountryByName(authorData.countryName) ?: throw CountryNotFoundException()
+            val author = Author(-1, authorData.name, authorData.surname,
+                    authorData.birthDate, authorData.deathDate, country)
             authorDao.createAuthor(author)
         }
     }
@@ -26,14 +34,21 @@ class AuthorService(private val dataSource: DataSource, private val authorDao: A
         }
     }
 
+    fun getAuthors(): ArrayList<AuthorData> {
+        return transaction(dataSource) {
+            authorDao.getAuthors()
+        }
+    }
+
     fun getAuthorByFullName(name: String, surname: String): Author? {
         return transaction(dataSource) {
             authorDao.getAuthorByFullName(name, surname)
         }
     }
 
-    fun getAuthorsOfCountry(country: Country): ArrayList<Author> {
+    fun getAuthorsOfCountry(countryName: String): ArrayList<Author> {
         return transaction(dataSource) {
+            val country = countryDao.getCountryByName(countryName) ?: throw CountryNotFoundException()
             authorDao.getAuthorsOfCountry(country)
         }
     }
@@ -44,13 +59,32 @@ class AuthorService(private val dataSource: DataSource, private val authorDao: A
         }
     }
 
+    fun updateAuthor(id: Int, authorData: AuthorData) {
+        return transaction(dataSource) {
+            val country = countryDao.getCountryByName(authorData.countryName) ?: throw CountryNotFoundException()
+            val author = Author(id, authorData.name, authorData.surname,
+                    authorData.birthDate, authorData.deathDate, country)
+            authorDao.updateAuthor(author)
+        }
+    }
+
     fun updateAuthor(author: Author) {
         return transaction(dataSource) {
             authorDao.updateAuthor(author)
         }
     }
 
-    fun deleteAuthor(author: Author) {
-        return authorDao.deleteAuthor(author)
+    fun deleteAuthor(authorData: AuthorData): Author {
+        return transaction(dataSource) {
+            val author = getAuthorByFullName(authorData.name, authorData.surname) ?: throw AuthorNotFoundException()
+            authorDao.deleteAuthor(author.id)
+            author
+        }
+    }
+
+    fun deleteAuthor(id: Int) {
+        return transaction(dataSource) {
+            authorDao.deleteAuthor(id)
+        }
     }
 }

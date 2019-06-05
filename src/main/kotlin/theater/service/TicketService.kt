@@ -1,14 +1,16 @@
 package theater.service
 
 import theater.dao.TicketDao
+import theater.exception.TicketNotFoundException
 import theater.model.Ticket
+import theater.model.data.TicketData
 import javax.sql.DataSource
 
 class TicketService(private val dataSource: DataSource, private val ticketDao: TicketDao) : Service() {
 
-    fun createTicket(ticket: Ticket): Int {
+    fun createTicket(ticketData: TicketData): Int {
         return transaction(dataSource) {
-            ticketDao.createTicket(ticket)
+            ticketDao.createTicket(ticketData)
         }
     }
 
@@ -24,6 +26,12 @@ class TicketService(private val dataSource: DataSource, private val ticketDao: T
         }
     }
 
+    fun getTicketsOfShow(showId: Int): ArrayList<TicketData> {
+        return transaction(dataSource) {
+            ticketDao.getTicketsOfShow(showId)
+        }
+    }
+
     fun updateTicket(ticket: Ticket) {
         transaction(dataSource) {
             ticketDao.updateTicket(ticket)
@@ -36,6 +44,14 @@ class TicketService(private val dataSource: DataSource, private val ticketDao: T
         }
     }
 
+    fun buyTicket(row: Int, seat: Int, price: Int, showId: Int, previously: Boolean) {
+        transaction(dataSource) {
+            val ticket = ticketDao.getTicket(row, seat, price, showId) ?: throw TicketNotFoundException()
+            ticket.presence = false
+            ticket.previously = previously
+            ticketDao.updateTicket(ticket)
+        }
+    }
     fun getFreeTicketsByAllSpectacles(): List<Ticket> {
         return transaction(dataSource) {
             ticketDao.getFreeTicketsByAllSpectacles()
