@@ -99,19 +99,19 @@ fun main() {
                     if (it.contains("performance")) {
 //                        performanceController.createPerformance(it.substring("create performance".length).trim())
                     } else if (it.contains("performances")) {
-                        performanceController.createPerformances(it.substring("create performances".length).trim())
+//                        performanceController.createPerformances(it.substring("create performances".length).trim())
                     } else if (it.contains("tour")) {
 //                        performanceController.createConcertTour(it.substring("create tour".length).trim())
                     } else if (it.contains("tours")) {
-                        performanceController.createConcertTours(it.substring("create tours".length).trim())
+//                        performanceController.createConcertTours(it.substring("create tours".length).trim())
                     } else if (it.contains("role")) {
                         performanceController.createRole(it.substring("create role".length).trim())
                     } else if (it.contains("roles")) {
-                        performanceController.createRoles(it.substring("create roles".length).trim())
+//                        performanceController.createRoles(it.substring("create roles".length).trim())
                     } else if (it.contains("feature")) {
 //                        performanceController.createFeature(it.substring("create feature".length).trim())
                     } else if (it.contains("features")) {
-                        performanceController.createFeatures(it.substring("create features".length).trim())
+//                        performanceController.createFeatures(it.substring("create features".length).trim())
                     } else if (it.contains("producer")) {
                         employeeController.createProducer(it.substring("create producer".length).trim());
                     } else if (it.contains("actor")) {
