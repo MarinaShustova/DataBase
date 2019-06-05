@@ -24,7 +24,7 @@ class ProducersDao(private val dataSource: DataSource) {
 
     fun deleteProducer(id: Int) {
         val stmt = dataSource.connection.prepareStatement("DELETE FROM producers WHERE producers.id = ?")
-        stmt.setInt(1, id.toInt())
+        stmt.setInt(1, id)
         stmt.executeUpdate()
     }
 
@@ -37,7 +37,7 @@ class ProducersDao(private val dataSource: DataSource) {
                         "producers.id = ?"
         )
         stmt.setString(1, toUpdate.activity)
-        stmt.setInt(2, toUpdate.id!!)
+        stmt.setInt(2, toUpdate.id)
     }
 
     fun updateProducer(id: Int, keysNValues: Map<String, String>) { //updating in two statements
@@ -138,6 +138,42 @@ class ProducersDao(private val dataSource: DataSource) {
         }
     }
 
+    fun getProducers(): List<Producer> {
+        val stmt = dataSource.connection.prepareStatement(
+                "SELECT producers.id as producer_id, employee_id, fio, sex, birth_date, " +
+                        "children_amount, salary, origin, hire_date, instrument " +
+                        "FROM employees e " +
+                        "JOIN producers ON producers.employee_id = e.id)"
+        )
+        val res = stmt.executeQuery()
+
+
+        val resultList = ArrayList<Producer>()
+
+        while (res.next()) {
+            val countryDao = CountryDao(dataSource)
+            val employeeCountry = countryDao.getCountry(res.getInt("origin"))
+            if (employeeCountry == null) continue
+
+            val relatedEmployee = Employee(res.getInt("employee_id"),
+                    res.getString("fio"),
+                    res.getString("sex"),
+                    res.getDate("birth_date"),
+                    res.getInt("children_amount"),
+                    res.getInt("salary"),
+                    employeeCountry.name,
+                    res.getDate("hire_date")
+            )
+
+            resultList.add(Producer(
+                    res.getInt("producer_id"),
+                    relatedEmployee,
+                    res.getString("activity")))
+        }
+
+        return resultList
+    }
+
     fun getProducersBySex(sex: String): List<Producer?> {
         val stmt = dataSource.connection.prepareStatement(
                 "SELECT producers.id as producer_id, employee_id, fio, sex, birth_date, " +
@@ -150,7 +186,7 @@ class ProducersDao(private val dataSource: DataSource) {
         stmt.setString(1, sex)
         val res = stmt.executeQuery()
 
-        var resultList = ArrayList<Producer?>()
+        val resultList = ArrayList<Producer?>()
 
         while (res.next()) {
             val countryDao = CountryDao(dataSource)

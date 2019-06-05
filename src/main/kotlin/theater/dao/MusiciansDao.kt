@@ -25,7 +25,7 @@ class MusiciansDao(private val dataSource: DataSource) {
 
     fun deleteMusician(id: Int) {
         val stmt = dataSource.connection.prepareStatement("DELETE FROM musicians WHERE musicians.id = ?")
-        stmt.setInt(1, id.toInt())
+        stmt.setInt(1, id)
         stmt.executeUpdate()
     }
 
@@ -87,7 +87,7 @@ class MusiciansDao(private val dataSource: DataSource) {
                         "musicians.id = ?"
         )
         stmt.setString(1, toUpdate.instrument)
-        stmt.setInt(2, toUpdate.id!!)
+        stmt.setInt(2, toUpdate.id)
     }
 
     fun getMusicianById(id: Int): Musician? {
@@ -238,6 +238,17 @@ class MusiciansDao(private val dataSource: DataSource) {
         return getMusiciansBy(stmt)
     }
 
+    fun getMusicians(): List<Musician> {
+        val stmt = dataSource.connection.prepareStatement(
+                "SELECT musicians.id as musician_id, employee_id, fio, sex, birth_date, " +
+                        "children_amount, salary, origin, hire_date, instrument " +
+                        "FROM employees e " +
+                        "JOIN musicians ON musicians.employee_id = e.id)"
+        )
+        stmt.executeQuery()
+        return getMusiciansBy(stmt)
+    }
+    
     private fun getMusiciansBy(stmt: PreparedStatement): List<Musician> {
         val res = stmt.executeQuery()
 

@@ -12,6 +12,33 @@ import java.sql.Date
 @RequestMapping("/producers")
 class ProducerController(private val service: EmployeeService) {
 
+    @GetMapping("/{id}")
+    fun getProducerById(@PathVariable id: Int): ResponseEntity<ProducerData> {
+        val producer = service.getProducerById(id)
+        return if (null != producer) {
+            return ResponseEntity.ok(ProducerData(producer))
+        } else {
+            ResponseEntity.notFound().build()
+        }
+    }
+
+    @GetMapping
+    fun getProducerByName(@RequestParam(value = "fio", required = false) fio: String): ResponseEntity<ProducerData> {
+        val producer = service.getProducerByName(fio)
+        return if (null != producer) {
+            return ResponseEntity.ok(ProducerData(producer))
+        } else {
+            ResponseEntity.notFound().build()
+        }
+    }
+
+    @GetMapping
+    fun getProducers(): ResponseEntity<List<ProducerData>> {
+        val producers = service.getProducers()
+        val eData = producers.asSequence().map { ProducerData(it) }.toList()
+        return ResponseEntity.ok(eData)
+    }
+    
     @PostMapping("/create")
     fun createProducer(@RequestBody data: ProducerData): ResponseEntity<String> {
         val relatedEmployee = Employee(-1, data.fio, data.sex, Date.valueOf(data.birthDate),
@@ -43,11 +70,4 @@ class ProducerController(private val service: EmployeeService) {
         }
     }
 
-//    fun getProducerById(id: Int): Producer? {
-//
-//    }
-//
-//    fun getProducerByName(fio: String): Producer? {
-//
-//    }
 }

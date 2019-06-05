@@ -19,9 +19,39 @@ class EmployeeService(
         private val musiciansDao: MusiciansDao,
         private val servantsDao: ServantsDao) : Service() {
 
+    fun getEmployees(): List<Employee> {
+        return transaction(dataSource) {
+            employeesDao.getEmployees()
+        }
+    }
+
+    fun getActors(): List<Actor> {
+        return transaction(dataSource) {
+            actorsDao.getActors()
+        }
+    }
+
+    fun getMusicians(): List<Musician> {
+        return transaction(dataSource) {
+            musiciansDao.getMusicians()
+        }
+    }
+
+    fun getProducers(): List<Producer> {
+        return transaction(dataSource) {
+            producersDao.getProducers()
+        }
+    }
+
+    fun getServants(): List<Servant> {
+        return transaction(dataSource) {
+            servantsDao.getServants()
+        }
+    }
+    
     fun getProducerById(id: Int): Producer? {
         return transaction(dataSource) {
-            producersDao.getProducerById(id);
+            producersDao.getProducerById(id)
         }
     }
 
@@ -47,7 +77,7 @@ class EmployeeService(
 
     fun getActorById(id: Int): Actor? {
         return transaction(dataSource) {
-            actorsDao.getActorById(id);
+            actorsDao.getActorById(id)
         }
     }
 
@@ -73,7 +103,7 @@ class EmployeeService(
 
     fun getMusicianById(id: Int): Musician? {
         return transaction(dataSource) {
-            musiciansDao.getMusicianById(id);
+            musiciansDao.getMusicianById(id)
         }
     }
 
@@ -99,7 +129,7 @@ class EmployeeService(
 
     fun getServantById(id: Int): Servant? {
         return transaction(dataSource) {
-            servantsDao.getServantById(id);
+            servantsDao.getServantById(id)
         }
     }
 
@@ -154,6 +184,13 @@ class EmployeeService(
             musiciansDao.updateMusician(id, keysNValues)
         }
     }
+
+    fun updateMusician(toUpdate: Musician) {
+        return transaction(dataSource) {
+            musiciansDao.updateMusician(toUpdate)
+        }
+    }
+
 
     fun updateServant(toUpdate: Servant) {
         return transaction(dataSource) {
@@ -291,31 +328,31 @@ class EmployeeService(
         }
     }
 
-    fun getActorsRoles(actorId: Int): List<Role?> {
+    fun getActorsRoles(actorId: Int): List<Role> {
         return transaction(dataSource) {
             actorsDao.getActorsRoles(actorId)
         }
     }
 
-    fun getActorsRolesByGenre(actorId: Int, genreId: Int): List<Role?> {
+    fun getActorsRolesByGenre(actorId: Int, genre: String): List<Role> {
         return transaction(dataSource) {
-            actorsDao.getActorsRolesByGenre(actorId, genreId)
+            actorsDao.getActorsRolesByGenre(actorId, genre)
         }
     }
 
-    fun getActorsRolesByAgeCategory(actorId: Int, age: Int): List<Role?> {
+    fun getActorsRolesByAgeCategory(actorId: Int, age: Int): List<Role> {
         return transaction(dataSource) {
             actorsDao.getActorsRolesByAgeCategory(actorId, age)
         }
     }
 
-    fun getActorsRolesByProducer(actorId: Int, producerId: Int): List<Role?> {
+    fun getActorsRolesByProducer(actorId: Int, producerId: Int): List<Role> {
         return transaction(dataSource) {
             actorsDao.getActorsRolesByProducer(actorId, producerId)
         }
     }
 
-    fun getActorsRolesByPeriod(actorId: Int, periodStart: Date, periodEnd: Date): List<Role?> {
+    fun getActorsRolesByPeriod(actorId: Int, periodStart: Date, periodEnd: Date): List<Role> {
         return transaction(dataSource) {
             actorsDao.getActorsRolesByPeriod(actorId, periodStart, periodEnd)
         }

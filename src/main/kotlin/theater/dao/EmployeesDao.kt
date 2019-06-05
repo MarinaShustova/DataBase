@@ -39,7 +39,7 @@ class EmployeesDao(private val dataSource: DataSource) {
     }
 
     fun updateEmployee(toUpdate: Employee) {
-        var stmt = dataSource.connection.prepareStatement(
+        val stmt = dataSource.connection.prepareStatement(
                 "UPDATE employees SET (fio = ?, sex = ?, birth_date = ?," +
                         "children_amount = ?, salary = ?, origin, hire_date) WHERE " +
                         "employees.id = ?"
@@ -160,15 +160,22 @@ class EmployeesDao(private val dataSource: DataSource) {
         )
 
         stmt.setInt(1, salary)
-        val res = stmt.executeQuery()
+        stmt.executeQuery()
+        return getEmployeesBy(stmt)
+    }
 
+    fun getEmployees(): List<Employee> {
+        val stmt = dataSource.connection.prepareStatement(
+                "SELECT * FROM employees"
+        )
+        stmt.executeQuery()
         return getEmployeesBy(stmt)
     }
 
     private fun getEmployeesBy(stmt: PreparedStatement): List<Employee> {
         val res = stmt.executeQuery()
 
-        var resultList = ArrayList<Employee>()
+        val resultList = ArrayList<Employee>()
 
         while (res.next()) {
             val employee = buildEmployee(res)

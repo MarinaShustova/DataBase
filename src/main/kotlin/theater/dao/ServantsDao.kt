@@ -24,7 +24,7 @@ class ServantsDao(private val dataSource: DataSource) {
 
     fun deleteServant(id: Int) {
         val stmt = dataSource.connection.prepareStatement("DELETE FROM servants WHERE servants.id = ?")
-        stmt.setInt(1, id.toInt())
+        stmt.setInt(1, id)
         stmt.executeUpdate()
     }
 
@@ -86,7 +86,7 @@ class ServantsDao(private val dataSource: DataSource) {
                         "servants.id = ?"
         )
         stmt.setString(1, toUpdate.activity)
-        stmt.setInt(2, toUpdate.id!!)
+        stmt.setInt(2, toUpdate.id)
     }
 
     fun getServantById(id: Int): Servant? {
@@ -135,6 +135,42 @@ class ServantsDao(private val dataSource: DataSource) {
         } else {
             null
         }
+    }
+
+    fun getServants(): List<Servant> {
+        val stmt = dataSource.connection.prepareStatement(
+                "SELECT servants.id as servant_id, employee_id, fio, sex, birth_date, " +
+                        "children_amount, salary, origin, hire_date, activity " +
+                        "FROM employees e " +
+                        "JOIN servants ON servants.employee_id = e.id)"
+        )
+        val res = stmt.executeQuery()
+
+
+        val resultList = ArrayList<Servant>()
+
+        while (res.next()) {
+            val countryDao = CountryDao(dataSource)
+            val employeeCountry = countryDao.getCountry(res.getInt("origin"))
+            if (employeeCountry == null) continue
+
+            val relatedEmployee = Employee(res.getInt("employee_id"),
+                    res.getString("fio"),
+                    res.getString("sex"),
+                    res.getDate("birth_date"),
+                    res.getInt("children_amount"),
+                    res.getInt("salary"),
+                    employeeCountry.name,
+                    res.getDate("hire_date")
+            )
+
+            resultList.add(Servant(
+                    res.getInt("servant_id"),
+                    relatedEmployee,
+                    res.getString("activity")))
+        }
+
+        return resultList
     }
     
 }

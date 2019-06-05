@@ -15,6 +15,7 @@ import java.util.*
 import javax.sql.DataSource
 import kotlin.collections.ArrayList
 import theater.model.Producer
+import java.lang.IllegalArgumentException
 
 
 class ActorsDao(private val dataSource: DataSource) {
@@ -253,6 +254,17 @@ class ActorsDao(private val dataSource: DataSource) {
         return getActorsBy(stmt)
     }
 
+    fun getActors(): List<Actor> {
+        val stmt = dataSource.connection.prepareStatement(
+                "SELECT actors.id as actor_id, employee_id, fio, sex, birth_date, " +
+                        "children_amount, salary, origin, hire_date, is_student " +
+                        "FROM employees e " +
+                        "JOIN actors ON actors.employee_id = e.id)"
+        )
+        stmt.executeQuery()
+        return getActorsBy(stmt)
+    }
+
     private fun getActorsBy(stmt: PreparedStatement): List<Actor> {
         val res = stmt.executeQuery()
 
@@ -267,10 +279,10 @@ class ActorsDao(private val dataSource: DataSource) {
         return resultList
     }
 
-    private fun getRolesBy(stmt: PreparedStatement): List<Role?> {
+    private fun getRolesBy(stmt: PreparedStatement): List<Role> {
         val res = stmt.executeQuery()
 
-        var resultList = ArrayList<Role?>()
+        var resultList = ArrayList<Role>()
 
         while (res.next()) {
             val role = Role(res.getLong("id"), res.getString("name"))
@@ -280,7 +292,7 @@ class ActorsDao(private val dataSource: DataSource) {
         return resultList
     }
 
-    fun getActorsRoles(actorId: Int): List<Role?> {
+    fun getActorsRoles(actorId: Int): List<Role> {
         val stmt = dataSource.connection.prepareStatement(
                 "SELECT r.id, r.name FROM " +
                         "(SELECT actors.id FROM actors WHERE actors.id = ?) a " +
@@ -291,8 +303,13 @@ class ActorsDao(private val dataSource: DataSource) {
         stmt.setInt(1, actorId)
         return getRolesBy(stmt)
     }
+    
+    
+    fun getActorsRolesByGenre(actorId: Int, genreName: String): List<Role> {
+        val genreDao = GenreDao(dataSource)
+        val genre = genreDao.getGenreByName(genreName)
+        if (genre == null) throw IllegalArgumentException("No such genre in database")
 
-    fun getActorsRolesByGenre(actorId: Int, genreId: Int): List<Role?> {
         val stmt = dataSource.connection.prepareStatement(
                 "SELECT r.id, r.name FROM " +
                         "(SELECT actors.id FROM actors WHERE actors.id = ?) a " +
@@ -305,11 +322,11 @@ class ActorsDao(private val dataSource: DataSource) {
         )
 
         stmt.setInt(1, actorId)
-        stmt.setInt(2, genreId)
+        stmt.setInt(2, genre.id)
         return getRolesBy(stmt)
     }
 
-    fun getActorsRolesByAgeCategory(actorId: Int, age: Int): List<Role?> {
+    fun getActorsRolesByAgeCategory(actorId: Int, age: Int): List<Role> {
         val stmt = dataSource.connection.prepareStatement(
                 "SELECT DISTINCT r.id, r.name FROM " +
                         "(SELECT actors.id FROM actors WHERE actors.id = ?) a " +
@@ -326,7 +343,7 @@ class ActorsDao(private val dataSource: DataSource) {
         return getRolesBy(stmt)
     }
 
-    fun getActorsRolesByProducer(actorId: Int, producerId: Int): List<Role?> {
+    fun getActorsRolesByProducer(actorId: Int, producerId: Int): List<Role> {
         val stmt = dataSource.connection.prepareStatement(
                 "SELECT DISTINCT r.id, r.name FROM " +
                         "(SELECT actors.id FROM actors WHERE actors.id = ?) a " +
@@ -343,7 +360,7 @@ class ActorsDao(private val dataSource: DataSource) {
         return getRolesBy(stmt)
     }
 
-    fun getActorsRolesByPeriod(actorId: Int, periodStart: Date, periodEnd: Date): List<Role?> {
+    fun getActorsRolesByPeriod(actorId: Int, periodStart: Date, periodEnd: Date): List<Role> {
         val stmt = dataSource.connection.prepareStatement(
                 "SELECT DISTINCT r.id, r.name FROM " +
                         "(SELECT actors.id FROM actors WHERE actors.id = ?) a " +
