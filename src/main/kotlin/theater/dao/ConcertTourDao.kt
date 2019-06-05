@@ -58,7 +58,7 @@ class ConcertTourDao(private val dataSource: DataSource) {
         val rs = stmt.executeQuery()
         return if (rs.next()) {
             ConcertTour(
-                rs.getLong("ctid"), rs.getString("city"),
+                rs.getInt("ctid"), rs.getString("city"),
                 rs.getDate("start_date"), rs.getDate("finish_date")
             )
         } else {
@@ -72,7 +72,7 @@ class ConcertTourDao(private val dataSource: DataSource) {
         stmt.setString(1, tour.city)
         stmt.setDate(2, tour.start_date)
         stmt.setDate(3, tour.finish_date)
-        stmt.setLong(5, tour.id!!)
+        stmt.setInt(5, tour.id!!)
         stmt.executeUpdate()
     }
 
@@ -102,7 +102,7 @@ class ConcertTourDao(private val dataSource: DataSource) {
         while (rs.next()) {
             res.add(
                 ConcertTour(
-                    rs.getLong("id"), rs.getString("city"),
+                    rs.getInt("id"), rs.getString("city"),
                     rs.getDate("start_date"), rs.getDate("finish_date")
                 )
             )

@@ -260,7 +260,7 @@ class ActorsDao(private val dataSource: DataSource) {
         var resultList = ArrayList<Role?>()
 
         while (res.next()) {
-            val role = Role(res.getLong("id"), res.getString("name"))
+            val role = Role(res.getInt("id"), res.getString("name"))
             resultList.add(role)
         }
 

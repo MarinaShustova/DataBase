@@ -75,7 +75,7 @@ class PerformanceDao(private val dataSource: DataSource) {
         val rs = stmt.executeQuery()
         return if (rs.next()) {
             Performance(
-                rs.getLong("pid"), rs.getString("production_designer"),
+                rs.getInt("pid"), rs.getString("production_designer"),
                 rs.getString("production_director"), rs.getString("production_conductor"),
                 rs.getInt("season")
             )
@@ -91,7 +91,7 @@ class PerformanceDao(private val dataSource: DataSource) {
         stmt.setString(2, performance.production_director)
         stmt.setString(3, performance.production_conductor)
         stmt.setInt(4, performance.season)
-        stmt.setLong(5, performance.id!!)
+        stmt.setInt(5, performance.id!!)
         stmt.executeUpdate()
     }
 
@@ -108,7 +108,7 @@ class PerformanceDao(private val dataSource: DataSource) {
         while (rs.next()) {
             res.add(
                 Performance(
-                    rs.getLong("id"), rs.getString("production_designer"),
+                    rs.getInt("id"), rs.getString("production_designer"),
                     rs.getString("production_director"), rs.getString("production_conductor"),
                     rs.getInt("season")
                 )
