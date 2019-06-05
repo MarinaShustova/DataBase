@@ -113,8 +113,8 @@ class ConcertTourDao(private val dataSource: DataSource) {
     fun getTourTroupe(employeesDao: EmployeesDao,
                       spectacleId: Int, start: Date, finish: Date
     ): Pair<List<Actor>, List<Producer>> {
-        var theQuery = "select a.fio, employee_id, is_student\n" +
-                "from (select *\n" +
+        var theQuery = "select * \n" +
+                "from (select fio, actors.id, employee_id as \"employee\", is_student\n" +
                 "      from employees\n" +
                 "               join actors on employees.id = actors.employee_id\n" +
                 "               join actors_roles ar on actors.id = ar.actor_id\n" +
@@ -136,8 +136,8 @@ class ConcertTourDao(private val dataSource: DataSource) {
             act.add(
                 Actor(
                     rs.getLong("id"),
-                    employeesDao.getEmployee(rs.getLong("employee"))!!,
-                    rs.getBoolean("isStudent")
+                    employeesDao.getEmployeeById(rs.getLong("employee"))!!,
+                    rs.getBoolean("is_student")
                 )
             )
         }
@@ -162,7 +162,7 @@ class ConcertTourDao(private val dataSource: DataSource) {
             prod.add(
                 Producer(
                     rs.getLong("id"),
-                    employeesDao.getEmployee(rs.getLong("employee"))!!,
+                    employeesDao.getEmployeeById(rs.getLong("employee"))!!,
                     rs.getString("activity")
                 )
             )

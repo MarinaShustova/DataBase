@@ -365,7 +365,7 @@ class ActorsDao(private val dataSource: DataSource) {
             res.add(
                 Actor(
                     rs.getLong("id"),
-                    employeesDao.getEmployee(rs.getLong("employee"))!!,
+                    employeesDao.getEmployeeById(rs.getLong("employee"))!!,
                     rs.getBoolean("isStudent")
                 )
             )
@@ -400,7 +400,7 @@ class ActorsDao(private val dataSource: DataSource) {
             res.add(
                 Actor(
                     rs.getLong("id"),
-                    employeesDao.getEmployee(rs.getLong("employee"))!!,
+                    employeesDao.getEmployeeById(rs.getLong("employee"))!!,
                     rs.getBoolean("isStudent")
                 )
             )
@@ -438,7 +438,7 @@ class ActorsDao(private val dataSource: DataSource) {
             res.add(
                 Actor(
                     rs.getLong("id"),
-                    employeesDao.getEmployee(rs.getLong("employee"))!!,
+                    employeesDao.getEmployeeById(rs.getLong("employee"))!!,
                     rs.getBoolean("isStudent")
                 )
             )
@@ -485,7 +485,7 @@ class ActorsDao(private val dataSource: DataSource) {
             res.add(
                 Actor(
                     rs.getLong("id"),
-                    employeesDao.getEmployee(rs.getLong("employee"))!!,
+                    employeesDao.getEmployeeById(rs.getLong("employee"))!!,
                     rs.getBoolean("isStudent")
                 )
             )
@@ -534,7 +534,7 @@ class ActorsDao(private val dataSource: DataSource) {
             res.add(
                 Actor(
                     rs.getLong("id"),
-                    employeesDao.getEmployee(rs.getLong("employee"))!!,
+                    employeesDao.getEmployeeById(rs.getLong("employee"))!!,
                     rs.getBoolean("isStudent")
                 )
             )
@@ -587,7 +587,7 @@ class ActorsDao(private val dataSource: DataSource) {
             res.add(
                 Actor(
                     rs.getLong("id"),
-                    employeesDao.getEmployee(rs.getLong("employee"))!!,
+                    employeesDao.getEmployeeById(rs.getLong("employee"))!!,
                     rs.getBoolean("isStudent")
                 )
             )
