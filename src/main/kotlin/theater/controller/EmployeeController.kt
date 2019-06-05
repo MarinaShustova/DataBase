@@ -22,7 +22,7 @@ class EmployeeController(private val service: EmployeeService) {
         }
     }
 
-    @GetMapping
+    @GetMapping("/fio")
     fun getEmployeeByName(@RequestParam(value = "fio") fio: String): ResponseEntity<EmployeeData> {
         val employee = service.getEmployeeByName(fio)
         return if (null != employee) {
@@ -39,7 +39,7 @@ class EmployeeController(private val service: EmployeeService) {
         return ResponseEntity.ok(eData)
     }
 
-    @GetMapping
+    @GetMapping("/sex")
     fun getEmployeesBySex(@RequestParam(value = "sex") sex: String): ResponseEntity<List<EmployeeData>> {
         val employees = service.getEmployeesBySex(sex)
         val eData = employees.asSequence().map { EmployeeData(it) }.toList()
@@ -47,14 +47,14 @@ class EmployeeController(private val service: EmployeeService) {
     }
 
 
-    @GetMapping
+    @GetMapping("/exp")
     fun getEmployeesByExperience(@RequestParam(value = "exp") exp: Int): ResponseEntity<List<EmployeeData>> {
         val employees = service.getEmployeesByExperience(exp)
         val eData = employees.asSequence().map { EmployeeData(it) }.toList()
         return ResponseEntity.ok(eData)
     }
 
-    @GetMapping
+    @GetMapping("/birth")
     fun getEmployeesByBirthDate(@RequestParam(value = "birth") birth: String): ResponseEntity<List<EmployeeData>> {
         try {
             val date = Date.valueOf(birth)
@@ -66,21 +66,21 @@ class EmployeeController(private val service: EmployeeService) {
         return ResponseEntity.badRequest().build()
     }
 
-    @GetMapping
+    @GetMapping("/age")
     fun getEmployeesByAge(@RequestParam(value = "age") age: Int): ResponseEntity<List<EmployeeData>> {
         val employees = service.getEmployeesByAge(age)
         val eData = employees.asSequence().map { EmployeeData(it) }.toList()
         return ResponseEntity.ok(eData)
     }
 
-    @GetMapping
+    @GetMapping("/children_amount")
     fun getEmployeesByChildrenAmount(@RequestParam(value = "children_amount") children_amount: Int): ResponseEntity<List<EmployeeData>> {
         val employees = service.getEmployeesByChildrenAmount(children_amount)
         val eData = employees.asSequence().map { EmployeeData(it) }.toList()
         return ResponseEntity.ok(eData)
     }
 
-    @GetMapping
+    @GetMapping("/salary")
     fun getEmployeesBySalary(@RequestParam(value = "salary") salary: Int): ResponseEntity<List<EmployeeData>> {
         val employees = service.getEmployeesBySalary(salary)
         val eData = employees.asSequence().map { EmployeeData(it) }.toList()

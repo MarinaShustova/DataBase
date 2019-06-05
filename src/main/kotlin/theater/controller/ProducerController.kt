@@ -22,8 +22,8 @@ class ProducerController(private val service: EmployeeService) {
         }
     }
 
-    @GetMapping
-    fun getProducerByName(@RequestParam(value = "fio", required = false) fio: String): ResponseEntity<ProducerData> {
+    @GetMapping("/fio")
+    fun getProducerByName(@RequestParam(value = "fio") fio: String): ResponseEntity<ProducerData> {
         val producer = service.getProducerByName(fio)
         return if (null != producer) {
             ResponseEntity.ok(ProducerData(producer))

@@ -12,6 +12,7 @@ import java.sql.Date
 @RestController
 @RequestMapping("/musician")
 class MusicianController(private val service: EmployeeService) {
+
     @GetMapping("/{id}")
     fun getMusicianById(@PathVariable id: Int): ResponseEntity<MusicianData> {
         val musician = service.getMusicianById(id)
@@ -53,7 +54,7 @@ class MusicianController(private val service: EmployeeService) {
         }
     }
     
-    @GetMapping
+    @GetMapping("/fio")
     fun getMusicianByName(@RequestParam(value = "fio") fio: String): ResponseEntity<MusicianData> {
         val musician = service.getMusicianByName(fio)
         return if (null != musician) {
@@ -70,21 +71,21 @@ class MusicianController(private val service: EmployeeService) {
         return ResponseEntity.ok(eData)
     }
 
-    @GetMapping
+    @GetMapping("/sex")
     fun getMusiciansBySex(@RequestParam(value = "sex") sex: String): ResponseEntity<List<MusicianData>> {
         val musicians = service.getMusiciansBySex(sex)
         val mData = musicians.asSequence().map { MusicianData(it) }.toList()
         return ResponseEntity.ok(mData)
     }
 
-    @GetMapping
+    @GetMapping("/exp")
     fun getMusiciansByExperience(@RequestParam(value = "exp") exp: Int): ResponseEntity<List<MusicianData>> {
         val musicians = service.getMusiciansByExperience(exp)
         val mData = musicians.asSequence().map { MusicianData(it) }.toList()
         return ResponseEntity.ok(mData)
     }
 
-    @GetMapping
+    @GetMapping("/birth")
     fun getMusiciansByBirthDate(@RequestParam(value = "birth") birth: String): ResponseEntity<List<MusicianData>> {
         return try {
             val date = Date.valueOf(birth)
@@ -96,21 +97,21 @@ class MusicianController(private val service: EmployeeService) {
         }
     }
 
-    @GetMapping
+    @GetMapping("/age")
     fun getMusiciansByAge(@RequestParam(value = "age") age: Int): ResponseEntity<List<MusicianData>> {
         val musicians = service.getMusiciansByAge(age)
         val mData = musicians.asSequence().map { MusicianData(it) }.toList()
         return ResponseEntity.ok(mData)
     }
 
-    @GetMapping
+    @GetMapping("/children_amount")
     fun getMusiciansByChildrenAmount(@RequestParam(value = "children_amount") children_amount: Int): ResponseEntity<List<MusicianData>> {
         val musicians = service.getMusiciansByChildrenAmount(children_amount)
         val mData = musicians.asSequence().map { MusicianData(it) }.toList()
         return ResponseEntity.ok(mData)
     }
 
-    @GetMapping
+    @GetMapping("salary")
     fun getMusiciansBySalary(@RequestParam(value = "salary") salary: Int): ResponseEntity<List<MusicianData>> {
         val musicians = service.getMusiciansBySalary(salary)
         val mData = musicians.asSequence().map { MusicianData(it) }.toList()

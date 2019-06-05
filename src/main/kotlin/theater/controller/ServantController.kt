@@ -23,8 +23,8 @@ class ServantController(private val service: EmployeeService) {
         }
     }
 
-    @GetMapping
-    fun getServantByName(@RequestParam(value = "fio", required = false) fio: String): ResponseEntity<ServantData> {
+    @GetMapping("/fio")
+    fun getServantByName(@RequestParam(value = "fio") fio: String): ResponseEntity<ServantData> {
         val servant = service.getServantByName(fio)
         return if (null != servant) {
             ResponseEntity.ok(ServantData(servant))
