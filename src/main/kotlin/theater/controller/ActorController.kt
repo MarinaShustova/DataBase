@@ -22,7 +22,7 @@ class ActorController(private val service: EmployeeService) {
     fun getActorById(@PathVariable id: Int): ResponseEntity<ActorData> {
         val actor = service.getActorById(id)
         return if (null != actor) {
-            return ResponseEntity.ok(ActorData(actor))
+            ResponseEntity.ok(ActorData(actor))
         } else {
             ResponseEntity.notFound().build()
         }
@@ -32,7 +32,7 @@ class ActorController(private val service: EmployeeService) {
     fun getActorByName(@RequestParam(value = "fio", required = false) fio: String): ResponseEntity<ActorData> {
         val actor = service.getActorByName(fio)
         return if (null != actor) {
-            return ResponseEntity.ok(ActorData(actor))
+            ResponseEntity.ok(ActorData(actor))
         } else {
             ResponseEntity.notFound().build()
         }
@@ -52,7 +52,7 @@ class ActorController(private val service: EmployeeService) {
         val toDelete = service.getActorById(id)
         return if (toDelete != null) {
             service.deleteActor(id)
-            return ResponseEntity.ok("Deleted actor with id ${id}")
+            ResponseEntity.ok("Deleted actor with id ${id}")
         } else {
             ResponseEntity.notFound().build()
         }
@@ -63,7 +63,7 @@ class ActorController(private val service: EmployeeService) {
         val toUpdate = service.getActorById(data.id)
         return if (toUpdate != null) {
             service.updateActor(toUpdate)
-            return ResponseEntity.ok("Updated actor with id ${toUpdate.id}")
+            ResponseEntity.ok("Updated actor with id ${toUpdate.id}")
         } else {
             ResponseEntity.notFound().build()
         }
@@ -93,14 +93,14 @@ class ActorController(private val service: EmployeeService) {
 
     @GetMapping
     fun getActorsByBirthDate(@RequestParam(value = "birth", required = false) birth: String): ResponseEntity<List<ActorData>> {
-        try {
+        return try {
             val date = Date.valueOf(birth)
             val actors = service.getActorsByBirthDate(date)
             val aData = actors.asSequence().map { ActorData(it) }.toList()
             return ResponseEntity.ok(aData)
         } catch (e: IllegalArgumentException) {
+            ResponseEntity.badRequest().build()
         }
-        return ResponseEntity.badRequest().build()
     }
 
     @GetMapping
@@ -175,7 +175,7 @@ class ActorController(private val service: EmployeeService) {
         return if (null != producer) {
             val roles = service.getActorsRolesByProducer(id, producer.id)
             val rData = roles.asSequence().map { RoleData(it) }.toList()
-            return ResponseEntity.ok(rData)
+            ResponseEntity.ok(rData)
         } else {
             ResponseEntity.notFound().build()
         }

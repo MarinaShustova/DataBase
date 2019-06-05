@@ -17,7 +17,7 @@ class ServantController(private val service: EmployeeService) {
     fun getServantById(@PathVariable id: Int): ResponseEntity<ServantData> {
         val servant = service.getServantById(id)
         return if (null != servant) {
-            return ResponseEntity.ok(ServantData(servant))
+            ResponseEntity.ok(ServantData(servant))
         } else {
             ResponseEntity.notFound().build()
         }
@@ -27,7 +27,7 @@ class ServantController(private val service: EmployeeService) {
     fun getServantByName(@RequestParam(value = "fio", required = false) fio: String): ResponseEntity<ServantData> {
         val servant = service.getServantByName(fio)
         return if (null != servant) {
-            return ResponseEntity.ok(ServantData(servant))
+            ResponseEntity.ok(ServantData(servant))
         } else {
             ResponseEntity.notFound().build()
         }
@@ -54,7 +54,7 @@ class ServantController(private val service: EmployeeService) {
         val toDelete = service.getActorById(id)
         return if (toDelete != null) {
             service.deleteServant(id)
-            return ResponseEntity.ok("Deleted servant with id ${id}")
+            ResponseEntity.ok("Deleted servant with id ${id}")
         } else {
             ResponseEntity.notFound().build()
         }
@@ -65,7 +65,7 @@ class ServantController(private val service: EmployeeService) {
         val toUpdate = service.getServantById(data.id)
         return if (toUpdate != null) {
             service.updateServant(toUpdate)
-            return ResponseEntity.ok("Updated servant with id ${toUpdate.id}")
+            ResponseEntity.ok("Updated servant with id ${toUpdate.id}")
         } else {
             ResponseEntity.notFound().build()
         }

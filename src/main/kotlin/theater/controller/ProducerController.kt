@@ -16,7 +16,7 @@ class ProducerController(private val service: EmployeeService) {
     fun getProducerById(@PathVariable id: Int): ResponseEntity<ProducerData> {
         val producer = service.getProducerById(id)
         return if (null != producer) {
-            return ResponseEntity.ok(ProducerData(producer))
+            ResponseEntity.ok(ProducerData(producer))
         } else {
             ResponseEntity.notFound().build()
         }
@@ -26,7 +26,7 @@ class ProducerController(private val service: EmployeeService) {
     fun getProducerByName(@RequestParam(value = "fio", required = false) fio: String): ResponseEntity<ProducerData> {
         val producer = service.getProducerByName(fio)
         return if (null != producer) {
-            return ResponseEntity.ok(ProducerData(producer))
+            ResponseEntity.ok(ProducerData(producer))
         } else {
             ResponseEntity.notFound().build()
         }
@@ -53,7 +53,7 @@ class ProducerController(private val service: EmployeeService) {
         val toDelete = service.getActorById(id)
         return if (toDelete != null) {
             service.deleteProducer(id)
-            return ResponseEntity.ok("Deleted producer with id ${id}")
+            ResponseEntity.ok("Deleted producer with id ${id}")
         } else {
             ResponseEntity.notFound().build()
         }
@@ -64,7 +64,7 @@ class ProducerController(private val service: EmployeeService) {
         val toUpdate = service.getProducerById(data.id)
         return if (toUpdate != null) {
             service.updateProducer(toUpdate)
-            return ResponseEntity.ok("Updated producer with id ${toUpdate.id}")
+            ResponseEntity.ok("Updated producer with id ${toUpdate.id}")
         } else {
             ResponseEntity.notFound().build()
         }

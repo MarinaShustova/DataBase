@@ -16,7 +16,7 @@ class MusicianController(private val service: EmployeeService) {
     fun getMusicianById(@PathVariable id: Int): ResponseEntity<MusicianData> {
         val musician = service.getMusicianById(id)
         return if (null != musician) {
-            return ResponseEntity.ok(MusicianData(musician))
+            ResponseEntity.ok(MusicianData(musician))
         } else {
             ResponseEntity.notFound().build()
         }
@@ -36,7 +36,7 @@ class MusicianController(private val service: EmployeeService) {
         val toDelete = service.getActorById(id)
         return if (toDelete != null) {
             service.deleteMusician(id)
-            return ResponseEntity.ok("Deleted musician with id ${id}")
+            ResponseEntity.ok("Deleted musician with id ${id}")
         } else {
             ResponseEntity.notFound().build()
         }
@@ -47,7 +47,7 @@ class MusicianController(private val service: EmployeeService) {
         val toUpdate = service.getMusicianById(data.id)
         return if (toUpdate != null) {
             service.updateMusician(toUpdate)
-            return ResponseEntity.ok("Updated musician with id ${toUpdate.id}")
+            ResponseEntity.ok("Updated musician with id ${toUpdate.id}")
         } else {
             ResponseEntity.notFound().build()
         }
@@ -57,7 +57,7 @@ class MusicianController(private val service: EmployeeService) {
     fun getMusicianByName(@RequestParam(value = "fio") fio: String): ResponseEntity<MusicianData> {
         val musician = service.getMusicianByName(fio)
         return if (null != musician) {
-            return ResponseEntity.ok(MusicianData(musician))
+            ResponseEntity.ok(MusicianData(musician))
         } else {
             ResponseEntity.notFound().build()
         }
@@ -77,7 +77,6 @@ class MusicianController(private val service: EmployeeService) {
         return ResponseEntity.ok(mData)
     }
 
-
     @GetMapping
     fun getMusiciansByExperience(@RequestParam(value = "exp") exp: Int): ResponseEntity<List<MusicianData>> {
         val musicians = service.getMusiciansByExperience(exp)
@@ -87,14 +86,14 @@ class MusicianController(private val service: EmployeeService) {
 
     @GetMapping
     fun getMusiciansByBirthDate(@RequestParam(value = "birth") birth: String): ResponseEntity<List<MusicianData>> {
-        try {
+        return try {
             val date = Date.valueOf(birth)
             val musicians = service.getMusiciansByBirthDate(date)
             val mData = musicians.asSequence().map { MusicianData(it) }.toList()
-            return ResponseEntity.ok(mData)
+            ResponseEntity.ok(mData)
         } catch (e: IllegalArgumentException) {
+            ResponseEntity.badRequest().build()
         }
-        return ResponseEntity.badRequest().build()
     }
 
     @GetMapping

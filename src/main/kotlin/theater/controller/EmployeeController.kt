@@ -16,7 +16,7 @@ class EmployeeController(private val service: EmployeeService) {
     fun getEmployeeById(@PathVariable id: Int): ResponseEntity<EmployeeData> {
         val employee = service.getEmployeeById(id)
         return if (null != employee) {
-            return ResponseEntity.ok(EmployeeData(employee))
+            ResponseEntity.ok(EmployeeData(employee))
         } else {
             ResponseEntity.notFound().build()
         }
@@ -26,7 +26,7 @@ class EmployeeController(private val service: EmployeeService) {
     fun getEmployeeByName(@RequestParam(value = "fio") fio: String): ResponseEntity<EmployeeData> {
         val employee = service.getEmployeeByName(fio)
         return if (null != employee) {
-            return ResponseEntity.ok(EmployeeData(employee))
+            ResponseEntity.ok(EmployeeData(employee))
         } else {
             ResponseEntity.notFound().build()
         }
