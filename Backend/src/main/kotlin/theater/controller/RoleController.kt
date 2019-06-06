@@ -12,6 +12,7 @@ import theater.model.Role
 import theater.service.PerformanceService
 import theater.service.Service
 import java.sql.Date
+import theater.exception.RoleNotFoundException
 
 @RestController
 @RequestMapping("/roles")
@@ -35,7 +36,7 @@ class RoleController(private val service: PerformanceService) {
     fun getRoleById(
         @PathVariable id: Int
     ): RoleData {
-        val role = service.findRole(id)
+        val role = service.findRole(id) ?: throw RoleNotFoundException()
         return RoleData(role)
     }
 

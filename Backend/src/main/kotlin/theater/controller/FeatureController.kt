@@ -12,6 +12,7 @@ import theater.model.Role
 import theater.service.PerformanceService
 import theater.service.Service
 import java.sql.Date
+import theater.exception.FeatureNotFoundException
 
 @RestController
 @RequestMapping("/features")
@@ -36,7 +37,7 @@ class FeatureController(private val service: PerformanceService) {
     fun getFeatureById(
         @PathVariable id: Int
     ): FeatureData {
-        val feature = service.findFeature(id)
+        val feature = service.findFeature(id) ?: throw FeatureNotFoundException()
         return FeatureData(feature)
     }
 
