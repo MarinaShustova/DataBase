@@ -6,6 +6,10 @@ import theater.dao.RoleDao
 import theater.TheaterDataSource
 import theater.dao.*
 import theater.model.*
+import theater.model.data.FeatureData
+import theater.model.data.PerformanceData
+import theater.model.data.RoleData
+import theater.model.data.TourData
 import java.sql.Date
 
 

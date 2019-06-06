@@ -3,6 +3,7 @@ package theater.dao
 import theater.model.Actor
 import theater.model.ConcertTour
 import theater.model.Producer
+import theater.model.data.TourData
 import java.sql.Date
 import java.sql.Statement
 import javax.sql.DataSource
@@ -51,7 +52,7 @@ class ConcertTourDao(private val dataSource: DataSource) {
     fun findConcertTour(id: Int): ConcertTour? {
         val stmt = dataSource.connection.prepareStatement(
             "SELECT " +
-                    "ct.id ctid, ct.city, ct.start_date, ct.finish_date " +
+                    "ct.id ctid, ct.city, ct.start_date, ct.finish_date, ct.performance_id " +
                     "FROM tours AS ct " +
                     "WHERE ct.id = ?"
         )
@@ -60,7 +61,8 @@ class ConcertTourDao(private val dataSource: DataSource) {
         return if (rs.next()) {
             ConcertTour(
                 rs.getInt("ctid"), rs.getString("city"),
-                rs.getDate("start_date"), rs.getDate("finish_date")
+                rs.getDate("start_date"), rs.getDate("finish_date"),
+                    rs.getInt("performance_id")
             )
         } else {
             null
@@ -92,7 +94,7 @@ class ConcertTourDao(private val dataSource: DataSource) {
 
     fun getConcertTours(page: Page): ArrayList<TourData> {
         val theQuery =
-            "SELECT id, city, start_date, finish_date  FROM tours ORDER BY start_date LIMIT ? OFFSET ?"
+            "SELECT id, city, start_date, finish_date, performance_id  FROM tours ORDER BY start_date LIMIT ? OFFSET ?"
         val conn = dataSource.connection
         val stmt = conn.prepareStatement(theQuery)
         stmt.setInt(1, page.size)
@@ -105,7 +107,8 @@ class ConcertTourDao(private val dataSource: DataSource) {
                 TourData(
                     ConcertTour(
                         rs.getInt("id"), rs.getString("city"),
-                        rs.getDate("start_date"), rs.getDate("finish_date")
+                        rs.getDate("start_date"), rs.getDate("finish_date"),
+                            rs.getInt("performance_id")
                     )
                 )
             )

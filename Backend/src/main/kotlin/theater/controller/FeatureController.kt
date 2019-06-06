@@ -13,6 +13,7 @@ import theater.service.PerformanceService
 import theater.service.Service
 import java.sql.Date
 import theater.exception.FeatureNotFoundException
+import theater.model.data.FeatureData
 
 @RestController
 @RequestMapping("/features")
