@@ -28,7 +28,7 @@ class FeatureController(private val service: PerformanceService) {
     fun getFeatures(
         @RequestParam from: Int,
         @RequestParam size: Int
-    ): String {
+    ): FeatureData {
         return service.getFeatures(Page(from, size)).map { "${it.name} ${it.value}" }.joinToString("\n")
     }
 
