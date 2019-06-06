@@ -4,6 +4,7 @@ import theater.Info
 import java.sql.Statement
 import javax.sql.DataSource
 import theater.model.*
+import theater.model.data.PerformanceData
 import java.sql.Date
 
 data class Page(val num: Int, val size: Int)
@@ -12,13 +13,14 @@ class PerformanceDao(private val dataSource: DataSource) {
 
     fun createPerformance(toCreate: Performance): Int {
         val stmt = dataSource.connection.prepareStatement(
-            "INSERT INTO performances (production_designer, production_director, production_conductor, season) VALUES (?, ?, ?, ?)",
+            "INSERT INTO performances (production_designer, production_director, production_conductor, season, spectacle_id) VALUES (?, ?, ?, ?, ?)",
             Statement.RETURN_GENERATED_KEYS
         )
         stmt.setInt(1, toCreate.production_designer)
         stmt.setInt(2, toCreate.production_director)
         stmt.setInt(3, toCreate.production_conductor)
         stmt.setInt(4, toCreate.season)
+        stmt.setInt(5, toCreate.spectacle_id)
         stmt.executeUpdate()
         val gk = stmt.generatedKeys
         gk.next()
@@ -28,7 +30,7 @@ class PerformanceDao(private val dataSource: DataSource) {
 
     fun createPerformances(toCreate: Iterable<Performance>): List<Int> {
         val stmt = dataSource.connection.prepareStatement(
-            "INSERT INTO performances (production_designer, production_director, production_conductor, season) VALUES (?, ?, ?, ?)",
+            "INSERT INTO performances (production_designer, production_director, production_conductor, season, spectacle_id) VALUES (?, ?, ?, ?, ?)",
             Statement.RETURN_GENERATED_KEYS
 
         )
@@ -37,6 +39,7 @@ class PerformanceDao(private val dataSource: DataSource) {
             stmt.setInt(2, performance.production_director)
             stmt.setInt(3, performance.production_conductor)
             stmt.setInt(4, performance.season)
+            stmt.setInt(5, performance.spectacle_id)
             stmt.addBatch()
         }
 
@@ -67,7 +70,7 @@ class PerformanceDao(private val dataSource: DataSource) {
         val stmt = dataSource.connection.prepareStatement(
             "SELECT " +
                     "p.id pid, p.production_designer, p.production_director, p.production_conductor, " +
-                    "p.season " +
+                    "p.season, p.spectacle_id " +
                     "FROM performances AS p " +
                     "WHERE p.id = ?"
         )
@@ -77,7 +80,7 @@ class PerformanceDao(private val dataSource: DataSource) {
                 Performance(
                     rs.getInt("pid"), rs.getInt("production_designer"),
                     rs.getInt("production_director"), rs.getInt("production_conductor"),
-                    rs.getInt("season")
+                    rs.getInt("season"), rs.getInt("spectacle_id")
                 )
         } else {
             null
@@ -86,18 +89,19 @@ class PerformanceDao(private val dataSource: DataSource) {
 
     fun updatePerformance(performance: Performance) {
         val stmt =
-            dataSource.connection.prepareStatement("UPDATE performances SET production_designer = ?, production_director = ?, production_conductor = ?, season = ? WHERE id = ?")
+            dataSource.connection.prepareStatement("UPDATE performances SET production_designer = ?, production_director = ?, production_conductor = ?, season = ?, spectacle_id = ? WHERE id = ?")
         stmt.setInt(1, performance.production_designer)
         stmt.setInt(2, performance.production_director)
         stmt.setInt(3, performance.production_conductor)
         stmt.setInt(4, performance.season)
+        stmt.setInt(5, performance.spectacle_id)
         stmt.setInt(5, performance.id!!)
         stmt.executeUpdate()
     }
 
-    fun getPerformances(page: Page): List<PerformanceData> {
+    fun getPerformances(page: Page): ArrayList<PerformanceData> {
         val theQuery =
-            "SELECT id, production_designer, production_director, production_conductor, season  FROM performances LIMIT ? OFFSET ?"
+            "SELECT id, production_designer, production_director, production_conductor, season, spectacle_id  FROM performances LIMIT ? OFFSET ?"
         val conn = dataSource.connection
         val stmt = conn.prepareStatement(theQuery)
         stmt.setInt(1, page.size)
@@ -111,7 +115,7 @@ class PerformanceDao(private val dataSource: DataSource) {
                     Performance(
                         rs.getInt("id"), rs.getInt("production_designer"),
                         rs.getInt("production_director"), rs.getInt("production_conductor"),
-                        rs.getInt("season")
+                        rs.getInt("season"), rs.getInt("spectacle_id")
                     )
                 )
             )
