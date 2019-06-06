@@ -75,7 +75,7 @@ class TourController(private val service: PerformanceService) {
     fun getTourTroupe(
         @PathVariable id: Int,
         @RequestParam start: String, @RequestParam finish: String
-    ): String {
+    ): Pair<List<Actor>, List<Producer>> {
         val startD = Date.valueOf(start)
         val finishD = Date.valueOf(finish)
         return service.getTourTroupe(id, startD, finishD)
