@@ -4,6 +4,8 @@
     <!--<color name="colorPrimaryDark">#303F9F</color>-->
     <!--<color name="colorAccent">#FF4081</color>-->
 
+    <color name="black">#000000</color>
+
     <color name="colorPrimary">#00bcd4</color>
     <color name="colorPrimaryDark">#0097a7</color>
     <color name="colorAccent">#40c4ff</color>
@@ -13,4 +15,6 @@
 
     <color name="light_black">#202020</color>
     <color name="light_gray">#6A6A6A</color>
+
+    <color name="red">#CD0425 </color>
 </resources>
