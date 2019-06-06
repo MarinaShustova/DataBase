@@ -564,7 +564,7 @@ class ActorsDao(private val dataSource: DataSource) {
             res.add(
                 Actor(
                     rs.getInt("id"),
-                    employeesDao.getEmployee(rs.getLong("employee"))!!,
+                    employeesDao.getEmployeeById(rs.getInt("employee"))!!,
                     rs.getBoolean("is_student")
                 )
             )
@@ -617,7 +617,7 @@ class ActorsDao(private val dataSource: DataSource) {
             res.add(
                 Actor(
                     rs.getInt("id"),
-                    employeesDao.getEmployee(rs.getInt("employee"))!!,
+                    employeesDao.getEmployeeById(rs.getInt("employee"))!!,
                     rs.getBoolean("is_student")
                 )
             )

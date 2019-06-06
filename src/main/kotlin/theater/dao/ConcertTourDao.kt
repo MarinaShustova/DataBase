@@ -135,8 +135,8 @@ class ConcertTourDao(private val dataSource: DataSource) {
         while (rs.next()) {
             act.add(
                 Actor(
-                    rs.getLong("id"),
-                    employeesDao.getEmployeeById(rs.getLong("employee"))!!,
+                    rs.getInt("id"),
+                    employeesDao.getEmployeeById(rs.getInt("employee"))!!,
                     rs.getBoolean("is_student")
                 )
             )
@@ -161,8 +161,8 @@ class ConcertTourDao(private val dataSource: DataSource) {
         while (rs.next()) {
             prod.add(
                 Producer(
-                    rs.getLong("id"),
-                    employeesDao.getEmployeeById(rs.getLong("employee"))!!,
+                    rs.getInt("id"),
+                    employeesDao.getEmployeeById(rs.getInt("employee"))!!,
                     rs.getString("activity")
                 )
             )
