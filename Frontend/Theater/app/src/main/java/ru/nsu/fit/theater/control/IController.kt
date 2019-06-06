@@ -6,16 +6,16 @@ interface IController {
         AUTHORS,
         COUNTRIES,
         EMPLOYEES,
-        FEATURES,
+            FEATURES,
         GENRES,
-        MUSICIANS,
-        PERFORMANCES,
-        PRODUCERS,
-        ROLES,
-        SERVANTS,
+            MUSICIANS,
+            PERFORMANCES,
+            PRODUCERS,
+            ROLES,
+            SERVANTS,
         SHOWS,
         SPECTACLES,
         TICKETS,
-        TOURS
+            TOURS
     }
 }
