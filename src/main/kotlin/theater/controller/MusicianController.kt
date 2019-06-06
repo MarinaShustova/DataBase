@@ -10,7 +10,7 @@ import java.lang.IllegalArgumentException
 import java.sql.Date
 
 @RestController
-@RequestMapping("/musician")
+@RequestMapping("/musicians")
 class MusicianController(private val service: EmployeeService) {
 
     @GetMapping("/{id}")

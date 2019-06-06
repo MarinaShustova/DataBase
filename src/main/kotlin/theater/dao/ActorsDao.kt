@@ -125,7 +125,6 @@ class ActorsDao(private val dataSource: DataSource) {
         }
     }
 
-
     fun getActorByName(fio: String): Actor? {
         val employeesDao = EmployeesDao(dataSource)
         val relatedEmployee = employeesDao.getEmployeeByName(fio)
@@ -177,7 +176,7 @@ class ActorsDao(private val dataSource: DataSource) {
                 "SELECT actors.id as actor_id, employee_id, fio, sex, birth_date, " +
                         "children_amount, salary, origin, hire_date, is_student " +
                         "FROM (SELECT * FROM employees WHERE employees.sex = ?) e " +
-                        "JOIN actors ON actors.employee_id = e.id)"
+                        "JOIN actors ON actors.employee_id = e.id"
         )
 
 
@@ -188,10 +187,10 @@ class ActorsDao(private val dataSource: DataSource) {
     fun getActorsByExperience(years: Int): List<Actor> {
         val stmt = dataSource.connection.prepareStatement(
                 "SELECT actors.id as actor_id, employee_id, fio, sex, birth_date, " +
-                        "children_amount, salary, origin, hire_date, instrument " +
+                        "children_amount, salary, origin, hire_date, is_student " +
                         "FROM (SELECT * FROM employees " +
                         "WHERE date_part('year', age(current_date, hire_date)) >= ?) e " +
-                        "JOIN actors ON actors.employee_id = e.id)"
+                        "JOIN actors ON actors.employee_id = e.id"
         )
 
 
@@ -202,10 +201,10 @@ class ActorsDao(private val dataSource: DataSource) {
     fun getActorsByBirthDate(birth: Date): List<Actor> {
         val stmt = dataSource.connection.prepareStatement(
                 "SELECT actors.id as actor_id, employee_id, fio, sex, birth_date, " +
-                        "children_amount, salary, origin, hire_date, instrument " +
+                        "children_amount, salary, origin, hire_date, is_student " +
                         "FROM (SELECT * FROM employees " +
                         "WHERE birth_date = ?) e " +
-                        "JOIN actors ON actors.employee_id = e.id)"
+                        "JOIN actors ON actors.employee_id = e.id"
         )
 
 
@@ -216,10 +215,10 @@ class ActorsDao(private val dataSource: DataSource) {
     fun getActorsByAge(age: Int): List<Actor> {
         val stmt = dataSource.connection.prepareStatement(
                 "SELECT actors.id as actor_id, employee_id, fio, sex, birth_date, " +
-                        "children_amount, salary, origin, hire_date, instrument " +
+                        "children_amount, salary, origin, hire_date, is_student " +
                         "FROM (SELECT * FROM employees " +
                         "WHERE date_part('year', age(current_date, birth_date)) = ?) e " +
-                        "JOIN actors ON actors.employee_id = e.id)"
+                        "JOIN actors ON actors.employee_id = e.id"
         )
 
 
@@ -230,10 +229,10 @@ class ActorsDao(private val dataSource: DataSource) {
     fun getActorsByChildrenAmount(count: Int): List<Actor> {
         val stmt = dataSource.connection.prepareStatement(
                 "SELECT actors.id as actor_id, employee_id, fio, sex, birth_date, " +
-                        "children_amount, salary, origin, hire_date, instrument " +
+                        "children_amount, salary, origin, hire_date, is_student " +
                         "FROM (SELECT * FROM employees " +
                         "WHERE children_count = ?) e " +
-                        "JOIN actors ON actors.employee_id = e.id)"
+                        "JOIN actors ON actors.employee_id = e.id"
         )
 
 
@@ -244,10 +243,10 @@ class ActorsDao(private val dataSource: DataSource) {
     fun getActorsBySalary(salary: Int): List<Actor> {
         val stmt = dataSource.connection.prepareStatement(
                 "SELECT actors.id as actor_id, employee_id, fio, sex, birth_date, " +
-                        "children_amount, salary, origin, hire_date, instrument " +
+                        "children_amount, salary, origin, hire_date, is_student " +
                         "FROM (SELECT * FROM employees " +
                         "WHERE salary >= ?) e " +
-                        "JOIN actors ON actors.employee_id = e.id)"
+                        "JOIN actors ON actors.employee_id = e.id"
         )
 
         stmt.setInt(1, salary)
@@ -259,7 +258,7 @@ class ActorsDao(private val dataSource: DataSource) {
                 "SELECT actors.id as actor_id, employee_id, fio, sex, birth_date, " +
                         "children_amount, salary, origin, hire_date, is_student " +
                         "FROM employees e " +
-                        "JOIN actors ON actors.employee_id = e.id)"
+                        "JOIN actors ON actors.employee_id = e.id"
         )
         stmt.executeQuery()
         return getActorsBy(stmt)

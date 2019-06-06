@@ -142,7 +142,7 @@ class ServantsDao(private val dataSource: DataSource) {
                 "SELECT servants.id as servant_id, employee_id, fio, sex, birth_date, " +
                         "children_amount, salary, origin, hire_date, activity " +
                         "FROM employees e " +
-                        "JOIN servants ON servants.employee_id = e.id)"
+                        "JOIN servants ON servants.employee_id = e.id"
         )
         val res = stmt.executeQuery()
 

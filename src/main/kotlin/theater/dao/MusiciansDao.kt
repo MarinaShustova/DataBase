@@ -165,7 +165,7 @@ class MusiciansDao(private val dataSource: DataSource) {
                 "SELECT musicians.id as musician_id, employee_id, fio, sex, birth_date, " +
                         "children_amount, salary, origin, hire_date, instrument " +
                         "FROM (SELECT * FROM employees WHERE employees.sex = ?) e " +
-                        "JOIN musicians ON musicians.employee_id = e.id)"
+                        "JOIN musicians ON musicians.employee_id = e.id"
         )
 
 
@@ -179,7 +179,7 @@ class MusiciansDao(private val dataSource: DataSource) {
                         "children_amount, salary, origin, hire_date, instrument " +
                         "FROM (SELECT * FROM employees " +
                         "WHERE date_part('year', age(current_date, hire_date)) >= ?) e " +
-                        "JOIN musicians ON musicians.employee_id = e.id)"
+                        "JOIN musicians ON musicians.employee_id = e.id"
         )
 
         stmt.setInt(1, years)
@@ -192,7 +192,7 @@ class MusiciansDao(private val dataSource: DataSource) {
                         "children_amount, salary, origin, hire_date, instrument " +
                         "FROM (SELECT * FROM employees " +
                         "WHERE birth_date = ?) e " +
-                        "JOIN musicians ON musicians.employee_id = e.id)"
+                        "JOIN musicians ON musicians.employee_id = e.id"
         )
 
         stmt.setDate(1, birth)
@@ -205,7 +205,7 @@ class MusiciansDao(private val dataSource: DataSource) {
                         "children_amount, salary, origin, hire_date, instrument " +
                         "FROM (SELECT * FROM employees " +
                         "WHERE date_part('year', age(current_date, birth_date)) = ?) e " +
-                        "JOIN musicians ON musicians.employee_id = e.id)"
+                        "JOIN musicians ON musicians.employee_id = e.id"
         )
 
 
@@ -219,7 +219,7 @@ class MusiciansDao(private val dataSource: DataSource) {
                         "children_amount, salary, origin, hire_date, instrument " +
                         "FROM (SELECT * FROM employees " +
                         "WHERE children_count = ?) e " +
-                        "JOIN musicians ON musicians.employee_id = e.id)"
+                        "JOIN musicians ON musicians.employee_id = e.id"
         )
 
         stmt.setInt(1, count)
@@ -232,7 +232,7 @@ class MusiciansDao(private val dataSource: DataSource) {
                         "children_amount, salary, origin, hire_date, instrument " +
                         "FROM (SELECT * FROM employees " +
                         "WHERE salary >= ?) e " +
-                        "JOIN musicians ON musicians.employee_id = e.id)"
+                        "JOIN musicians ON musicians.employee_id = e.id"
         )
         stmt.setInt(1, salary)
         return getMusiciansBy(stmt)
@@ -243,7 +243,7 @@ class MusiciansDao(private val dataSource: DataSource) {
                 "SELECT musicians.id as musician_id, employee_id, fio, sex, birth_date, " +
                         "children_amount, salary, origin, hire_date, instrument " +
                         "FROM employees e " +
-                        "JOIN musicians ON musicians.employee_id = e.id)"
+                        "JOIN musicians ON musicians.employee_id = e.id"
         )
         stmt.executeQuery()
         return getMusiciansBy(stmt)

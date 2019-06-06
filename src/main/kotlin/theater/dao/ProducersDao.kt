@@ -141,9 +141,9 @@ class ProducersDao(private val dataSource: DataSource) {
     fun getProducers(): List<Producer> {
         val stmt = dataSource.connection.prepareStatement(
                 "SELECT producers.id as producer_id, employee_id, fio, sex, birth_date, " +
-                        "children_amount, salary, origin, hire_date, instrument " +
+                        "children_amount, salary, origin, hire_date, activity " +
                         "FROM employees e " +
-                        "JOIN producers ON producers.employee_id = e.id)"
+                        "JOIN producers ON producers.employee_id = e.id"
         )
         val res = stmt.executeQuery()
 
