@@ -28,8 +28,16 @@ class FeatureController(private val service: PerformanceService) {
     fun getFeatures(
         @RequestParam from: Int,
         @RequestParam size: Int
-    ): String {
-        return service.getFeatures(Page(from, size)).map { "${it.name} ${it.value}" }.joinToString("\n")
+    ): ArrayList<FeatureData> {
+        return service.getFeatures(Page(from, size))
+    }
+
+    @GetMapping("/{id}")
+    fun getFeatureById(
+        @PathVariable id: Int
+    ): FeatureData {
+        val feature = service.findFeature(id)
+        return FeatureData(feature)
     }
 
     @PostMapping("/update/{id}")

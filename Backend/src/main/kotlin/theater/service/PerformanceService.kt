@@ -103,23 +103,21 @@ class PerformanceService(
         }
     }
 
-    fun getPerformances(page: Page): List<Performance> {
+    fun getPerformances(page: Page): ArrayList<PerformanceData> {
         return transaction(dataSource) {
             val res = performanceDao.getPerformances(page)
-//            res.map { it.season }.forEach({}) //?
             res
         }
     }
 
-    fun getConcertTours(page: Page): List<ConcertTour> {
+    fun getConcertTours(page: Page): ArrayList<TourData> {
         return transaction(dataSource) {
             val res = concertTourDao.getConcertTours(page)
-            res.map { it.city }.forEach({}) //?
             res
         }
     }
 
-    fun getRoles(page: Page): List<Role> {
+    fun getRoles(page: Page): ArrayList<RoleData> {
         return transaction(dataSource) {
             val res = roleDao.getRoles(page)
             //res.map { it.season }.forEach({}) //?
@@ -127,7 +125,7 @@ class PerformanceService(
         }
     }
 
-    fun getFeatures(page: Page): List<Feature> {
+    fun getFeatures(page: Page): ArrayList<FeatureData> {
         return transaction(dataSource) {
             val res = featureDao.getFeatures(page)
             //res.map { it.season }.forEach({}) //?
