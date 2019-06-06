@@ -80,19 +80,20 @@ class FeatureDao(private val dataSource: DataSource) {
         stmt.executeUpdate()
     }
 
-    fun getFeatures(page: Page): List<Feature> {
+    fun getFeatures(page: Page): ArrayList<FeatureData> {
         val theQuery = "SELECT id, name, value FROM features ORDER BY name LIMIT ? OFFSET ?"
         val conn = dataSource.connection
         val stmt = conn.prepareStatement(theQuery)
         stmt.setInt(1, page.size)
         stmt.setInt(2, page.size * (page.num-1))
 
-        val res = ArrayList<Feature>()
+        val res = ArrayList<FeatureData>()
         val rs = stmt.executeQuery()
         while (rs.next()) {
             res.add(
+                FeatureData(
                 Feature(
-                rs.getInt("id"), rs.getString("name"), rs.getString("value"))
+                rs.getInt("id"), rs.getString("name"), rs.getString("value")))
             )
         }
         return res

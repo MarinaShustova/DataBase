@@ -11,12 +11,13 @@ class ConcertTourDao(private val dataSource: DataSource) {
 
     fun createConcertTour(toCreate: ConcertTour): Int {
         val stmt = dataSource.connection.prepareStatement(
-            "INSERT INTO tours (city, start_date, finish_date) VALUES (?, ?, ?)",
+            "INSERT INTO tours (city, start_date, finish_date, performance_id) VALUES (?, ?, ?, ?)",
             Statement.RETURN_GENERATED_KEYS
         )
         stmt.setString(1, toCreate.city)
         stmt.setDate(2, toCreate.start_date)
         stmt.setDate(3, toCreate.finish_date)
+        stmt.setInt(4, toCreate.performance_id)
         stmt.executeUpdate()
         val gk = stmt.generatedKeys
         gk.next()
@@ -26,7 +27,7 @@ class ConcertTourDao(private val dataSource: DataSource) {
 
     fun createConcertTours(toCreate: Iterable<ConcertTour>): List<Int> {
         val stmt = dataSource.connection.prepareStatement(
-            "INSERT INTO tours (city, start_date, finish_date) VALUES (?, ?, ?)",
+            "INSERT INTO tours (city, start_date, finish_date, performance_id) VALUES (?, ?, ?, ?)",
             Statement.RETURN_GENERATED_KEYS
 
         )
@@ -89,29 +90,32 @@ class ConcertTourDao(private val dataSource: DataSource) {
         return gk.getInt(1)
     }
 
-    fun getConcertTours(page: Page): List<ConcertTour> {
+    fun getConcertTours(page: Page): ArrayList<TourData> {
         val theQuery =
             "SELECT id, city, start_date, finish_date  FROM tours ORDER BY start_date LIMIT ? OFFSET ?"
         val conn = dataSource.connection
         val stmt = conn.prepareStatement(theQuery)
         stmt.setInt(1, page.size)
-        stmt.setInt(2, page.size * (page.num-1))
+        stmt.setInt(2, page.size * (page.num - 1))
 
-        val res = ArrayList<ConcertTour>()
+        val res = ArrayList<TourData>()
         val rs = stmt.executeQuery()
         while (rs.next()) {
             res.add(
-                ConcertTour(
-                    rs.getInt("id"), rs.getString("city"),
-                    rs.getDate("start_date"), rs.getDate("finish_date")
+                TourData(
+                    ConcertTour(
+                        rs.getInt("id"), rs.getString("city"),
+                        rs.getDate("start_date"), rs.getDate("finish_date")
+                    )
                 )
             )
         }
         return res
     }
 
-    fun getTourTroupe(employeesDao: EmployeesDao,
-                      spectacleId: Int, start: Date, finish: Date
+    fun getTourTroupe(
+        employeesDao: EmployeesDao,
+        spectacleId: Int, start: Date, finish: Date
     ): Pair<List<Actor>, List<Producer>> {
         var theQuery = "select * \n" +
                 "from (select fio, actors.id, employee_id as \"employee\", is_student\n" +

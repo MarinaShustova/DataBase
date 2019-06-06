@@ -12,6 +12,7 @@ import theater.model.Role
 import theater.service.PerformanceService
 import theater.service.Service
 import java.sql.Date
+import theater.exception.PerformanceNotFoundException
 
 @RestController
 @RequestMapping("/performances")
@@ -31,11 +32,16 @@ class PerformanceController(private val service: PerformanceService) {
     fun getPerformances(
         @RequestParam num: Int,
         @RequestParam size: Int
-    ): String {
-        return service.getPerformances(Page(num, size)).map {
-            "${it.production_designer} ${it.production_director}" +
-                    " ${it.production_conductor} ${it.season}"
-        }.joinToString("\n")
+    ): ArrayList<PerformanceData> {
+        return service.getPerformances(Page(num, size))
+    }
+
+    @GetMapping("/{id}")
+    fun getPerformanceById(
+        @PathVariable id: Int
+    ): PerformanceData {
+        val p = service.findPerformance(id) ?: throw PerformanceNotFoundException()
+        return PerformanceData(p)
     }
 
     @PostMapping("/update/{id}")
@@ -72,7 +78,7 @@ class PerformanceController(private val service: PerformanceService) {
     }
 
     @GetMapping("/spectacle/{id}")
-    fun getPerformanceInfo(@PathVariable id: Int): String {
-        return service.getPerformanceInfo(id).toString()
+    fun getPerformanceInfo(@PathVariable id: Int): Info {
+        return service.getPerformanceInfo(id)
     }
 }
