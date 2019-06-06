@@ -5,14 +5,12 @@ import theater.dao.CountryDao
 import theater.dao.EmployeesDao
 import theater.dao.Page
 import theater.dao.SpectacleDao
-import theater.model.ConcertTour
-import theater.model.Feature
-import theater.model.Performance
-import theater.model.Role
 import theater.service.PerformanceService
 import theater.service.Service
 import java.sql.Date
 import theater.exception.TourNotFoundException
+import theater.model.*
+import theater.model.data.TourData
 
 @RestController
 @RequestMapping("/tours")
@@ -20,9 +18,10 @@ class TourController(private val service: PerformanceService) {
     @PostMapping("/create")
     fun createConcertTour(
         @RequestParam city: String,
-        @RequestParam start: String, @RequestParam finish: String
+        @RequestParam start: String, @RequestParam finish: String,
+        @RequestParam perfId: Int
     ): String {
-        val toCreate = ConcertTour(-1, city, Date.valueOf(start), Date.valueOf(finish))
+        val toCreate = ConcertTour(-1, city, Date.valueOf(start), Date.valueOf(finish), perfId)
         service.createConcertTour(toCreate).toString()
         return "Created tour $city $start - $finish"
     }
@@ -46,9 +45,10 @@ class TourController(private val service: PerformanceService) {
     @PostMapping("/update/{id}")
     fun updateConcertTour(
         @PathVariable id: Int, @RequestParam city: String,
-        @RequestParam start: String, @RequestParam finish: String
+        @RequestParam start: String, @RequestParam finish: String,
+        @RequestParam perfId: Int
     ): String {
-        val toCreate = ConcertTour(id, city, Date.valueOf(start), Date.valueOf(finish))
+        val toCreate = ConcertTour(id, city, Date.valueOf(start), Date.valueOf(finish), perfId)
         val concertTour = service.findConcertTour(toCreate.id!!) ?: return "Concert tour with id $id not found"
         service.updateConcertTour(toCreate).toString()
         return "Updated tour from ${concertTour.city} ${concertTour.start_date} - ${concertTour.finish_date}" +

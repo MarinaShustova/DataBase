@@ -1,6 +1,7 @@
 package theater.controller
 
 import org.springframework.web.bind.annotation.*
+import theater.Info
 import theater.dao.CountryDao
 import theater.dao.EmployeesDao
 import theater.dao.Page
@@ -13,6 +14,7 @@ import theater.service.PerformanceService
 import theater.service.Service
 import java.sql.Date
 import theater.exception.PerformanceNotFoundException
+import theater.model.data.PerformanceData
 
 @RestController
 @RequestMapping("/performances")
@@ -21,11 +23,11 @@ class PerformanceController(private val service: PerformanceService) {
     fun createPerformance(
         @RequestParam pr_des: Int,
         @RequestParam pr_dir: Int, @RequestParam pr_cond: Int,
-        @RequestParam season: Int
+        @RequestParam season: Int, @RequestParam spId: Int
     ): String {
-        val toCreate = Performance(-1, pr_des, pr_dir, pr_cond, season)
+        val toCreate = Performance(-1, pr_des, pr_dir, pr_cond, season, spId)
         service.createPerformance(toCreate).toString()
-        return "Performance created (${pr_des}, $pr_dir, $pr_cond, $season)"
+        return "Performance created (${pr_des}, $pr_dir, $pr_cond, $season, $spId)"
     }
 
     @GetMapping
@@ -48,17 +50,18 @@ class PerformanceController(private val service: PerformanceService) {
     fun updatePerformance(
         @PathVariable id: Int, @RequestParam pr_des: Int,
         @RequestParam pr_dir: Int, @RequestParam pr_cond: Int,
-        @RequestParam season: Int
+        @RequestParam season: Int, @RequestParam spId: Int
     ): String {
         val toCreate = Performance(
             id,
-            pr_des, pr_dir, pr_cond, season
+            pr_des, pr_dir, pr_cond, season, spId
         )
         val performance = service.findPerformance(toCreate.id) ?: return "Performance with id $id not found"
         service.updatePerformance(toCreate).toString()
         return "Updated performance: from (${performance.production_designer}, " +
-                "${performance.production_director}, ${performance.production_conductor}, ${performance.season})" +
-                " to ($pr_des, $pr_dir, $pr_cond, $season)"
+                "${performance.production_director}, ${performance.production_conductor}, ${performance.season}," +
+                " ${performance.spectacle_id})" +
+                " to ($pr_des, $pr_dir, $pr_cond, $season $spId)"
     }
 
     @PostMapping("/delete/{id}")
