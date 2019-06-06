@@ -2,51 +2,59 @@
 <android.support.v7.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:gravity="center_vertical"
     android:orientation="vertical"
-    android:paddingLeft="@android:dimen/app_icon_size"
+    android:paddingStart="@dimen/activity_horizontal_margin"
     android:paddingTop="@android:dimen/app_icon_size"
+    android:paddingEnd="@dimen/activity_horizontal_margin"
     tools:context=".CreateSpectacle">
 
-    <EditText
-        android:id="@+id/spectacleName"
-        android:layout_width="326dp"
-        android:layout_height="46dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Название"
-        tools:layout_editor_absoluteX="26dp"
-        tools:layout_editor_absoluteY="72dp" />
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <EditText
-        android:id="@+id/ageCategory"
-        android:layout_width="326dp"
-        android:layout_height="46dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Возрастная категория"
-        tools:layout_editor_absoluteX="26dp"
-        tools:layout_editor_absoluteY="164dp" />
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/spectacleName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Название спектакля" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/ageCategory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Возрастная группа" />
+    </android.support.design.widget.TextInputLayout>
 
     <Spinner
         android:id="@+id/genre"
-        android:layout_width="326dp"
+        android:layout_width="380dp"
         android:layout_height="46dp"
         android:dropDownWidth="match_parent"
         android:spinnerMode="dropdown"
         android:visibility="visible"
         tools:layout_editor_absoluteX="26dp"
-        tools:layout_editor_absoluteY="118dp"
-        tools:visibility="visible" />
+        tools:layout_editor_absoluteY="118dp" />
 
     <Spinner
         android:id="@+id/author"
-        android:layout_width="326dp"
+        android:layout_width="380dp"
         android:layout_height="46dp"
         android:dropDownWidth="match_parent"
         android:spinnerMode="dropdown"
         tools:layout_editor_absoluteX="26dp"
         tools:layout_editor_absoluteY="210dp" />
+
+    <Button
+        android:id="@+id/createSpectacle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Create" />
 </android.support.v7.widget.LinearLayoutCompat>

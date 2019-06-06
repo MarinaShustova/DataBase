@@ -1,11 +1,29 @@
 package ru.nsu.fit.theater.control.spectacles
 
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import ru.nsu.fit.theater.App
 import ru.nsu.fit.theater.retrofit.model.SpectacleData
 import java.sql.Timestamp
 
 class RetrofitSpectaclesController: ISpectaclesController {
     override fun createSpectacle(data: SpectacleData, callback: ISpectaclesController.ICreateSpectacleCallback) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        App.api.createSpectacle(data).enqueue(object : Callback<ResponseBody>{
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if (!response.isSuccessful || response.body() == null) {
+                    callback.onError()
+                } else {
+                    callback.onSpectcleCreated()
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                callback.onError()
+            }
+
+        })
     }
 
     override fun createAuthorOfSpectacle(authId: Int, specName: String, callback: ISpectaclesController.ICreateAuthorOfSpectacleCallback) {
