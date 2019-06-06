@@ -12,6 +12,7 @@ import theater.model.Role
 import theater.service.PerformanceService
 import theater.service.Service
 import java.sql.Date
+import theater.exception.TourNotFoundException
 
 @RestController
 @RequestMapping("/tours")
@@ -38,7 +39,7 @@ class TourController(private val service: PerformanceService) {
     fun getTourById(
         @PathVariable id: Int
     ): TourData {
-        val tour = service.findConcertTour(id)
+        val tour = service.findConcertTour(id) ?: throw TourNotFoundException()
         return TourData(tour)
     }
 

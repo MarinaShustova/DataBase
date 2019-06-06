@@ -12,6 +12,7 @@ import theater.model.Role
 import theater.service.PerformanceService
 import theater.service.Service
 import java.sql.Date
+import theater.exception.PerformanceNotFoundException
 
 @RestController
 @RequestMapping("/performances")
@@ -39,7 +40,7 @@ class PerformanceController(private val service: PerformanceService) {
     fun getPerformanceById(
         @PathVariable id: Int
     ): PerformanceData {
-        val p = service.findPerformance(id)
+        val p = service.findPerformance(id) ?: throw PerformanceNotFoundException()
         return PerformanceData(p)
     }
 
