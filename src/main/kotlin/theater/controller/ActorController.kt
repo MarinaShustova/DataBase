@@ -124,31 +124,31 @@ class ActorController(private val service: EmployeeService) {
     }
 
     @GetMapping("/ranked")
-    fun getRankedActors(): ResponseEntity<List<ActorData>> {
+    fun getRankedActors():  ResponseEntity<Pair<List<ActorData>, Int>> {
         val actors = service.getActorsWithRanks()
-        val aData = actors.asSequence().map { ActorData(it) }.toList()
-        return ResponseEntity.ok(aData)
+        val aData = actors.first.asSequence().map { ActorData(it) }.toList()
+        return ResponseEntity.ok(Pair(aData, actors.second))
     }
 
     @GetMapping("/ranked/sex")
-    fun getRankedActorsBySex(@RequestParam(value = "sex") sex: String): ResponseEntity<List<ActorData>> {
+    fun getRankedActorsBySex(@RequestParam(value = "sex") sex: String):  ResponseEntity<Pair<List<ActorData>, Int>> {
         val actors = service.getActorsWithRanksSex(sex)
-        val aData = actors.asSequence().map { ActorData(it) }.toList()
-        return ResponseEntity.ok(aData)
+        val aData = actors.first.asSequence().map { ActorData(it) }.toList()
+        return ResponseEntity.ok(Pair(aData, actors.second))
     }
 
     @GetMapping("/ranked/age")
-    fun getRankedActorsByAge(@RequestParam(value = "age") age: Int): ResponseEntity<List<ActorData>> {
+    fun getRankedActorsByAge(@RequestParam(value = "age") age: Int): ResponseEntity<Pair<List<ActorData>, Int>> {
         val actors = service.getActorsWithRanksAge(age)
-        val aData = actors.asSequence().map { ActorData(it) }.toList()
-        return ResponseEntity.ok(aData)
+        val aData = actors.first.asSequence().map { ActorData(it) }.toList()
+        return ResponseEntity.ok(Pair(aData, actors.second))
     }
 
     @GetMapping("/ranked/contests")
-    fun getRankedActorsByAge(@RequestBody contests: List<String>): ResponseEntity<List<ActorData>> {
+    fun getRankedActorsByAge(@RequestBody contests: List<String>): ResponseEntity<Pair<List<ActorData>, Int>> {
         val actors = service.getActorsWithRanksContests(contests)
-        val aData = actors.asSequence().map { ActorData(it) }.toList()
-        return ResponseEntity.ok(aData)
+        val aData = actors.first.asSequence().map { ActorData(it) }.toList()
+        return ResponseEntity.ok(Pair(aData, actors.second))
     }
 
     @GetMapping("/roles/{id}")
@@ -158,8 +158,6 @@ class ActorController(private val service: EmployeeService) {
         return ResponseEntity.ok(rData)
     }
 
-
-    //    @GetMapping("/{id}/roles")
     @GetMapping("/roles/age/{id}")
     fun getActorsRolesByAge(@PathVariable(value = "id") id: Int, @RequestParam(value = "age") age: Int):
             ResponseEntity<List<RoleData>> {
@@ -168,7 +166,6 @@ class ActorController(private val service: EmployeeService) {
         return ResponseEntity.ok(rData)
     }
 
-    //    @GetMapping("/{id}/roles")
     @GetMapping("/roles/producer/{id}")
     fun getActorsRolesByProducer(@PathVariable(value = "id") id: Int, @RequestParam(value = "producer") producerFio: String):
             ResponseEntity<List<RoleData>> {
@@ -182,7 +179,6 @@ class ActorController(private val service: EmployeeService) {
         }
     }
 
-    //    @GetMapping("/{id}/roles")
     @GetMapping("/roles/period/{id}")
     fun getActorsRolesByPeriod(@PathVariable(value = "id") id: Int,
                                @RequestParam(value = "startDate") startDate: String,
@@ -194,7 +190,6 @@ class ActorController(private val service: EmployeeService) {
         return ResponseEntity.ok(rData)
     }
 
-    //    @GetMapping("/{id}/roles")
     @GetMapping("/roles/genre/{id}")
     fun getActorsRolesByGenre(@PathVariable(value = "id") id: Int,
                               @RequestParam(value = "genre") genreName: String): ResponseEntity<List<RoleData>> {

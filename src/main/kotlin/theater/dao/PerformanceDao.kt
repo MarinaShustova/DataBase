@@ -156,8 +156,8 @@ class PerformanceDao(private val dataSource: DataSource) {
         while (rs.next()) {
             prod.add(
                 Producer(
-                    rs.getLong("id"),
-                    employeesDao.getEmployeeById(rs.getLong("employee"))!!, rs.getString("activity")
+                    rs.getInt("id"),
+                    employeesDao.getEmployeeById(rs.getInt("employee"))!!, rs.getString("activity")
                 )
             )
         }
@@ -184,9 +184,9 @@ class PerformanceDao(private val dataSource: DataSource) {
             date = rs.getDate("show_date")
             act.add(
                 Actor(
-                    rs.getLong("id"),
-                    employeesDao.getEmployeeById(rs.getLong("employee"))!!,
-                    rs.getBoolean("isStudent")
+                    rs.getInt("id"),
+                    employeesDao.getEmployeeById(rs.getInt("employee"))!!,
+                    rs.getBoolean("is_student")
                 )
             )
         }

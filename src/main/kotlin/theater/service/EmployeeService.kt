@@ -361,21 +361,21 @@ class EmployeeService(
 
     //functions for selections
 
-    fun getActorsWithRanks(): List<Actor> {
+    fun getActorsWithRanks(): Pair<List<Actor>, Int> {
         return transaction(dataSource) {
             actorsDao.getActorsWithRanks(employeesDao)
         }
     }
 
-    fun getActorsWithRanksSex(sex: String): List<Actor> {
+    fun getActorsWithRanksSex(sex: String): Pair<List<Actor>, Int> {
         return actorsDao.getActorsWithRanksSex(employeesDao, sex)
     }
 
-    fun getActorsWithRanksAge(age: Int): List<Actor> {
+    fun getActorsWithRanksAge(age: Int): Pair<List<Actor>, Int> {
         return actorsDao.getActorsWithRanksAge(employeesDao, age)
     }
 
-    fun getActorsWithRanksContests(contests: List<String>): List<Actor> {
+    fun getActorsWithRanksContests(contests: List<String>): Pair<List<Actor>, Int> {
         return actorsDao.getActorsWithRanksContests(employeesDao, contests)
     }
 
