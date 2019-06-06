@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="vertical"
+    android:paddingLeft="@android:dimen/app_icon_size"
+    android:paddingTop="@android:dimen/app_icon_size"
+    tools:context=".CreateSpectacle">
+
+    <EditText
+        android:id="@+id/spectacleName"
+        android:layout_width="326dp"
+        android:layout_height="46dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Название"
+        tools:layout_editor_absoluteX="26dp"
+        tools:layout_editor_absoluteY="72dp" />
+
+    <EditText
+        android:id="@+id/ageCategory"
+        android:layout_width="326dp"
+        android:layout_height="46dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Возрастная категория"
+        tools:layout_editor_absoluteX="26dp"
+        tools:layout_editor_absoluteY="164dp" />
+
+    <Spinner
+        android:id="@+id/genre"
+        android:layout_width="326dp"
+        android:layout_height="46dp"
+        android:dropDownWidth="match_parent"
+        android:spinnerMode="dropdown"
+        android:visibility="visible"
+        tools:layout_editor_absoluteX="26dp"
+        tools:layout_editor_absoluteY="118dp"
+        tools:visibility="visible" />
+
+    <Spinner
+        android:id="@+id/author"
+        android:layout_width="326dp"
+        android:layout_height="46dp"
+        android:dropDownWidth="match_parent"
+        android:spinnerMode="dropdown"
+        tools:layout_editor_absoluteX="26dp"
+        tools:layout_editor_absoluteY="210dp" />
+</android.support.v7.widget.LinearLayoutCompat>
