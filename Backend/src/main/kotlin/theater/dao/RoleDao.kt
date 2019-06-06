@@ -43,7 +43,7 @@ class RoleDao(private val dataSource: DataSource) {
     fun findRole(id: Int): Role? {
         val stmt = dataSource.connection.prepareStatement(
             "SELECT " +
-                    "r.id rid, r.name "+
+                    "r.id rid, r.name " +
                     "FROM roles AS r " +
                     "WHERE r.id = ?"
         )
@@ -51,7 +51,8 @@ class RoleDao(private val dataSource: DataSource) {
         val rs = stmt.executeQuery()
         return if (rs.next()) {
             Role(
-                rs.getInt("rid"), rs.getString("name"))
+                rs.getInt("rid"), rs.getString("name")
+            )
         } else {
             null
         }
@@ -77,18 +78,22 @@ class RoleDao(private val dataSource: DataSource) {
         stmt.executeUpdate()
     }
 
-    fun getRoles(page: Page): List<Role> {
+    fun getRoles(page: Page): ArrayList<RoleData> {
         val theQuery = "SELECT id, name FROM roles ORDER BY name LIMIT ? OFFSET ?"
         val conn = dataSource.connection
         val stmt = conn.prepareStatement(theQuery)
         stmt.setInt(1, page.size)
-        stmt.setInt(2, page.size * (page.num-1))
+        stmt.setInt(2, page.size * (page.num - 1))
 
-        val res = ArrayList<Role>()
+        val res = ArrayList<RoleData>()
         val rs = stmt.executeQuery()
         while (rs.next()) {
-            res.add(Role(
-                rs.getInt("id"), rs.getString("name"))
+            res.add(
+                RoleData(
+                    Role(
+                        rs.getInt("id"), rs.getString("name")
+                    )
+                )
             )
         }
         return res
@@ -101,7 +106,6 @@ class RoleDao(private val dataSource: DataSource) {
         stmt.setInt(2, featureId)
         stmt.executeUpdate()
     }
-
 
 
 }

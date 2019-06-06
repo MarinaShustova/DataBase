@@ -27,8 +27,16 @@ class RoleController(private val service: PerformanceService) {
     fun getRoles(
         @RequestParam from: Int,
         @RequestParam size: Int
-    ): String {
-        return service.getRoles(Page(from, size)).map { "${it.name}" }.joinToString("\n")
+    ): ArrayList<RoleData> {
+        return service.getRoles(Page(from, size))
+    }
+
+    @GetMapping("/{id}")
+    fun getRoleById(
+        @PathVariable id: Int
+    ): RoleData {
+        val role = service.findRole(id)
+        return RoleData(role)
     }
 
     @PostMapping("/update/{id}")

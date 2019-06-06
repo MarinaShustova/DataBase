@@ -1,20 +1,14 @@
 package theater.model.data
 
-import theater.model.Actor
+import theater.model.ConcertTour
 import java.sql.Date
 
 data class TourData(
-        val id: Int,
-        val fio: String,
-        val sex: String,
-        val birthDate: String,
-        val childrenAmount: Int,
-        val salary: Int,
-        val origin: String,
-        val hireDate: String,
-        val isStudent: Boolean
+    val id: Int,
+    val city: String,
+    val start_date: Date,
+    val finish_date: Date,
+    val performance_id: Int
 ) {
-    constructor(a: Actor): this(a.id, a.employee.fio, a.employee.sex, a.employee.birthDate.toString(),
-            a.employee.childrenAmount, a.employee.salary, a.employee.origin, a.employee.hireDate.toString(),
-            a.isStudent)
+    constructor(t: ConcertTour): this(t.id, t.city, t.start_date, t.finish_date, t.performance_id)
 }

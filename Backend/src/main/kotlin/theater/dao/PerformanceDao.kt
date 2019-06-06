@@ -74,11 +74,11 @@ class PerformanceDao(private val dataSource: DataSource) {
         stmt.setInt(1, id)
         val rs = stmt.executeQuery()
         return if (rs.next()) {
-            Performance(
-                rs.getInt("pid"), rs.getInt("production_designer"),
-                rs.getInt("production_director"), rs.getInt("production_conductor"),
-                rs.getInt("season")
-            )
+                Performance(
+                    rs.getInt("pid"), rs.getInt("production_designer"),
+                    rs.getInt("production_director"), rs.getInt("production_conductor"),
+                    rs.getInt("season")
+                )
         } else {
             null
         }
@@ -95,22 +95,24 @@ class PerformanceDao(private val dataSource: DataSource) {
         stmt.executeUpdate()
     }
 
-    fun getPerformances(page: Page): List<Performance> {
+    fun getPerformances(page: Page): List<PerformanceData> {
         val theQuery =
             "SELECT id, production_designer, production_director, production_conductor, season  FROM performances LIMIT ? OFFSET ?"
         val conn = dataSource.connection
         val stmt = conn.prepareStatement(theQuery)
         stmt.setInt(1, page.size)
-        stmt.setInt(2, page.size * (page.num-1))
+        stmt.setInt(2, page.size * (page.num - 1))
 
-        val res = ArrayList<Performance>()
+        val res = ArrayList<PerformanceData>()
         val rs = stmt.executeQuery()
         while (rs.next()) {
             res.add(
-                Performance(
-                    rs.getInt("id"), rs.getInt("production_designer"),
-                    rs.getInt("production_director"), rs.getInt("production_conductor"),
-                    rs.getInt("season")
+                PerformanceData(
+                    Performance(
+                        rs.getInt("id"), rs.getInt("production_designer"),
+                        rs.getInt("production_director"), rs.getInt("production_conductor"),
+                        rs.getInt("season")
+                    )
                 )
             )
         }
@@ -133,8 +135,10 @@ class PerformanceDao(private val dataSource: DataSource) {
         stmt.executeUpdate()
     }
 
-    fun getPerformanceInfo(employeesDao: EmployeesDao,
-                           spectacleId: Int, countryDao: CountryDao): Info {
+    fun getPerformanceInfo(
+        employeesDao: EmployeesDao,
+        spectacleId: Int, countryDao: CountryDao
+    ): Info {
         var theQuery = "with premiere as (select s.show_date, p.id\n" +
                 "                  from performances p\n" +
                 "                           join shows s on p.id = s.performance_id\n" +
@@ -195,14 +199,16 @@ class PerformanceDao(private val dataSource: DataSource) {
                 "       death_date, country from authors a join spectacles s on a.id = s.author_id where s.id = ?"
         stmt = conn.prepareStatement(theQuery)
         stmt.setInt(1, spectacleId)
-        val author : Author
+        val author: Author
         rs = stmt.executeQuery()
         if (rs.next()) {
-            author = Author(rs.getInt("id"), rs.getString("name"),
+            author = Author(
+                rs.getInt("id"), rs.getString("name"),
                 rs.getString("surname"), rs.getDate("birthDare"),
-                rs.getDate("deathDate"), countryDao.getCountry(rs.getInt("country"))!!)
-        }
-        else author = Author(-1, "Default", "Default", Date(0),
+                rs.getDate("deathDate"), countryDao.getCountry(rs.getInt("country"))!!
+            )
+        } else author = Author(
+            -1, "Default", "Default", Date(0),
             Date(0), Country(-1, "Default")
         )
         return Info(prod, act, author, date)

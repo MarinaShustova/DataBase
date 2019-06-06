@@ -31,11 +31,16 @@ class PerformanceController(private val service: PerformanceService) {
     fun getPerformances(
         @RequestParam num: Int,
         @RequestParam size: Int
-    ): String {
-        return service.getPerformances(Page(num, size)).map {
-            "${it.production_designer} ${it.production_director}" +
-                    " ${it.production_conductor} ${it.season}"
-        }.joinToString("\n")
+    ): ArrayList<PerformanceData> {
+        return service.getPerformances(Page(num, size))
+    }
+
+    @GetMapping("/{id}")
+    fun getPerformanceById(
+        @PathVariable id: Int
+    ): PerformanceData {
+        val p = service.findPerformance(id)
+        return PerformanceData(p)
     }
 
     @PostMapping("/update/{id}")
