@@ -5,6 +5,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import retrofit2.Retrofit
 import retrofit2.converter.jackson.JacksonConverterFactory
 import ru.nsu.fit.theater.control.IController
+import ru.nsu.fit.theater.control.tickets.RetrofitTicketsController
 import ru.nsu.fit.theater.retrofit.BackendApi
 
 class App: Application() {
@@ -14,7 +15,7 @@ class App: Application() {
         lateinit var api: BackendApi
 
         val controllers = mapOf<IController.Type, IController>(
-
+            Pair(IController.Type.TICKETS, RetrofitTicketsController())
         )
     }
 
