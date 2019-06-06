@@ -6,7 +6,7 @@ import ru.nsu.fit.theater.retrofit.model.GenreData
 
 interface IGenresController: IController {
     interface ICreateGenreCallback: ICallback {
-        fun onGenreCreated()
+        fun onGenreCreated(genre: GenreData)
     }
 
     interface IGetGenreCallback: ICallback {

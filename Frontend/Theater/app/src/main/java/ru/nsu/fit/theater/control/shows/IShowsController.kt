@@ -2,6 +2,7 @@ package ru.nsu.fit.theater.control.shows
 
 import ru.nsu.fit.theater.control.ICallback
 import ru.nsu.fit.theater.control.IController
+import ru.nsu.fit.theater.retrofit.model.IdShowData
 import ru.nsu.fit.theater.retrofit.model.ShowData
 
 interface IShowsController: IController {
@@ -10,15 +11,15 @@ interface IShowsController: IController {
     }
 
     interface IUpdateShowCallback: ICallback {
-        fun onSHowUpdated()
+        fun onShowUpdated()
     }
 
     interface IGetShowCallback: ICallback {
-        fun onShowLoaded(show: ShowData)
+        fun onShowLoaded(show: IdShowData)
     }
 
     interface IGetShowsCallback: ICallback {
-        fun onShowsLoaded(shows: List<ShowData>)
+        fun onShowsLoaded(shows: List<IdShowData>)
     }
 
     interface IDeleteShowCallback: ICallback {

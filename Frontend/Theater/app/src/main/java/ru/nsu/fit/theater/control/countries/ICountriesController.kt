@@ -6,7 +6,7 @@ import ru.nsu.fit.theater.retrofit.model.CountryData
 
 interface ICountriesController: IController {
     interface ICreateCountryCallback: ICallback {
-        fun onCountryCreated()
+        fun onCountryCreated(id: Int)
     }
 
     interface IGetCountryCallback: ICallback {
