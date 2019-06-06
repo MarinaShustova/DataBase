@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="4dp"
@@ -8,55 +9,84 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <android.support.constraint.ConstraintLayout
-        android:clipChildren="true"
-        android:layout_width="match_parent"
-        android:layout_height="100dp">
+        android:layout_width="380dp"
+        android:layout_height="match_parent"
+        android:clipChildren="true">
 
         <TextView
             android:id="@+id/spectacle_date_day"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="08"
             android:textColor="@color/light_gray"
-            android:textSize="12sp"
-            android:text="08"/>
+            android:textSize="24sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/spectacle_date_weekday"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
-            android:text="сб"/>
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:text="сб"
+            android:textSize="14sp"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toEndOf="@+id/spectacle_date_day"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/spectacle_date_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
-            android:text="19:00"/>
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="12dp"
+            android:text="19:00"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toEndOf="@+id/spectacle_date_weekday"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/spectacle_is_premiere"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginStart="24dp"
+            android:text="премьера"
             android:textSize="16sp"
-            android:text="премьера"/>
+            app:layout_constraintBottom_toTopOf="@id/spectacle_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/spectacle_date_time" />
 
         <TextView
             android:id="@+id/spectacle_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:text="Красная шапочка"
             android:textSize="32sp"
-            android:text="Красная шапочка"/>
+            android:textColor="@color/black"
+            app:layout_constraintTop_toBottomOf="@id/spectacle_is_premiere"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <Button
             android:id="@+id/product_view_button_save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="24dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="12dp"
             android:background="@drawable/button_style_gradient"
             android:text="@string/tickets"
             android:textColor="#fff"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/spectacle_name" />
@@ -65,8 +95,13 @@
             android:id="@+id/spectacle_age"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="8sp"
-            android:text="16+"/>
+            android:layout_marginBottom="10dp"
+            android:layout_marginEnd="10dp"
+            android:text="16+"
+            android:textColor="@color/red"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
     </android.support.constraint.ConstraintLayout>
 
