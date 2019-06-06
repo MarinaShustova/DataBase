@@ -199,12 +199,12 @@ class PerformanceService(
         }
     }
 
-    fun getTourTroupe(spectacleId: Int, start: Date, finish: Date): String {
+    fun getTourTroupe(spectacleId: Int, start: Date, finish: Date): Pair<List<Actor>, List<Producer>> {
         val res = concertTourDao.getTourTroupe(
             employeesDao, spectacleId,
             start, finish
         )
-        return res.toString()
+        return res
     }
 
     fun getPerformanceInfo(spectacleId: Int): Info {
