@@ -1,4 +1,4 @@
-package ru.nsu.fit.theater
+package ru.nsu.fit.theater.control
 
 interface ICallback {
     fun onError()

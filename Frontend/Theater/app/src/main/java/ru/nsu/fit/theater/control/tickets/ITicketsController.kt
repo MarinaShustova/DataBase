@@ -1,6 +1,6 @@
 package ru.nsu.fit.theater.control.tickets
 
-import ru.nsu.fit.theater.ICallback
+import ru.nsu.fit.theater.control.ICallback
 import ru.nsu.fit.theater.control.IController
 import ru.nsu.fit.theater.retrofit.model.TicketData
 
