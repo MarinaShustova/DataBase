@@ -134,7 +134,7 @@ class TicketDao(private val dataSource: DataSource) {
                 res.getInt("price"),
                 res.getBoolean("presence"),
                 res.getBoolean("previously"),
-                null
+                res.getInt("show_id")
         )
     }
 
