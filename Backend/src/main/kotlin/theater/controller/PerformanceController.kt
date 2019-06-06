@@ -78,7 +78,7 @@ class PerformanceController(private val service: PerformanceService) {
     }
 
     @GetMapping("/spectacle/{id}")
-    fun getPerformanceInfo(@PathVariable id: Int): String {
-        return service.getPerformanceInfo(id).toString()
+    fun getPerformanceInfo(@PathVariable id: Int): Info {
+        return service.getPerformanceInfo(id)
     }
 }
