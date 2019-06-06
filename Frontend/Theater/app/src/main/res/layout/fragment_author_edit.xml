@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/author_name_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:hint="Имя"
+        app:layout_constraintBottom_toTopOf="@id/author_surname_edit"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/author_surname_edit"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:hint="Фамилия"
+        app:layout_constraintTop_toBottomOf="@+id/author_name_edit" />
+
+    <EditText
+        android:id="@+id/author_birth_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:hint="Дата рождения"
+        android:tooltipText="в формате yyyy-mm-dd"
+        app:layout_constraintTop_toBottomOf="@+id/author_surname_edit" />
+
+    <EditText
+        android:id="@+id/author_death_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:hint="Дата смерти"
+        android:tooltipText="в формате yyyy-mm-dd"
+        app:layout_constraintTop_toBottomOf="@+id/author_birth_edit" />
+
+    <android.support.v7.widget.AppCompatSpinner
+        android:id="@+id/author_country_name_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintTop_toBottomOf="@+id/author_death_edit">
+
+    </android.support.v7.widget.AppCompatSpinner>
+
+    <Button
+        android:id="@+id/author_view_button_save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/button_style_gradient"
+        android:text="@string/Ok"
+        android:textColor="#fff"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/author_country_name_spinner" />
+
+    <Button
+        android:id="@+id/author_view_button_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/button_style_gradient"
+        android:text="@string/cancel"
+        android:textColor="#fff"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/author_view_button_save" />
+
+</android.support.constraint.ConstraintLayout>
