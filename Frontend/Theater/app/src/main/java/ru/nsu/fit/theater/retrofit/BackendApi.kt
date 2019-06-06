@@ -5,6 +5,9 @@ package ru.nsu.fit.theater.retrofit
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.*
+import ru.nsu.fit.theater.model.Actor
+import ru.nsu.fit.theater.model.PerformanceInfo
+import ru.nsu.fit.theater.model.Producer
 import ru.nsu.fit.theater.retrofit.model.*
 import java.sql.Timestamp
 
@@ -160,7 +163,11 @@ interface BackendApi {
             @Query("value") value: String
     ): Call<ResponseBody>
 
-    //TODO: GET FEATURES!!!!!!
+    @GET("/features")
+    fun getFeatures(
+            @Query("from") from: Int,
+            @Query("size") size: Int
+    ): Call<List<FeatureData>>
 
     @POST("/features/update/{id}")
     fun updateFeature(
@@ -229,7 +236,43 @@ interface BackendApi {
     //endregion
 
     //region Performances
-    //TODO: implement performances!!!
+    @POST("/performances/create")
+    fun createPerformance(
+            @Query("pr_des") designer: Int,
+            @Query("pr_dir") director: Int,
+            @Query("pr_cond") conductor: Int,
+            @Query("season") season: Int
+    ): Call<ResponseBody>
+
+    @GET("/performances")
+    fun getPerformances(
+            @Query("num") from: Int,
+            @Query("size") size: Int
+    ): Call<List<PerformanceData>>
+
+    @GET("/performances/{id}")
+    fun getPerformance(@Path("id") id: Int): Call<PerformanceData>
+
+    @POST("/performances/update/{id}")
+    fun updatePerformance(
+            @Path("id") id: Int,
+            @Query("pr_des") designer: Int,
+            @Query("pr_dir") director: Int,
+            @Query("pr_cond") conductor: Int,
+            @Query("season") season: Int
+    ): Call<ResponseBody>
+
+    @POST("/performances/delete/{id}")
+    fun deletePerformance(@Path("id") id: Int): Call<ResponseBody>
+
+    @POST("/performances/link/{id}")
+    fun addRoleToPerformance(
+            @Path("id") perfId: Int,
+            @Query("id2") roleId: Int
+    ): Call<ResponseBody>
+
+    @GET("/performances/spectacle/{id}")
+    fun getPerformanceInfo(@Path("id") id: Int): Call<PerformanceInfo>
     //endregion
 
     //region Producers
@@ -253,7 +296,29 @@ interface BackendApi {
     //endregion
 
     //region Roles
-    //TODO: implement roles!!!
+    @POST("/roles/create")
+    fun createRole(@Query("name") name: String): Call<ResponseBody>
+
+    @GET("/roles")
+    fun getRoles():Call<List<RoleData>>
+
+    @GET("/roles/{id}")
+    fun getRoleById(@Path("id") id: Int): Call<RoleData>
+
+    @POST("/roles/update/{id}")
+    fun updateRole(
+            @Path("id") id: Int,
+            @Query("name") name: String
+    ): Call<ResponseBody>
+
+    @POST("/roles/delete/{id}")
+    fun deleteRole(@Path("id") id: Int): Call<ResponseBody>
+
+    @POST("/rolse/link/{id}")
+    fun addFeatureToRole(
+            @Path("id") roleId: Int,
+            @Query("id2") featureId: Int
+    ): Call<ResponseBody>
     //endregion
 
     //region Servants
@@ -349,6 +414,41 @@ interface BackendApi {
     //endregion
 
     //region Tours
-    //TODO: implement tours!!!
+    @POST("/tours/create")
+    fun createConcreteTour(
+            @Query("city") city: String,
+            @Query("start") start: String,
+            @Query("finish") finish: String
+    ): Call<ResponseBody>
+
+    @GET("/tours")
+    fun getConcreteTours(): Call<List<TourData>>
+
+    @GET("/tours/{id}")
+    fun getTourById(@Path("id") id: Int): Call<TourData>
+
+    @POST("/tours/{id}")
+    fun updateTour(
+            @Path("id") id: Int,
+            @Query("city") city: String,
+            @Query("start") start: String,
+            @Query("finish") finish: String
+    ): Call<ResponseBody>
+
+    @POST("/tours/delete/{id}")
+    fun deleteTour(@Path("id") id: Int): Call<ResponseBody>
+
+    @POST("/tours/link/{id}")
+    fun addConcreteTourToPerformance(
+            @Path("id") tourId: Int,
+            @Query("id2") performanceId: Int
+    ): Call<ResponseBody>
+
+    @GET("/tours/troupeBySpectacle/{id}")
+    fun getTourTroupe(
+            @Path("id") id: Int,
+            @Query("start") start: String,
+            @Query("finish") finish: String
+    ): Pair<List<Actor>, List<Producer>>
     //endregion
 }
