@@ -23,7 +23,7 @@ insert into employees(fio, sex, birth_date,children_amount, salary, hire_date, o
 insert into employees(fio, sex, birth_date,children_amount, salary, hire_date, origin) values('Майкл Гордон Олдфилд', 'male',to_date('1953-05-15','YYYY-MM-dd'), 0, 300000, to_date('2015-08-15','YYYY-MM-dd'), 1);
 insert into employees(fio, sex, birth_date,children_amount, salary, hire_date, origin) values('Дэвид Пьер Гетта', 'male', to_date('1967-11-07','YYYY-MM-dd'), 0, 600000, to_date('2018-02-25','YYYY-MM-dd'), 3);
 --servants
-insert into employees(fio, sex, birth_date,children_amount, salary, hire_date, origin) values('Киселёв Максим Игоревич', 'male',to_date('1989-09-22','YYYY-MM-dd'), 1, 50000, to_date('2016-11-31','YYYY-MM-dd'), 4);
+insert into employees(fio, sex, birth_date,children_amount, salary, hire_date, origin) values('Киселёв Максим Игоревич', 'male',to_date('1989-09-22','YYYY-MM-dd'), 1, 50000, to_date('2016-11-30','YYYY-MM-dd'), 4);
 insert into employees(fio, sex, birth_date,children_amount, salary, hire_date, origin) values('Погодина Анастасия Алексеевна', 'female',to_date('1990-08-14','YYYY-MM-dd'), 0, 50000, to_date('2017-08-15','YYYY-MM-dd'), 4);
 insert into employees(fio, sex, birth_date,children_amount, salary, hire_date, origin) values('Фельзинг Наталья Фёдоровна', 'female', to_date('1992-10-03','YYYY-MM-dd'), 0, 40000, to_date('2014-03-20','YYYY-MM-dd'), 4);
 
@@ -49,11 +49,11 @@ insert into servants(employee_id, activity) values(16, 'Звукооперато
 insert into servants(employee_id, activity) values(17, 'Осветитель');
 insert into servants(employee_id, activity) values(18, 'Билетёр');
 
-insert into ranks(name, value) values('Народный артист России', 'Указ президента РФ');
-insert into ranks(name, value) values('Заслуженный артист России', 'Указ президента РФ');
-insert into ranks(name, value) values('Золотой Орёл', 'Фестиваль Золотой Орёл');
-insert into ranks(name, value) values('ТЭФИ', 'Премия ТЭФИ');
-insert into ranks(name, value) values('Ника', 'Премия Ника');
+insert into ranks(name, contest) values('Народный артист России', 'Указ президента РФ');
+insert into ranks(name, contest) values('Заслуженный артист России', 'Указ президента РФ');
+insert into ranks(name, contest) values('Золотой Орёл', 'Фестиваль Золотой Орёл');
+insert into ranks(name, contest) values('ТЭФИ', 'Премия ТЭФИ');
+insert into ranks(name, contest) values('Ника', 'Премия Ника');
 
 insert into actors_ranks(actor_id, rank_id, date_of_giving) values(1, 3, to_date('2006-01-25','YYYY-MM-dd'));
 insert into actors_ranks(actor_id, rank_id, date_of_giving) values(1, 4, to_date('2006-03-30','YYYY-MM-dd'));

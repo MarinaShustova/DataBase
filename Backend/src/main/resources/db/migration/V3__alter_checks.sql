@@ -1,29 +1,39 @@
 alter table authors
-add constraint chk_dates check (if death_date not null then (birth_date < death_date));
+    add constraint chk_datesA check (death_date is null or (birth_date <= death_date));
 
 alter table employees
-add constraint chk_dates check (hire_date < birth_date);
+    add constraint chk_datesE check (hire_date >= birth_date);
 
 alter table employees
-add constraint chk_sex check (sex in ('male', 'female'));
+    add constraint chk_sex check (sex in ('male', 'female'));
 
 alter table employees
-add constraint chk_child check (children_amount >= 0);
+    add constraint chk_child check (children_amount >= 0);
+
+CREATE FUNCTION trigger_function() RETURNS trigger
+AS
+$BODY$
+declare
+    i integer = 0;
+begin
+    while i < 100
+        loop
+            if new.premiere = true then
+                insert into tickets(row, seat, price, presence, previously, show_id)
+                values (i / 10, i % 10, 1000, true, true, new.id);
+            else
+                insert into tickets(row, seat, price, presence, previously, show_id)
+                values (i / 10, i % 10, 500, true, true, new.id);
+            end if;
+            i = i + 1;
+        END loop;
+    return new;
+end;
+$BODY$
+    LANGUAGE plpgsql;
 
 create trigger ticket_creator
-on shows
-after insert
-as
-declare @i int = 0
-while @i < 100
-BEGIN
-if inserted.premiere = true
-begin
-	insert into tickets(row, seat, price, presence, previously, show_id) values(@i/10, @i%10, 500, true, true, inserted.id)
-end
-else
-begin
-	insert into tickets(row, seat, price, presence, previously, show_id) values(@i/10, @i%10, 1000, true, true, inserted.id)
-end
-    SET @i = @i + 1
-END
+    after insert
+    on shows
+    for each row
+execute procedure trigger_function();
