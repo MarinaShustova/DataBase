@@ -74,8 +74,8 @@ class CreateSpectacle : AppCompatActivity()  {
 
                             spinner2.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                                 override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-//                                    authorId = authors[position].
-                                    authorId = 1
+                                    authorId = authors[position].id
+//                                    authorId = 1
                                 }
 
                                 override fun onNothingSelected(parent: AdapterView<*>) {

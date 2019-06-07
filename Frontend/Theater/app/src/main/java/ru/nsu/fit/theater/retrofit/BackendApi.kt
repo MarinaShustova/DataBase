@@ -314,7 +314,7 @@ interface BackendApi {
     @POST("/roles/delete/{id}")
     fun deleteRole(@Path("id") id: Int): Call<ResponseBody>
 
-    @POST("/rolse/link/{id}")
+    @POST("/roles/link/{id}")
     fun addFeatureToRole(
             @Path("id") roleId: Int,
             @Query("id2") featureId: Int
