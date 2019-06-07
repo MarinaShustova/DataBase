@@ -241,7 +241,8 @@ interface BackendApi {
             @Query("pr_des") designer: Int,
             @Query("pr_dir") director: Int,
             @Query("pr_cond") conductor: Int,
-            @Query("season") season: Int
+            @Query("season") season: Int,
+            @Query("spectacle_id") spectacle_id: Int
     ): Call<ResponseBody>
 
     @GET("/performances")
@@ -259,7 +260,8 @@ interface BackendApi {
             @Query("pr_des") designer: Int,
             @Query("pr_dir") director: Int,
             @Query("pr_cond") conductor: Int,
-            @Query("season") season: Int
+            @Query("season") season: Int,
+            @Query("spectacle_id") spectacle_id: Int
     ): Call<ResponseBody>
 
     @POST("/performances/delete/{id}")
