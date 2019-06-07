@@ -10,7 +10,7 @@ class Db {
         portNumber = 5432
         databaseName = "theatre"
         user = "postgres"
-        password = "mysecretpassword"
+        password = "secret"
     }
 
     init {

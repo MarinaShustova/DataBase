@@ -14,7 +14,7 @@ import ru.nsu.fit.theater.base.BaseFragment
 import ru.nsu.fit.theater.control.IController
 import ru.nsu.fit.theater.control.authors.IAuthorsController
 import ru.nsu.fit.theater.control.authors.RetrofitAuthorsController
-import ru.nsu.fit.theater.retrofit.model.AuthorData
+import ru.nsu.fit.theater.retrofit.model.IdAuthorData
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -36,7 +36,7 @@ class AuthorsListFragment : BaseFragment() {
     override val layoutId: Int
         get() = R.layout.fragment_authors_list
 
-    private lateinit var authorsList: List<AuthorData>
+    private lateinit var authorsList: List<IdAuthorData>
     private lateinit var adapter: AuthorsAdapter
 
     private val controller = App.controllers[IController.Type.AUTHORS] as RetrofitAuthorsController
@@ -45,7 +45,7 @@ class AuthorsListFragment : BaseFragment() {
         super.onResume()
 
         controller.getAuthors(object : IAuthorsController.IGetAuthorsCallback {
-            override fun onAuthorsLoaded(authors: List<AuthorData>) {
+            override fun onAuthorsLoaded(authors: List<IdAuthorData>) {
                 authorsList = authors
                 adapter = AuthorsAdapter(authorsList)
                 configRecycler()
@@ -69,7 +69,7 @@ class AuthorsListFragment : BaseFragment() {
 
         val authorsListDateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
 
-        fun bind(item: AuthorData) {
+        fun bind(item: IdAuthorData) {
             view.apply {
                 author_item_name.text = item.name
                 author_item_surname.text = item.surname
@@ -83,16 +83,16 @@ class AuthorsListFragment : BaseFragment() {
                 author_item_country_name.text = item.countryName
             }
             view.setOnClickListener {
-                //listener.viewAuthor(item.id)
+                listener.viewAuthor(item.id)
             }
         }
     }
 
-    private inner class AuthorsAdapter(private var items: List<AuthorData>) :
+    private inner class AuthorsAdapter(private var items: List<IdAuthorData>) :
             RecyclerView.Adapter<AuthorsViewHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, p1: Int): AuthorsViewHolder {
             val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.playbill_item, parent, false)
+                    .inflate(R.layout.authors_list_item, parent, false)
             return AuthorsViewHolder(view)
         }
 

@@ -7,15 +7,12 @@ import android.support.v4.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
-import android.view.ViewGroup
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import ru.nsu.fit.theater.base.IAuthorFragmentListener
-import ru.nsu.fit.theater.retrofit.model.AuthorData
 import ru.nsu.fit.theater.view.authors.AuthorsListFragment
 import ru.nsu.fit.theater.view.authors.CreateAuthorFragment
 import ru.nsu.fit.theater.view.authors.ViewAuthorFragment
@@ -84,6 +81,9 @@ class MainActivity : AppCompatActivity(),
             R.id.nav_authors -> {
                 openAuthorsList()
             }
+            R.id.nav_playbill -> {
+                onPlaybillCreate()
+            }
         }
 
         drawer_layout.closeDrawer(GravityCompat.START)
@@ -99,10 +99,12 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onErrorAuthorsListLoading() {
+        Toast.makeText(this, "Error while loading author view", Toast.LENGTH_SHORT).show()
         supportFragmentManager.popBackStack(AuthorsListFragment.TAG, POP_BACK_STACK_INCLUSIVE)
     }
 
     override fun onErrorAuthorLoading() {
+        Toast.makeText(this, "Error while loading author view", Toast.LENGTH_SHORT).show()
         supportFragmentManager.popBackStack(ViewAuthorFragment.TAG, POP_BACK_STACK_INCLUSIVE)
     }
 

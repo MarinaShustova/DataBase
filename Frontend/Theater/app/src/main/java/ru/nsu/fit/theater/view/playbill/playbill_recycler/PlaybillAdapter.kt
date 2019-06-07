@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import ru.nsu.fit.theater.R
 import ru.nsu.fit.theater.model.PlaybillItem
 
-class PlaybillAdapter(private var items: ArrayList<PlaybillItem>) : RecyclerView.Adapter<PlaybillViewHolder>() {
+class PlaybillAdapter(private var items: List<PlaybillItem>) : RecyclerView.Adapter<PlaybillViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlaybillViewHolder {
         val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.playbill_item, parent, false)
@@ -21,16 +21,6 @@ class PlaybillAdapter(private var items: ArrayList<PlaybillItem>) : RecyclerView
 
     override fun onBindViewHolder(viewHolder: PlaybillViewHolder, position: Int) {
         viewHolder.bind(items[position])
-    }
-
-    fun addItem(item: PlaybillItem) {
-        items.add(item)
-        notifyItemInserted(items.lastIndex)
-    }
-
-    fun removeItemAt(position: Int) {
-        items.removeAt(position)
-        notifyItemRemoved(position)
     }
 
 }

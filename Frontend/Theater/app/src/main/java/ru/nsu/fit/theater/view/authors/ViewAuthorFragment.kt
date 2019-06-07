@@ -2,6 +2,7 @@ package ru.nsu.fit.theater.view.authors
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import kotlinx.android.synthetic.main.fragment_author_view.*
 import ru.nsu.fit.theater.App
 import ru.nsu.fit.theater.R
@@ -11,6 +12,7 @@ import ru.nsu.fit.theater.control.IController
 import ru.nsu.fit.theater.control.authors.IAuthorsController
 import ru.nsu.fit.theater.control.authors.RetrofitAuthorsController
 import ru.nsu.fit.theater.retrofit.model.AuthorData
+import ru.nsu.fit.theater.retrofit.model.IdAuthorData
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -51,18 +53,20 @@ class ViewAuthorFragment : BaseFragment() {
             return
         }
         controller.getAuthor(id, object : IAuthorsController.IGetAuthorCallback {
-            override fun onAuthorLoaded(author: AuthorData) {
+            override fun onAuthorLoaded(author: IdAuthorData) {
                 author_name.text = author.name
                 author_surname.text = author.surname
                 author_birth.text = authorDateFormat.format(author.birthDate)
                 if (author.deathDate != null) {
                     author_death.text = authorDateFormat.format(author.deathDate)
+                } else {
+                    author_death.text = "Пока не умер"
                 }
                 author_country_name.text = author.countryName
             }
 
             override fun onError() {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+               Toast.makeText(activity, "Error while loading author view", Toast.LENGTH_SHORT).show()
             }
         })
     }

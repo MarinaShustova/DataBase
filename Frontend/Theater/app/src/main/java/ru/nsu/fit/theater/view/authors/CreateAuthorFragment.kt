@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import kotlinx.android.synthetic.main.fragment_author_edit.*
 import ru.nsu.fit.theater.App
 import ru.nsu.fit.theater.R
@@ -77,11 +78,11 @@ class CreateAuthorFragment : BaseFragment() {
                     author_country_name_spinner.selectedItem.toString()
             ), object : IAuthorsController.ICreateAuthorCallback {
                 override fun onAuthorCreated() {
-                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                    Toast.makeText(activity, "Successful loading author view", Toast.LENGTH_SHORT).show()
                 }
 
                 override fun onError() {
-                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                    Toast.makeText(activity, "Error while loading author view", Toast.LENGTH_SHORT).show()
                 }
             })
             listener.saveAuthor()

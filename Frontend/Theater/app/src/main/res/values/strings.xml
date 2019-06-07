@@ -12,8 +12,9 @@
     <string name="buy_ticket">  Купить билет  </string>
     <string name="selected_item">Selected item:</string>
     <string name="actors">Актеры</string>
-    <string name="authors">Актеры</string>
+    <string name="authors">Авторы</string>
     <string name="validation_error_text">Поле не может быть пустым</string>
     <string name="date_validation_error_text">Формат даты не соответствует шаблону: yyyy-[m]m-[d]d</string>
     <string name="date_order_error_text">Неверный логический порядок дат</string>
+    <string name="playbill">Афиша</string>
 </resources>

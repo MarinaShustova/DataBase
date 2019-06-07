@@ -91,7 +91,7 @@ class ShowDao(private val dataSource: DataSource) {
     fun getPlaybills(): List<PlaybillData> {
         val stmt = dataSource.connection.prepareStatement(
                 "SELECT shows.id show_id, shows.show_date date, shows.premiere premiere," +
-                        " specs.name name, specs.age_category age\n" +
+                        " specs.name spec_name, specs.age_category age\n" +
                         "FROM shows AS shows\n" +
                         "JOIN performances AS perfs ON shows.performance_id = perfs.id\n" +
                         "JOIN spectacles AS specs ON perfs.spectacle_id = specs.id\n"
@@ -103,7 +103,7 @@ class ShowDao(private val dataSource: DataSource) {
             val data = PlaybillData(
                     queryResult.getDate("date"),
                     queryResult.getBoolean("premiere"),
-                    queryResult.getString("name"),
+                    queryResult.getString("spec_name"),
                     queryResult.getInt("age"),
                     queryResult.getInt("show_id")
             )
