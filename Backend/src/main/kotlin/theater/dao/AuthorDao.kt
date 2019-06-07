@@ -96,7 +96,9 @@ class AuthorDao(private val dataSource: DataSource) {
 
         val authorsList = ArrayList<AuthorData>()
         while (queryResult.next()) {
-            authorsList.add(AuthorData(queryResult.getString("author_name"),
+            authorsList.add(AuthorData(
+                    queryResult.getInt("author_id"),
+                    queryResult.getString("author_name"),
                     queryResult.getString("surname"),
                     queryResult.getDate("birth_date"),
                     queryResult.getDate("death_date"),
