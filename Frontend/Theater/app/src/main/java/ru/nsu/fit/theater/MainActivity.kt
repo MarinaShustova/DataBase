@@ -19,7 +19,6 @@ import ru.nsu.fit.theater.retrofit.model.AuthorData
 import ru.nsu.fit.theater.view.authors.AuthorsListFragment
 import ru.nsu.fit.theater.view.authors.CreateAuthorFragment
 import ru.nsu.fit.theater.view.authors.ViewAuthorFragment
-import ru.nsu.fit.theater.view.authors.authors_recycler.AuthorsViewHolder
 import ru.nsu.fit.theater.view.playbill.PlaybillFragment
 import ru.nsu.fit.theater.view.tickets.TicketsActivity
 
