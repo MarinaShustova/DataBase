@@ -1,6 +1,9 @@
 package theater.dao
 
+import theater.model.Genre
 import theater.model.Show
+import theater.model.Spectacle
+import theater.model.data.PlaybillData
 import java.sql.Statement
 import javax.sql.DataSource
 
@@ -83,5 +86,29 @@ class ShowDao(private val dataSource: DataSource) {
         )
         stmt.setInt(1, showId)
         stmt.executeUpdate()
+    }
+
+    fun getPlaybills(): List<PlaybillData> {
+        val stmt = dataSource.connection.prepareStatement(
+                "SELECT shows.id show_id, shows.show_date date, shows.premiere premiere," +
+                        " specs.name name, specs.age_category age\n" +
+                        "FROM shows AS shows\n" +
+                        "JOIN performances AS perfs ON shows.performance_id = perfs.id\n" +
+                        "JOIN spectacles AS specs ON perfs.spectacle_id = specs.id\n"
+        )
+        val queryResult = stmt.executeQuery()
+
+        val out = mutableListOf<PlaybillData>()
+        while (queryResult.next()){
+            val data = PlaybillData(
+                    queryResult.getDate("date"),
+                    queryResult.getBoolean("premiere"),
+                    queryResult.getString("name"),
+                    queryResult.getInt("age"),
+                    queryResult.getInt("show_id")
+            )
+            out.add(data)
+        }
+        return out
     }
 }

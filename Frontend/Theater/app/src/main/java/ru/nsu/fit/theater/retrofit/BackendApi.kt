@@ -5,10 +5,7 @@ package ru.nsu.fit.theater.retrofit
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.*
-import ru.nsu.fit.theater.model.Actor
-import ru.nsu.fit.theater.model.PerformanceInfo
-import ru.nsu.fit.theater.model.Producer
-import ru.nsu.fit.theater.model.Spectacle
+import ru.nsu.fit.theater.model.*
 import ru.nsu.fit.theater.retrofit.model.*
 import java.sql.Timestamp
 
@@ -359,6 +356,9 @@ interface BackendApi {
 
     @POST("/shows/delete/{id}")
     fun deleteShow(@Path("id") id: Int): Call<ResponseBody>
+
+    @GET("/shows/playbills")
+    fun getPlaybills(): Call<List<PlaybillItem>>
     //endregion
 
     //region Spectacles
