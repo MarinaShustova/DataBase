@@ -11,4 +11,5 @@
     <string name="Ok">Ок</string>
     <string name="cancel">Отмена</string>
     <string name="buy_ticket">  Купить билет  </string>
+    <string name="selected_item">Selected item:</string>
 </resources>
