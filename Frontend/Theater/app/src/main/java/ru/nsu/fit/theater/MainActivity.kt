@@ -13,6 +13,7 @@ import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import ru.nsu.fit.theater.base.IAuthorFragmentListener
+import ru.nsu.fit.theater.base.IShowFragmentListener
 import ru.nsu.fit.theater.view.authors.AuthorsListFragment
 import ru.nsu.fit.theater.view.authors.CreateAuthorFragment
 import ru.nsu.fit.theater.view.authors.ViewAuthorFragment
@@ -21,7 +22,7 @@ import ru.nsu.fit.theater.view.tickets.TicketsActivity
 
 class MainActivity : AppCompatActivity(),
         NavigationView.OnNavigationItemSelectedListener,
-        IAuthorFragmentListener {
+        IAuthorFragmentListener, IShowFragmentListener {
 
     companion object {
         const val OPEN_TICKETS_LIST = 7845
@@ -82,7 +83,7 @@ class MainActivity : AppCompatActivity(),
                 openAuthorsList()
             }
             R.id.nav_playbill -> {
-                onPlaybillCreate()
+                openPlaybill()
             }
         }
 
@@ -115,6 +116,14 @@ class MainActivity : AppCompatActivity(),
                 .commit()
     }
 
+    private fun openPlaybill() {
+        supportActionBar?.title = "АФиша"
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.container, PlaybillFragment.newInstance())
+                .addToBackStack(PlaybillFragment.TAG)
+                .commit()
+    }
+
     fun openTicketsList() {
         val intent = Intent(this, TicketsActivity::class.java)
         startActivityForResult(intent, OPEN_TICKETS_LIST)
@@ -128,6 +137,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun viewAuthor(id: Int) {
+        supportActionBar?.title = "Автор"
         supportFragmentManager.beginTransaction()
                 .replace(R.id.container, ViewAuthorFragment.newInstance(id))
                 .addToBackStack(ViewAuthorFragment.TAG)
@@ -135,6 +145,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun openAuthorsList() {
+        supportActionBar?.title = "Авторы"
         supportFragmentManager.beginTransaction()
                 .replace(R.id.container, AuthorsListFragment.newInstance())
                 .addToBackStack(AuthorsListFragment.TAG)
@@ -146,6 +157,12 @@ class MainActivity : AppCompatActivity(),
                 .replace(R.id.container, AuthorsListFragment.newInstance())
                 .addToBackStack(AuthorsListFragment.TAG)
                 .commit()
+    }
+
+    override fun openShowTickets(id: Int) {
+        val intent = Intent(this, TicketsActivity::class.java)
+        intent.putExtra(TicketsActivity.SHOW_ID_KEY, id)
+        startActivity(intent)
     }
 
 }
