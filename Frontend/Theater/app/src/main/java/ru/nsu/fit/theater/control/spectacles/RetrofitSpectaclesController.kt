@@ -5,7 +5,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import ru.nsu.fit.theater.App
-import ru.nsu.fit.theater.retrofit.model.IdSpectacleData
+import ru.nsu.fit.theater.model.Spectacle
 import ru.nsu.fit.theater.retrofit.model.SpectacleData
 import java.sql.Timestamp
 
@@ -37,12 +37,12 @@ class RetrofitSpectaclesController: ISpectaclesController {
     }
 
     override fun getSpectacle(id: Int, callback: ISpectaclesController.IGetSpectacleCallback) {
-        App.api.getSpectacle(id).enqueue(object : Callback<SpectacleData> {
-            override fun onFailure(call: Call<SpectacleData>, t: Throwable) {
+        App.api.getSpectacle(id).enqueue(object : Callback<Spectacle> {
+            override fun onFailure(call: Call<Spectacle>, t: Throwable) {
                 callback.onError()
             }
 
-            override fun onResponse(call: Call<SpectacleData>, response: Response<SpectacleData>) {
+            override fun onResponse(call: Call<Spectacle>, response: Response<Spectacle>) {
                 if (!response.isSuccessful || response.body() == null){
                     callback.onError()
                 } else {
@@ -53,12 +53,12 @@ class RetrofitSpectaclesController: ISpectaclesController {
     }
 
     override fun getSpectacles(callback: ISpectaclesController.IGetSpectaclesCallback) {
-        App.api.getSpectacles().enqueue(object : Callback<List<IdSpectacleData>> {
-            override fun onFailure(call: Call<List<IdSpectacleData>>, t: Throwable) {
+        App.api.getSpectacles().enqueue(object : Callback<List<Spectacle>> {
+            override fun onFailure(call: Call<List<Spectacle>>, t: Throwable) {
                 callback.onError()
             }
 
-            override fun onResponse(call: Call<List<IdSpectacleData>>, response: Response<List<IdSpectacleData>>) {
+            override fun onResponse(call: Call<List<Spectacle>>, response: Response<List<Spectacle>>) {
                 if (!response.isSuccessful || response.body() == null){
                     callback.onError()
                 } else {
@@ -69,12 +69,12 @@ class RetrofitSpectaclesController: ISpectaclesController {
     }
 
     override fun getSpectaclesOfGenre(genre: String, callback: ISpectaclesController.IGetSpectaclesOfGenreCallback) {
-        App.api.getSpectaclesOfGenre(genre).enqueue(object : Callback<List<IdSpectacleData>> {
-            override fun onFailure(call: Call<List<IdSpectacleData>>, t: Throwable) {
+        App.api.getSpectaclesOfGenre(genre).enqueue(object : Callback<List<Spectacle>> {
+            override fun onFailure(call: Call<List<Spectacle>>, t: Throwable) {
                 callback.onError()
             }
 
-            override fun onResponse(call: Call<List<IdSpectacleData>>, response: Response<List<IdSpectacleData>>) {
+            override fun onResponse(call: Call<List<Spectacle>>, response: Response<List<Spectacle>>) {
                 if (!response.isSuccessful || response.body() == null){
                     callback.onError()
                 } else {
@@ -85,12 +85,12 @@ class RetrofitSpectaclesController: ISpectaclesController {
     }
 
     override fun getSpectaclesOfAuthor(id: Int, callback: ISpectaclesController.IGetSpectaclesOfAuthorCallback) {
-        App.api.getSpectaclesOfAuthor(id).enqueue(object : Callback<List<IdSpectacleData>> {
-            override fun onFailure(call: Call<List<IdSpectacleData>>, t: Throwable) {
+        App.api.getSpectaclesOfAuthor(id).enqueue(object : Callback<List<Spectacle>> {
+            override fun onFailure(call: Call<List<Spectacle>>, t: Throwable) {
                 callback.onError()
             }
 
-            override fun onResponse(call: Call<List<IdSpectacleData>>, response: Response<List<IdSpectacleData>>) {
+            override fun onResponse(call: Call<List<Spectacle>>, response: Response<List<Spectacle>>) {
                 if (!response.isSuccessful || response.body() == null){
                     callback.onError()
                 } else {
@@ -101,12 +101,12 @@ class RetrofitSpectaclesController: ISpectaclesController {
     }
 
     override fun getSpectaclesOfCountry(name: String, callback: ISpectaclesController.IGetSpectaclesOfCountryCallback) {
-        App.api.getSpectaclesOfCountry(name).enqueue(object : Callback<List<IdSpectacleData>> {
-            override fun onFailure(call: Call<List<IdSpectacleData>>, t: Throwable) {
+        App.api.getSpectaclesOfCountry(name).enqueue(object : Callback<List<Spectacle>> {
+            override fun onFailure(call: Call<List<Spectacle>>, t: Throwable) {
                 callback.onError()
             }
 
-            override fun onResponse(call: Call<List<IdSpectacleData>>, response: Response<List<IdSpectacleData>>) {
+            override fun onResponse(call: Call<List<Spectacle>>, response: Response<List<Spectacle>>) {
                 if (!response.isSuccessful || response.body() == null){
                     callback.onError()
                 } else {
@@ -117,12 +117,12 @@ class RetrofitSpectaclesController: ISpectaclesController {
     }
 
     override fun getSpectaclesOfCentury(cent: Int, callback: ISpectaclesController.IGetSpectaclesOfCenturyCallback) {
-        App.api.getSpectaclesOfCentury(cent).enqueue(object : Callback<List<IdSpectacleData>> {
-            override fun onFailure(call: Call<List<IdSpectacleData>>, t: Throwable) {
+        App.api.getSpectaclesOfCentury(cent).enqueue(object : Callback<List<Spectacle>> {
+            override fun onFailure(call: Call<List<Spectacle>>, t: Throwable) {
                 callback.onError()
             }
 
-            override fun onResponse(call: Call<List<IdSpectacleData>>, response: Response<List<IdSpectacleData>>) {
+            override fun onResponse(call: Call<List<Spectacle>>, response: Response<List<Spectacle>>) {
                 if (!response.isSuccessful || response.body() == null){
                     callback.onError()
                 } else {
@@ -133,12 +133,12 @@ class RetrofitSpectaclesController: ISpectaclesController {
     }
 
     override fun getSpectaclesOfPeriod(from: Timestamp, to: Timestamp, callback: ISpectaclesController.IGetSpectaclesOfPeriodCallback) {
-        App.api.getSpectaclesOfPeriod(from, to).enqueue(object : Callback<List<IdSpectacleData>> {
-            override fun onFailure(call: Call<List<IdSpectacleData>>, t: Throwable) {
+        App.api.getSpectaclesOfPeriod(from, to).enqueue(object : Callback<List<Spectacle>> {
+            override fun onFailure(call: Call<List<Spectacle>>, t: Throwable) {
                 callback.onError()
             }
 
-            override fun onResponse(call: Call<List<IdSpectacleData>>, response: Response<List<IdSpectacleData>>) {
+            override fun onResponse(call: Call<List<Spectacle>>, response: Response<List<Spectacle>>) {
                 if (!response.isSuccessful || response.body() == null){
                     callback.onError()
                 } else {

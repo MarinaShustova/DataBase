@@ -8,6 +8,7 @@ import retrofit2.http.*
 import ru.nsu.fit.theater.model.Actor
 import ru.nsu.fit.theater.model.PerformanceInfo
 import ru.nsu.fit.theater.model.Producer
+import ru.nsu.fit.theater.model.Spectacle
 import ru.nsu.fit.theater.retrofit.model.*
 import java.sql.Timestamp
 
@@ -371,28 +372,28 @@ interface BackendApi {
     ): Call<ResponseBody>
 
     @GET("/spectacles/{id}")
-    fun getSpectacle(@Path("id") d: Int): Call<SpectacleData>
+    fun getSpectacle(@Path("id") d: Int): Call<Spectacle>
 
     @GET("/spectacles/all")
-    fun getSpectacles(): Call<List<IdSpectacleData>>
+    fun getSpectacles(): Call<List<Spectacle>>
 
     @GET("/spectacles/genre")
-    fun getSpectaclesOfGenre(@Query("name") genre: String): Call<List<IdSpectacleData>>
+    fun getSpectaclesOfGenre(@Query("name") genre: String): Call<List<Spectacle>>
 
     @GET("/spectacles/author")
-    fun getSpectaclesOfAuthor(@Query("id") id: Int): Call<List<IdSpectacleData>>
+    fun getSpectaclesOfAuthor(@Query("id") id: Int): Call<List<Spectacle>>
 
     @GET("/spectacles/country")
-    fun getSpectaclesOfCountry(@Query("name") country: String): Call<List<IdSpectacleData>>
+    fun getSpectaclesOfCountry(@Query("name") country: String): Call<List<Spectacle>>
 
     @GET("/spectacles/get")
-    fun getSpectaclesOfCentury(@Query("century") century: Int): Call<List<IdSpectacleData>>
+    fun getSpectaclesOfCentury(@Query("century") century: Int): Call<List<Spectacle>>
 
     @GET("/spectacles/get/")
     fun getSpectaclesOfPeriod(
             @Query("start") from: Timestamp,
             @Query("end") to: Timestamp
-    ): Call<List<IdSpectacleData>>
+    ): Call<List<Spectacle>>
 
     @POST("/spectacles/update")
     fun updateSpectacle(@Query("id") id: Int, @Body data: SpectacleData): Call<ResponseBody>

@@ -14,7 +14,7 @@ interface IController {
             ROLES,
             SERVANTS,
         SHOWS,
-        SPECTACLES,
+                SPECTACLES,
         TICKETS,
             TOURS
     }
