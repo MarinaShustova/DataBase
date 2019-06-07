@@ -9,7 +9,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <android.support.constraint.ConstraintLayout
-        android:layout_width="380dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipChildren="true">
 
@@ -53,9 +53,8 @@
             android:id="@+id/spectacle_is_premiere"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="24dp"
             android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
             android:text="премьера"
             android:textSize="16sp"
             app:layout_constraintBottom_toTopOf="@id/spectacle_name"
@@ -67,14 +66,15 @@
             android:id="@+id/spectacle_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="8dp"
             android:text="Красная шапочка"
-            android:textSize="32sp"
             android:textColor="@color/black"
-            app:layout_constraintTop_toBottomOf="@id/spectacle_is_premiere"
+            android:textSize="32sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/spectacle_is_premiere" />
 
         <Button
             android:id="@+id/product_view_button_save"
@@ -95,11 +95,11 @@
             android:id="@+id/spectacle_age"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:layout_marginEnd="10dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
             android:text="16+"
             android:textColor="@color/red"
-            android:textSize="12sp"
+            android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
