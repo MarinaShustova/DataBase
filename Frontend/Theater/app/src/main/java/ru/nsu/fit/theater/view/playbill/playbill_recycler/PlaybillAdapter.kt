@@ -1,4 +1,4 @@
-package ru.nsu.fit.theater.playbill_recycler
+package ru.nsu.fit.theater.view.playbill.playbill_recycler
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater

@@ -3,7 +3,6 @@ package ru.nsu.fit.theater
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.TextInputEditText
-import android.support.design.widget.TextInputLayout
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -62,7 +61,7 @@ class CreateSpectacle : AppCompatActivity()  {
                     }
                 })
         val a = (App.controllers[IController.Type.AUTHORS] as RetrofitAuthorsController)
-                .getAuhtors(object : ICallback, IAuthorsController.IGetAuthorsCallback {
+                .getAuthors(object : ICallback, IAuthorsController.IGetAuthorsCallback {
                     override fun onAuthorsLoaded(authors: List<AuthorData>) {
                         for (ad : AuthorData in authors){
                             authorsList.add(ad.name+" "+ad.surname)

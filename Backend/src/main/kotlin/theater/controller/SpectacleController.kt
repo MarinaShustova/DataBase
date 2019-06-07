@@ -30,9 +30,8 @@ class SpectacleController(private val spectacleService: SpectacleService) {
     }
 
     @GetMapping("/{id}")
-    fun getSpectacle(@PathVariable id: Int): SpectacleData {
-        val data = SpectacleData(spectacleService.getSpectacle(id) ?: throw SpectacleNotFoundException())
-        return data
+    fun getSpectacle(@PathVariable id: Int): Spectacle {
+        return spectacleService.getSpectacle(id) ?: throw SpectacleNotFoundException()
     }
 
     @GetMapping("/get/all")

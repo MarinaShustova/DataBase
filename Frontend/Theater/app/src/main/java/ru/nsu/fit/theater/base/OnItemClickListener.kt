@@ -1,4 +1,4 @@
-package ru.nsu.fit.avoloshina.fricomanager.base
+package ru.nsu.fit.theater.base
 
 interface OnItemClickListener<T> {
 

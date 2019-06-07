@@ -1,14 +1,12 @@
-package ru.nsu.fit.theater
+package ru.nsu.fit.theater.view.playbill
 
-import android.os.Bundle
-import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
-import android.view.View
 import kotlinx.android.synthetic.main.fragment_playbill.*
+import ru.nsu.fit.theater.R
 import ru.nsu.fit.theater.base.BaseFragment
 import ru.nsu.fit.theater.controller.PlaybillController
 import ru.nsu.fit.theater.model.PlaybillItem
-import ru.nsu.fit.theater.playbill_recycler.PlaybillAdapter
+import ru.nsu.fit.theater.view.playbill.playbill_recycler.PlaybillAdapter
 
 class PlaybillFragment : BaseFragment() {
 
@@ -35,14 +33,6 @@ class PlaybillFragment : BaseFragment() {
         adapter = PlaybillAdapter(playbill)
         configRecycler()
     }
-
-//    override fun onStart() {
-//        super.onStart()
-//
-//        playbill = controller.getSpectacles()
-//        adapter = PlaybillAdapter(playbill)
-//        configRecycler()
-//    }
 
     private fun configRecycler() {
         playbill_recycler_view.layoutManager = LinearLayoutManager(activity)

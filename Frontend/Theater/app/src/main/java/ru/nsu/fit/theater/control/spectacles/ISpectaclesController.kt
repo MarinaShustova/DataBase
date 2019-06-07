@@ -2,7 +2,7 @@ package ru.nsu.fit.theater.control.spectacles
 
 import ru.nsu.fit.theater.control.ICallback
 import ru.nsu.fit.theater.control.IController
-import ru.nsu.fit.theater.retrofit.model.IdSpectacleData
+import ru.nsu.fit.theater.model.Spectacle
 import ru.nsu.fit.theater.retrofit.model.SpectacleData
 import java.sql.Timestamp
 
@@ -16,33 +16,33 @@ interface ISpectaclesController: IController {
     }
 
     interface IGetSpectacleCallback: ICallback {
-        fun onSpectacleLoaded(spectacle: SpectacleData)
+        fun onSpectacleLoaded(spectacle: Spectacle)
     }
 
     interface IGetSpectaclesCallback: ICallback {
-        fun onSpectaclesLoaded(spectacles: List<IdSpectacleData>)
+        fun onSpectaclesLoaded(spectacles: List<Spectacle>)
     }
 
     interface IGetSpectaclesOfGenreCallback: ICallback {
-        fun onSpectaclesLoaded(spectacles: List<IdSpectacleData>)
+        fun onSpectaclesLoaded(spectacles: List<Spectacle>)
 
     }
 
     interface IGetSpectaclesOfAuthorCallback: ICallback {
-        fun onSpectaclesLoaded(spectacles: List<IdSpectacleData>)
+        fun onSpectaclesLoaded(spectacles: List<Spectacle>)
 
     }
 
     interface IGetSpectaclesOfCountryCallback: ICallback {
-        fun onSpectaclesLoaded(spectacles: List<IdSpectacleData>)
+        fun onSpectaclesLoaded(spectacles: List<Spectacle>)
     }
 
     interface IGetSpectaclesOfCenturyCallback: ICallback {
-        fun onSpectaclesLoaded(spectacles: List<IdSpectacleData>)
+        fun onSpectaclesLoaded(spectacles: List<Spectacle>)
     }
 
     interface IGetSpectaclesOfPeriodCallback: ICallback {
-        fun onSpectaclesLoaded(spectacles: List<IdSpectacleData>)
+        fun onSpectaclesLoaded(spectacles: List<Spectacle>)
     }
 
     interface IUpdateSpectacleCallback: ICallback {

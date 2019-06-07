@@ -6,6 +6,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import ru.nsu.fit.theater.App
 import ru.nsu.fit.theater.retrofit.model.AuthorData
+import ru.nsu.fit.theater.retrofit.model.IdAuthorData
 
 class RetrofitAuthorsController: IAuthorsController {
     override fun createAuthor(data: AuthorData, callback: IAuthorsController.ICreateAuthorCallback) {
@@ -22,12 +23,12 @@ class RetrofitAuthorsController: IAuthorsController {
     }
 
     override fun getAuthor(id: Int, callback: IAuthorsController.IGetAuthorCallback) {
-        App.api.getAuthorById(id).enqueue(object : Callback<AuthorData> {
-            override fun onFailure(call: Call<AuthorData>, t: Throwable) {
+        App.api.getAuthorById(id).enqueue(object : Callback<IdAuthorData> {
+            override fun onFailure(call: Call<IdAuthorData>, t: Throwable) {
                 callback.onError()
             }
 
-            override fun onResponse(call: Call<AuthorData>, response: Response<AuthorData>) {
+            override fun onResponse(call: Call<IdAuthorData>, response: Response<IdAuthorData>) {
                 if (!response.isSuccessful || response.body() == null){
                     callback.onError()
                 } else {
@@ -37,13 +38,13 @@ class RetrofitAuthorsController: IAuthorsController {
         })
     }
 
-    override fun getAuhtors(callback: IAuthorsController.IGetAuthorsCallback) {
-        App.api.getAuthors().enqueue(object : Callback<List<AuthorData>> {
-            override fun onFailure(call: Call<List<AuthorData>>, t: Throwable) {
+    override fun getAuthors(callback: IAuthorsController.IGetAuthorsCallback) {
+        App.api.getAuthors().enqueue(object : Callback<List<IdAuthorData>> {
+            override fun onFailure(call: Call<List<IdAuthorData>>, t: Throwable) {
                 callback.onError()
             }
 
-            override fun onResponse(call: Call<List<AuthorData>>, response: Response<List<AuthorData>>) {
+            override fun onResponse(call: Call<List<IdAuthorData>>, response: Response<List<IdAuthorData>>) {
                 if (!response.isSuccessful || response.body() == null){
                     callback.onError()
                 } else {
@@ -54,12 +55,12 @@ class RetrofitAuthorsController: IAuthorsController {
     }
 
     override fun getAuthorsOfCountry(name: String, callback: IAuthorsController.IGetAuthorsOfCountryCallback) {
-        App.api.getAuthorsOfCountry(name).enqueue(object : Callback<List<AuthorData>> {
-            override fun onFailure(call: Call<List<AuthorData>>, t: Throwable) {
+        App.api.getAuthorsOfCountry(name).enqueue(object : Callback<List<IdAuthorData>> {
+            override fun onFailure(call: Call<List<IdAuthorData>>, t: Throwable) {
                 callback.onError()
             }
 
-            override fun onResponse(call: Call<List<AuthorData>>, response: Response<List<AuthorData>>) {
+            override fun onResponse(call: Call<List<IdAuthorData>>, response: Response<List<IdAuthorData>>) {
                 if (!response.isSuccessful || response.body() == null){
                     callback.onError()
                 } else {
@@ -70,12 +71,12 @@ class RetrofitAuthorsController: IAuthorsController {
     }
 
     override fun getAuthorsOfCentury(century: Int, callback: IAuthorsController.IGetAuthorsOfCenturyCallback) {
-        App.api.getAuthorsOfCentury(century).enqueue(object : Callback<List<AuthorData>> {
-            override fun onFailure(call: Call<List<AuthorData>>, t: Throwable) {
+        App.api.getAuthorsOfCentury(century).enqueue(object : Callback<List<IdAuthorData>> {
+            override fun onFailure(call: Call<List<IdAuthorData>>, t: Throwable) {
                 callback.onError()
             }
 
-            override fun onResponse(call: Call<List<AuthorData>>, response: Response<List<AuthorData>>) {
+            override fun onResponse(call: Call<List<IdAuthorData>>, response: Response<List<IdAuthorData>>) {
                 if (!response.isSuccessful || response.body() == null){
                     callback.onError()
                 } else {

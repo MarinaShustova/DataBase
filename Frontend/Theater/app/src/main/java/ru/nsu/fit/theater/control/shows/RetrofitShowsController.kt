@@ -5,6 +5,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import ru.nsu.fit.theater.App
+import ru.nsu.fit.theater.model.PlaybillItem
 import ru.nsu.fit.theater.retrofit.model.IdShowData
 import ru.nsu.fit.theater.retrofit.model.ShowData
 
@@ -76,6 +77,22 @@ class RetrofitShowsController: IShowsController {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if (response.isSuccessful) callback.onShowDeleted()
                 else callback.onError()
+            }
+        })
+    }
+
+    override fun getPlaybills(callback: IShowsController.IGetPlaybillsCallback) {
+        App.api.getPlaybills().enqueue(object : Callback<List<PlaybillItem>> {
+            override fun onFailure(call: Call<List<PlaybillItem>>, t: Throwable) {
+                callback.onError()
+            }
+
+            override fun onResponse(call: Call<List<PlaybillItem>>, response: Response<List<PlaybillItem>>) {
+                if (!response.isSuccessful || response.body() == null) {
+                    callback.onError()
+                } else {
+                    callback.onPlaybillsLoaded(response.body()!!)
+                }
             }
         })
     }
