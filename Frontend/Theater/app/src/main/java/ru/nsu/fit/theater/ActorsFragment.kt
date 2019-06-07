@@ -19,20 +19,20 @@ class ActorsFragment: BaseFragment() {
         }
     }
 
-    fun onCreate(){
-        val controller = App.controllers.get(IController.Type.ACTORS) as RetrofitActorsController
-        controller.getActors(object: IActorController.IGetActorsCallback {
-            override fun onError() {
-            }
-
-            override fun onActorsLoaded(a: List<ActorData>) {
-                actors = ArrayList(a)
-                println(actors)
-                adapter = ActorsAdapter(actors)
-                configRecycler()
-            }
-        })
-    }
+//    fun onCreate(){
+//        val controller = App.controllers.get(IController.Type.ACTORS) as RetrofitActorsController
+//        controller.getActors(object: IActorController.IGetActorsCallback {
+//            override fun onError() {
+//            }
+//
+//            override fun onActorsLoaded(a: List<ActorData>) {
+//                actors = ArrayList(a)
+//                println(actors)
+//                adapter = ActorsAdapter(actors)
+//                configRecycler()
+//            }
+//        })
+//    }
 
     override val layoutId: Int
         get() = R.layout.fragment_actors
@@ -42,23 +42,23 @@ class ActorsFragment: BaseFragment() {
 
     override fun onResume() {
         super.onResume()
-//TODO: uncomment this section
-        val controller = App.controllers.get(IController.Type.ACTORS) as RetrofitActorsController
-        controller.getActors(object: IActorController.IGetActorsCallback {
-            override fun onError() {
-            }
+////TODO: uncomment this section
+//        val controller = App.controllers.get(IController.Type.ACTORS) as RetrofitActorsController
+//        controller.getActors(object: IActorController.IGetActorsCallback {
+//            override fun onError() {
+//            }
+//
+//            override fun onActorsLoaded(a: List<ActorData>) {
+//                actors = ArrayList(a)
+//                println(actors)
+//                adapter = ActorsAdapter(actors)
+//                configRecycler()
+//            }
+//        })
 
-            override fun onActorsLoaded(a: List<ActorData>) {
-                actors = ArrayList(a)
-                println(actors)
-                adapter = ActorsAdapter(actors)
-                configRecycler()
-            }
-        })
-
-//        actors = initData()
-//        adapter = ActorsAdapter(actors)
-//        configRecycler()
+        actors = initData()
+        adapter = ActorsAdapter(actors)
+        configRecycler()
     }
 
 
