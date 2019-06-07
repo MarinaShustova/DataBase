@@ -85,6 +85,10 @@ class MainActivity : AppCompatActivity(),
             R.id.nav_playbill -> {
                 openPlaybill()
             }
+            R.id.nav_perfInfo -> {
+                val perfIntent = Intent(this, ChoosePerformanceActivity::class.java)
+                startActivity(perfIntent)
+            }
         }
 
         drawer_layout.closeDrawer(GravityCompat.START)

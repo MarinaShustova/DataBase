@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                                    xmlns:tools="http://schemas.android.com/tools"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="4dp"
+                                    app:cardCornerRadius="4dp"
+                                    android:elevation="4dp"
+                                    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <android.support.constraint.ConstraintLayout
+            android:layout_width="445dp"
+            android:layout_height="match_parent">
+
+        <TextView
+                android:text="TextView"
+                android:layout_width="376dp"
+                android:layout_height="56dp"
+                android:id="@+id/actor_output_name" android:textSize="24sp"
+                tools:ignore="MissingConstraints"
+                app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="4dp"
+                android:textColor="@color/black" android:layout_marginStart="16dp"
+                app:layout_constraintStart_toStartOf="parent"/>
+        <TextView
+                android:text="TextView"
+                android:layout_width="107dp"
+                android:layout_height="22dp"
+                android:id="@+id/actor_output_origin"
+                app:layout_constraintTop_toBottomOf="@+id/actor_output_hire"
+                tools:ignore="MissingConstraints" android:layout_marginTop="8dp" android:textSize="14sp"
+                android:layout_marginStart="16dp" app:layout_constraintStart_toStartOf="parent"/>
+        <TextView
+                android:text="TextView"
+                android:layout_width="174dp"
+                android:layout_height="25dp"
+                android:id="@+id/actor_output_birth"
+                tools:ignore="MissingConstraints"
+                app:layout_constraintTop_toBottomOf="@+id/textView9" app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="16dp"/>
+        <TextView
+                android:text="Дата рождения"
+                android:layout_width="154dp"
+                android:layout_height="20dp"
+                android:id="@+id/textView9"
+                app:layout_constraintTop_toBottomOf="@+id/actor_output_name"
+                tools:ignore="MissingConstraints" app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="16dp"/>
+        <TextView
+                android:text="Дата наема"
+                android:layout_width="161dp"
+                android:layout_height="20dp"
+                android:id="@+id/textView10"
+                tools:ignore="MissingConstraints"
+                app:layout_constraintTop_toBottomOf="@+id/actor_output_birth"
+                app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="16dp"/>
+        <TextView
+                android:text="TextView"
+                android:layout_width="188dp"
+                android:layout_height="31dp"
+                android:id="@+id/actor_output_hire"
+                tools:ignore="MissingConstraints"
+                app:layout_constraintTop_toBottomOf="@+id/textView10" app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="16dp"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/actor_output_student"
+                android:layout_marginTop="4dp"
+                app:layout_constraintTop_toBottomOf="@+id/actor_output_origin" tools:ignore="MissingConstraints"
+                android:textSize="12sp" app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="16dp"/>
+        <Button
+                android:text="Редактировать"
+                android:layout_width="140dp"
+                android:layout_height="38dp"
+                android:id="@+id/actor_edit_button"
+                android:textSize="12sp" app:layout_constraintStart_toEndOf="@+id/actor_output_origin"
+                android:layout_marginStart="72dp" android:layout_marginTop="116dp"
+                app:layout_constraintTop_toTopOf="parent"/>
+        <Button
+                android:text="удалить"
+                android:layout_width="141dp"
+                android:layout_height="35dp"
+                android:id="@+id/actor_delete_button"
+                app:layout_constraintTop_toBottomOf="@+id/actor_edit_button"
+                app:layout_constraintBottom_toBottomOf="parent" android:layout_marginBottom="18dp"
+                android:textSize="12sp" app:layout_constraintStart_toEndOf="@+id/actor_output_origin"
+                android:layout_marginStart="72dp" app:layout_constraintVertical_bias="0.0"/>
+    </android.support.constraint.ConstraintLayout>
+</android.support.v7.widget.CardView>

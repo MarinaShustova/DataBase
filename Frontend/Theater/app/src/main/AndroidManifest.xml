@@ -14,10 +14,23 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".ChoosePerformanceActivity"></activity>
+        <activity
+                android:name=".ActorsActivity"
+                android:label="Актеры">
+        </activity>
+        <activity
+                android:name=".CreateActorActivity"
+                android:label="Создать актера">
+        </activity>
+        <activity
+                android:name=".UpdateActorActivity"
+                android:label="Редактировать актера">
+        </activity>
         <activity
             android:name=".PerformanceActivity"
             android:label="@string/title_activity_performance"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".CreateSpectacle" />
         <activity
             android:name=".MainActivity"
@@ -29,7 +42,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.tickets.TicketsActivity"></activity>
+        <activity android:name=".view.tickets.TicketsActivity" />
     </application>
 
 </manifest>
