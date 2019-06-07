@@ -1,4 +1,4 @@
-package ru.nsu.fit.theater.tickets_recycler
+package ru.nsu.fit.theater.view.tickets.tickets_recycler
 
 import android.support.v7.widget.RecyclerView
 import android.view.View

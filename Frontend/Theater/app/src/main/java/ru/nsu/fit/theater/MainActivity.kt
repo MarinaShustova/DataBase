@@ -2,18 +2,34 @@ package ru.nsu.fit.theater
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.design.widget.NavigationView
+import android.support.v4.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.RecyclerView
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
+import android.view.ViewGroup
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
-import ru.nsu.fit.theater.model.PlaybillItem
+import ru.nsu.fit.theater.base.IAuthorFragmentListener
+import ru.nsu.fit.theater.retrofit.model.AuthorData
+import ru.nsu.fit.theater.view.authors.AuthorsListFragment
+import ru.nsu.fit.theater.view.authors.CreateAuthorFragment
+import ru.nsu.fit.theater.view.authors.ViewAuthorFragment
+import ru.nsu.fit.theater.view.authors.authors_recycler.AuthorsViewHolder
+import ru.nsu.fit.theater.view.playbill.PlaybillFragment
+import ru.nsu.fit.theater.view.tickets.TicketsActivity
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity(),
+        NavigationView.OnNavigationItemSelectedListener,
+        IAuthorFragmentListener {
+
+    companion object {
+        const val OPEN_TICKETS_LIST = 7845
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,10 +82,29 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_actors -> {
                 // Handle the camera action
             }
+            R.id.nav_authors -> {
+                openAuthorsList()
+            }
         }
 
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == OPEN_TICKETS_LIST) {
+            //supportFragmentManager.popBackStack()
+        }
+    }
+
+    override fun onErrorAuthorsListLoading() {
+        supportFragmentManager.popBackStack(AuthorsListFragment.TAG, POP_BACK_STACK_INCLUSIVE)
+    }
+
+    override fun onErrorAuthorLoading() {
+        supportFragmentManager.popBackStack(ViewAuthorFragment.TAG, POP_BACK_STACK_INCLUSIVE)
     }
 
     private fun onPlaybillCreate() {
@@ -78,4 +113,38 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 .addToBackStack(PlaybillFragment.TAG)
                 .commit()
     }
+
+    fun openTicketsList() {
+        val intent = Intent(this, TicketsActivity::class.java)
+        startActivityForResult(intent, OPEN_TICKETS_LIST)
+    }
+
+    override fun createAuthor() {
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.container, CreateAuthorFragment.newInstance())
+                .addToBackStack(ViewAuthorFragment.TAG)
+                .commit()
+    }
+
+    override fun viewAuthor(id: Int) {
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.container, ViewAuthorFragment.newInstance(id))
+                .addToBackStack(ViewAuthorFragment.TAG)
+                .commit()
+    }
+
+    private fun openAuthorsList() {
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.container, AuthorsListFragment.newInstance())
+                .addToBackStack(AuthorsListFragment.TAG)
+                .commit()
+    }
+
+    override fun saveAuthor() {
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.container, AuthorsListFragment.newInstance())
+                .addToBackStack(AuthorsListFragment.TAG)
+                .commit()
+    }
+
 }

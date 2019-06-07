@@ -5,7 +5,9 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import kotlinx.android.synthetic.main.errror_screen.*
 import org.slf4j.LoggerFactory
+import ru.nsu.fit.theater.R
 
 abstract class BaseFragment: Fragment() {
 

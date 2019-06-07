@@ -37,7 +37,7 @@ class RetrofitAuthorsController: IAuthorsController {
         })
     }
 
-    override fun getAuhtors(callback: IAuthorsController.IGetAuthorsCallback) {
+    override fun getAuthors(callback: IAuthorsController.IGetAuthorsCallback) {
         App.api.getAuthors().enqueue(object : Callback<List<AuthorData>> {
             override fun onFailure(call: Call<List<AuthorData>>, t: Throwable) {
                 callback.onError()

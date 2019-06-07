@@ -37,7 +37,7 @@ interface IAuthorsController: IController {
 
     fun getAuthor(id: Int, callback: IGetAuthorCallback)
 
-    fun getAuhtors(callback: IGetAuthorsCallback)
+    fun getAuthors(callback: IGetAuthorsCallback)
 
     fun getAuthorsOfCountry(name: String, callback: IGetAuthorsOfCountryCallback)
 
