@@ -14,21 +14,22 @@
             android:layout_height="45dp"
             android:inputType="textPersonName"
             android:ems="10"
-            android:id="@+id/actor_input_name" android:hint="Name" tools:ignore="MissingConstraints"
-            tools:layout_editor_absoluteX="16dp" android:layout_marginTop="32dp"
-            app:layout_constraintTop_toTopOf="parent"/>
+            android:id="@+id/actor_input_name" android:hint="ФИО" tools:ignore="MissingConstraints"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="16dp"/>
     <EditText
             android:layout_width="322dp"
             android:layout_height="wrap_content"
             android:inputType="date"
             android:ems="10"
-            android:id="@+id/actor_input_birth" android:hint="Birth date" tools:ignore="MissingConstraints"
+            android:id="@+id/actor_input_birth" android:hint="Дата рождения" tools:ignore="MissingConstraints"
             app:layout_constraintTop_toBottomOf="@+id/actor_input_sex"
-            tools:layout_editor_absoluteX="16dp"/>
+            app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="16dp"/>
     <TextView
-            android:text="in format yyyy-mm-dd"
-            android:layout_width="158dp"
-            android:layout_height="18dp"
+            android:text="в формате yyyy-mm-dd"
+            android:layout_width="285dp"
+            android:layout_height="24dp"
             android:id="@+id/textView3" tools:ignore="MissingConstraints"
             app:layout_constraintTop_toBottomOf="@+id/actor_input_birth" android:layout_marginStart="8dp"
             app:layout_constraintStart_toStartOf="@+id/actor_input_birth"/>
@@ -37,61 +38,63 @@
             android:layout_height="wrap_content"
             android:inputType="textPersonName"
             android:ems="10"
-            tools:layout_editor_absoluteX="16dp"
-            android:id="@+id/actor_input_sex" android:hint="Sex" tools:ignore="MissingConstraints"
-            app:layout_constraintTop_toBottomOf="@+id/actor_input_name"/>
+            android:id="@+id/actor_input_sex" android:hint="Пол" tools:ignore="MissingConstraints"
+            app:layout_constraintTop_toBottomOf="@+id/actor_input_name" app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="16dp"/>
     <EditText
             android:layout_width="320dp"
             android:layout_height="43dp"
             android:inputType="number"
             android:ems="10"
-            android:id="@+id/actor_input_children_amount" android:hint="Children amount"
+            android:id="@+id/actor_input_children_amount" android:hint="Количество детей"
             tools:ignore="MissingConstraints"
-            tools:layout_editor_absoluteX="18dp"
-            app:layout_constraintTop_toBottomOf="@+id/textView3"/>
+            app:layout_constraintTop_toBottomOf="@+id/textView3" app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="16dp"/>
     <EditText
             android:layout_width="319dp"
             android:layout_height="43dp"
             android:inputType="number"
             android:ems="10"
-            tools:layout_editor_absoluteX="16dp"
-            android:id="@+id/actor_input_salary" android:hint="Salary" tools:ignore="MissingConstraints"
-            app:layout_constraintTop_toBottomOf="@+id/actor_input_children_amount"/>
+            android:id="@+id/actor_input_salary" android:hint="Зарплата" tools:ignore="MissingConstraints"
+            app:layout_constraintTop_toBottomOf="@+id/actor_input_children_amount"
+            app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="16dp"/>
     <EditText
             android:layout_width="319dp"
             android:layout_height="45dp"
             android:inputType="textPersonName"
             android:ems="10"
-            tools:layout_editor_absoluteX="17dp"
-            android:id="@+id/actor_input_origin" android:hint="Origin" tools:ignore="MissingConstraints"
-            app:layout_constraintTop_toBottomOf="@+id/actor_input_salary"/>
+            android:id="@+id/actor_input_origin" android:hint="Происхождение" tools:ignore="MissingConstraints"
+            app:layout_constraintTop_toBottomOf="@+id/actor_input_salary" app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="16dp"/>
     <EditText
             android:layout_width="319dp"
             android:layout_height="42dp"
             android:inputType="date"
             android:ems="10"
-            tools:layout_editor_absoluteX="17dp"
-            android:id="@+id/actor_input_hire" android:hint="Hire date" tools:ignore="MissingConstraints"
-            app:layout_constraintTop_toBottomOf="@+id/actor_input_origin"/>
+            android:id="@+id/actor_input_hire" android:hint="Дата приема" tools:ignore="MissingConstraints"
+            app:layout_constraintTop_toBottomOf="@+id/actor_input_origin" app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="16dp"/>
     <TextView
-            android:text="in format yyyy-mm-dd"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:text="в формате yyyy-mm-dd"
+            android:layout_width="288dp"
+            android:layout_height="25dp"
             android:id="@+id/textView8" tools:ignore="MissingConstraints"
             app:layout_constraintTop_toBottomOf="@+id/actor_input_hire"
             app:layout_constraintStart_toStartOf="@+id/actor_input_hire" android:layout_marginStart="8dp"/>
     <CheckBox
-            android:text="Student"
+            android:text="Студент"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:layout_editor_absoluteX="16dp" android:id="@+id/actor_input_student"
+            android:id="@+id/actor_input_student"
             tools:ignore="MissingConstraints"
-            android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@+id/textView8"/>
+            android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@+id/textView8"
+            app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="16dp"/>
     <Button
-            android:text="submit"
-            android:layout_width="98dp"
+            android:text="Отправить"
+            android:layout_width="135dp"
             android:layout_height="47dp"
-            tools:layout_editor_absoluteX="15dp" android:id="@+id/actor_input_submit"
+            android:id="@+id/actor_input_submit"
             tools:ignore="MissingConstraints" android:layout_marginTop="16dp"
-            app:layout_constraintTop_toBottomOf="@+id/actor_input_student"/>
+            app:layout_constraintTop_toBottomOf="@+id/actor_input_student" app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="16dp"/>
 </android.support.constraint.ConstraintLayout>
