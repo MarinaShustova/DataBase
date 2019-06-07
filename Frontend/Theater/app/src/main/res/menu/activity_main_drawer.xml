@@ -13,6 +13,10 @@
             android:id="@+id/nav_authors"
             android:icon="@drawable/ic_mode_edit"
             android:title="@string/authors" />
+        <item
+            android:id="@+id/nav_perfInfo"
+            android:icon="@drawable/ic_dashboard_black_24dp"
+            android:title="@string/spInfo" />
     </group>
 
 </menu>

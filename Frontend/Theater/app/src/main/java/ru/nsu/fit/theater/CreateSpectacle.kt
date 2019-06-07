@@ -18,6 +18,7 @@ import ru.nsu.fit.theater.control.spectacles.ISpectaclesController
 import ru.nsu.fit.theater.control.spectacles.RetrofitSpectaclesController
 import ru.nsu.fit.theater.retrofit.model.AuthorData
 import ru.nsu.fit.theater.retrofit.model.GenreData
+import ru.nsu.fit.theater.retrofit.model.IdAuthorData
 import ru.nsu.fit.theater.retrofit.model.SpectacleData
 
 class CreateSpectacle : AppCompatActivity()  {
@@ -62,8 +63,8 @@ class CreateSpectacle : AppCompatActivity()  {
                 })
         val a = (App.controllers[IController.Type.AUTHORS] as RetrofitAuthorsController)
                 .getAuthors(object : ICallback, IAuthorsController.IGetAuthorsCallback {
-                    override fun onAuthorsLoaded(authors: List<AuthorData>) {
-                        for (ad : AuthorData in authors){
+                    override fun onAuthorsLoaded(authors: List<IdAuthorData>) {
+                        for (ad : IdAuthorData in authors){
                             authorsList.add(ad.name+" "+ad.surname)
                         }
                         if (spinner2 != null) {
@@ -73,8 +74,8 @@ class CreateSpectacle : AppCompatActivity()  {
 
                             spinner2.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                                 override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-//                                    authorId = authors[position].
-                                    authorId = 1
+                                    authorId = authors[position].id
+//                                    authorId = 1
                                 }
 
                                 override fun onNothingSelected(parent: AdapterView<*>) {

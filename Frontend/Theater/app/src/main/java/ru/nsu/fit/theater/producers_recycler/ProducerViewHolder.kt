@@ -6,7 +6,6 @@ import kotlinx.android.synthetic.main.perfproducer_row_item.view.*
 import kotlinx.android.synthetic.main.playbill_item.view.*
 import ru.nsu.fit.theater.model.PlaybillItem
 import ru.nsu.fit.theater.model.Producer
-import ru.nsu.fit.theater.playbill_recycler.PlaybillViewHolder
 import ru.nsu.fit.theater.retrofit.model.ProducerData
 import java.text.SimpleDateFormat
 import java.util.*

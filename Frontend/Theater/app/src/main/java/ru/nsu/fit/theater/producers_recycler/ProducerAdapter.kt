@@ -20,6 +20,7 @@ class ProducerAdapter(private var items: ArrayList<ProducerData>) : RecyclerView
     }
 
     override fun onBindViewHolder(p0: ProducerViewHolder, p1: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        p0.bind(items[p1])
+         //To change body of created functions use File | Settings | File Templates.
     }
 }
