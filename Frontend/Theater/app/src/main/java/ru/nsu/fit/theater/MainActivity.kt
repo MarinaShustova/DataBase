@@ -76,6 +76,8 @@ class MainActivity : AppCompatActivity(),
         // Handle navigation view item clicks here.
         when (item.itemId) {
             R.id.nav_actors -> {
+                val int = Intent(this, ActorsActivity::class.java)
+                startActivity(int)
                 // Handle the camera action
             }
             R.id.nav_authors -> {
