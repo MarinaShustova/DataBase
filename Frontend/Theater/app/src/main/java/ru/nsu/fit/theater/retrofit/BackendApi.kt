@@ -95,16 +95,16 @@ interface BackendApi {
     fun createAuthor(@Body author: AuthorData): Call<ResponseBody>
 
     @GET("/authors/{id}")
-    fun getAuthorById(@Path("id") id: Int): Call<AuthorData>
+    fun getAuthorById(@Path("id") id: Int): Call<IdAuthorData>
 
     @GET("/authors/get")
-    fun getAuthors(): Call<List<AuthorData>>
+    fun getAuthors(): Call<List<IdAuthorData>>
 
     @GET("/authors/country")
-    fun getAuthorsOfCountry(@Query("name") name: String): Call<List<AuthorData>>
+    fun getAuthorsOfCountry(@Query("name") name: String): Call<List<IdAuthorData>>
 
     @GET("/authors")
-    fun getAuthorsOfCentury(@Query("century") century: Int): Call<List<AuthorData>>
+    fun getAuthorsOfCentury(@Query("century") century: Int): Call<List<IdAuthorData>>
 
     @POST("/authors/update/{id}")
     fun updateAuthor(@Path("id") id: Int, @Body data: AuthorData): Call<ResponseBody>
