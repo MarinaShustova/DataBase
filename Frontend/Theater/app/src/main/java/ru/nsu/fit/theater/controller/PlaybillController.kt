@@ -4,28 +4,22 @@ import ru.nsu.fit.theater.model.PlaybillItem
 import java.util.*
 
 class PlaybillController(){
-<<<<<<< HEAD
 //    private val baseProductsList = ArrayList<PlaybillItem>().apply {
-=======
     private val baseProductsList = ArrayList<PlaybillItem>().apply {
->>>>>>> 662c24c4e5814263c1efaa62de21f72a1888a042
 //        add(PlaybillItem(Date(2019, 6, 8, 13, 0), true, "Красная шапочка", 0))
 //        add(PlaybillItem(Date(2019, 6, 28, 13, 0), true, "Летучая мышь", 6))
 //        add(PlaybillItem(Date(2019, 6, 16, 13, 0), false, "Бал в честь Жака", 12))
 //        add(PlaybillItem(Date(2019, 6, 14, 13, 0), true, "Оловянный солдатик", 0))
-<<<<<<< HEAD
 //    }
 //
 //    fun getSpectacles(): ArrayList<PlaybillItem>{
 //        println(baseProductsList)
 //        return baseProductsList
 //    }
-=======
     }
 
     fun getSpectacles(): ArrayList<PlaybillItem>{
         println(baseProductsList)
         return baseProductsList
     }
->>>>>>> 662c24c4e5814263c1efaa62de21f72a1888a042
 }
