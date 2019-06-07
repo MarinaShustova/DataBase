@@ -7,7 +7,8 @@ data class PerformanceData(
         val production_designer: Int,
         val production_director: Int,
         val production_conductor: Int,
-        val season: Int
+        val season: Int,
+        val spectacle_id: Int
 ) {
 //    constructor(p: Performance): this(p.id, p.production_designer,
 //        p.production_director, p.production_conductor, p.season)

@@ -3,6 +3,7 @@ package theater.dao
 import theater.model.Author
 import theater.model.Country
 import theater.model.data.AuthorData
+import theater.model.data.IdAuthorData
 import java.sql.Date
 import java.sql.Statement
 import javax.sql.DataSource
@@ -85,7 +86,7 @@ class AuthorDao(private val dataSource: DataSource) {
         }
     }
 
-    fun getAuthors(): ArrayList<AuthorData> {
+    fun getAuthors(): ArrayList<IdAuthorData> {
         val stmt = dataSource.connection.prepareStatement(
                 "SELECT a.id author_id, a.surname surname, a.name author_name, a.birth_date birth_date, a.death_date death_date" +
                         ", c.id country_id, c.name country_name "
@@ -94,9 +95,11 @@ class AuthorDao(private val dataSource: DataSource) {
         )
         val queryResult = stmt.executeQuery()
 
-        val authorsList = ArrayList<AuthorData>()
+        val authorsList = ArrayList<IdAuthorData>()
         while (queryResult.next()) {
-            authorsList.add(AuthorData(queryResult.getString("author_name"),
+            authorsList.add(IdAuthorData(
+                    queryResult.getInt("author_id"),
+                    queryResult.getString("author_name"),
                     queryResult.getString("surname"),
                     queryResult.getDate("birth_date"),
                     queryResult.getDate("death_date"),

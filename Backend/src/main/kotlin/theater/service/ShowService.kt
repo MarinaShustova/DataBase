@@ -2,6 +2,7 @@ package theater.service
 
 import theater.dao.ShowDao
 import theater.model.Show
+import theater.model.data.PlaybillData
 import theater.model.data.ShowData
 import javax.sql.DataSource
 
@@ -56,4 +57,9 @@ class ShowService(private val dataSource: DataSource,
         }
     }
 
+    fun getPlaybills(): List<PlaybillData> {
+        return transaction(dataSource) {
+            showDao.getPlaybills()
+        }
+    }
 }

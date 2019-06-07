@@ -3,6 +3,7 @@ package ru.nsu.fit.theater.control.authors
 import ru.nsu.fit.theater.control.ICallback
 import ru.nsu.fit.theater.control.IController
 import ru.nsu.fit.theater.retrofit.model.AuthorData
+import ru.nsu.fit.theater.retrofit.model.IdAuthorData
 
 interface IAuthorsController: IController {
     interface ICreateAuthorCallback: ICallback {
@@ -10,19 +11,19 @@ interface IAuthorsController: IController {
     }
 
     interface IGetAuthorCallback: ICallback {
-        fun onAuthorLoaded(author: AuthorData)
+        fun onAuthorLoaded(author: IdAuthorData)
     }
 
     interface IGetAuthorsCallback: ICallback {
-        fun onAuthorsLoaded(authors: List<AuthorData>)
+        fun onAuthorsLoaded(authors: List<IdAuthorData>)
     }
 
     interface IGetAuthorsOfCountryCallback: ICallback {
-        fun onAuthorsLoaded(authors: List<AuthorData>)
+        fun onAuthorsLoaded(authors: List<IdAuthorData>)
     }
 
     interface IGetAuthorsOfCenturyCallback: ICallback {
-        fun onAuthorsLoaded(authors: List<AuthorData>)
+        fun onAuthorsLoaded(authors: List<IdAuthorData>)
     }
 
     interface IUpdateAuthorCallback: ICallback {

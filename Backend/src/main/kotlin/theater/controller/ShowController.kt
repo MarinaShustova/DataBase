@@ -3,6 +3,7 @@ package theater.controller
 import org.springframework.web.bind.annotation.*
 import theater.exception.ShowNotFoundException
 import theater.model.Show
+import theater.model.data.PlaybillData
 import theater.model.data.ShowData
 import theater.service.ShowService
 
@@ -35,5 +36,10 @@ class ShowController(private val showService: ShowService) {
     fun deleteShow(@PathVariable id: Int): String {
         showService.deleteShow(id)
         return "Deleted show argsStr"
+    }
+
+    @GetMapping("/playbills")
+    fun getPlaybills(): List<PlaybillData> {
+        return showService.getPlaybills()
     }
 }

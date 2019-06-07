@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.*
 import theater.exception.AuthorNotFoundException
 import theater.model.Author
 import theater.model.data.AuthorData
+import theater.model.data.IdAuthorData
 import theater.service.AuthorService
 import java.sql.Date
 
@@ -23,35 +24,35 @@ class AuthorController(private val authorService: AuthorService) {
 //    }
 
     @GetMapping("/{id}")
-    fun getAuthor(@PathVariable id: Int): AuthorData {
+    fun getAuthor(@PathVariable id: Int): IdAuthorData {
         val author = authorService.getAuthor(id) ?: throw AuthorNotFoundException()
-        return AuthorData(author)
+        return IdAuthorData(author)
     }
 
     @GetMapping("/get")
-    fun getAuthors(): ArrayList<AuthorData> {
+    fun getAuthors(): ArrayList<IdAuthorData> {
         return authorService.getAuthors()
     }
 
     @GetMapping("/country")
-    fun getAuthorsOfCountry(@RequestParam name: String): List<AuthorData> {
+    fun getAuthorsOfCountry(@RequestParam name: String): List<IdAuthorData> {
         val authorsList = authorService.getAuthorsOfCountry(name)
-        val res = ArrayList<AuthorData>()
+        val res = ArrayList<IdAuthorData>()
         for (author in authorsList) {
-            res.add(AuthorData(author.name, author.surname, author.birthDate, author.deathDate, author.country.name))
+            res.add(IdAuthorData(author.id, author.name, author.surname, author.birthDate, author.deathDate, author.country.name))
         }
         return res
     }
 
     @GetMapping
-    fun getAuthorsOfCurCentury(@RequestParam century: Int): List<AuthorData> {
+    fun getAuthorsOfCurCentury(@RequestParam century: Int): List<IdAuthorData> {
         return try {
             val startDate = Date.valueOf((century - 1).toString() + "01-01-01")
             val endDate = Date.valueOf((century).toString() + "00-01-01")
             val authorsList = authorService.getAuthorsOfCurCentury(startDate, endDate)
-            val res = ArrayList<AuthorData>()
+            val res = ArrayList<IdAuthorData>()
             for (author in authorsList) {
-                res.add(AuthorData(author.name, author.surname, author.birthDate, author.deathDate, author.country.name))
+                res.add(IdAuthorData(author.id, author.name, author.surname, author.birthDate, author.deathDate, author.country.name))
             }
             res
         } catch (ex: IllegalArgumentException) {

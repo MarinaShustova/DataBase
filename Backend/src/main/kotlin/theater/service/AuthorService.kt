@@ -7,6 +7,7 @@ import theater.exception.CountryNotFoundException
 import theater.model.Author
 import theater.model.Country
 import theater.model.data.AuthorData
+import theater.model.data.IdAuthorData
 import java.sql.Date
 import javax.sql.DataSource
 
@@ -34,7 +35,7 @@ class AuthorService(private val dataSource: DataSource, private val authorDao: A
         }
     }
 
-    fun getAuthors(): ArrayList<AuthorData> {
+    fun getAuthors(): ArrayList<IdAuthorData> {
         return transaction(dataSource) {
             authorDao.getAuthors()
         }

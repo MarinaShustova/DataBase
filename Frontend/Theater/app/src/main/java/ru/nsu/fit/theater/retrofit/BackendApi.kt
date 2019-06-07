@@ -5,9 +5,7 @@ package ru.nsu.fit.theater.retrofit
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.*
-import ru.nsu.fit.theater.model.Actor
-import ru.nsu.fit.theater.model.PerformanceInfo
-import ru.nsu.fit.theater.model.Producer
+import ru.nsu.fit.theater.model.*
 import ru.nsu.fit.theater.retrofit.model.*
 import java.sql.Timestamp
 
@@ -95,16 +93,16 @@ interface BackendApi {
     fun createAuthor(@Body author: AuthorData): Call<ResponseBody>
 
     @GET("/authors/{id}")
-    fun getAuthorById(@Path("id") id: Int): Call<AuthorData>
+    fun getAuthorById(@Path("id") id: Int): Call<IdAuthorData>
 
     @GET("/authors/get")
-    fun getAuthors(): Call<List<AuthorData>>
+    fun getAuthors(): Call<List<IdAuthorData>>
 
     @GET("/authors/country")
-    fun getAuthorsOfCountry(@Query("name") name: String): Call<List<AuthorData>>
+    fun getAuthorsOfCountry(@Query("name") name: String): Call<List<IdAuthorData>>
 
     @GET("/authors")
-    fun getAuthorsOfCentury(@Query("century") century: Int): Call<List<AuthorData>>
+    fun getAuthorsOfCentury(@Query("century") century: Int): Call<List<IdAuthorData>>
 
     @POST("/authors/update/{id}")
     fun updateAuthor(@Path("id") id: Int, @Body data: AuthorData): Call<ResponseBody>
@@ -241,7 +239,8 @@ interface BackendApi {
             @Query("pr_des") designer: Int,
             @Query("pr_dir") director: Int,
             @Query("pr_cond") conductor: Int,
-            @Query("season") season: Int
+            @Query("season") season: Int,
+            @Query("spectacle_id") spectacle_id: Int
     ): Call<ResponseBody>
 
     @GET("/performances")
@@ -259,7 +258,8 @@ interface BackendApi {
             @Query("pr_des") designer: Int,
             @Query("pr_dir") director: Int,
             @Query("pr_cond") conductor: Int,
-            @Query("season") season: Int
+            @Query("season") season: Int,
+            @Query("spectacle_id") spectacle_id: Int
     ): Call<ResponseBody>
 
     @POST("/performances/delete/{id}")
@@ -356,6 +356,9 @@ interface BackendApi {
 
     @POST("/shows/delete/{id}")
     fun deleteShow(@Path("id") id: Int): Call<ResponseBody>
+
+    @GET("/shows/playbills")
+    fun getPlaybills(): Call<List<PlaybillItem>>
     //endregion
 
     //region Spectacles
@@ -369,28 +372,28 @@ interface BackendApi {
     ): Call<ResponseBody>
 
     @GET("/spectacles/{id}")
-    fun getSpectacle(@Path("id") d: Int): Call<SpectacleData>
+    fun getSpectacle(@Path("id") d: Int): Call<Spectacle>
 
     @GET("/spectacles/all")
-    fun getSpectacles(): Call<List<IdSpectacleData>>
+    fun getSpectacles(): Call<List<Spectacle>>
 
     @GET("/spectacles/genre")
-    fun getSpectaclesOfGenre(@Query("name") genre: String): Call<List<IdSpectacleData>>
+    fun getSpectaclesOfGenre(@Query("name") genre: String): Call<List<Spectacle>>
 
     @GET("/spectacles/author")
-    fun getSpectaclesOfAuthor(@Query("id") id: Int): Call<List<IdSpectacleData>>
+    fun getSpectaclesOfAuthor(@Query("id") id: Int): Call<List<Spectacle>>
 
     @GET("/spectacles/country")
-    fun getSpectaclesOfCountry(@Query("name") country: String): Call<List<IdSpectacleData>>
+    fun getSpectaclesOfCountry(@Query("name") country: String): Call<List<Spectacle>>
 
     @GET("/spectacles/get")
-    fun getSpectaclesOfCentury(@Query("century") century: Int): Call<List<IdSpectacleData>>
+    fun getSpectaclesOfCentury(@Query("century") century: Int): Call<List<Spectacle>>
 
     @GET("/spectacles/get/")
     fun getSpectaclesOfPeriod(
             @Query("start") from: Timestamp,
             @Query("end") to: Timestamp
-    ): Call<List<IdSpectacleData>>
+    ): Call<List<Spectacle>>
 
     @POST("/spectacles/update")
     fun updateSpectacle(@Query("id") id: Int, @Body data: SpectacleData): Call<ResponseBody>
