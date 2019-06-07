@@ -17,7 +17,7 @@ import ru.nsu.fit.theater.retrofit.BackendApi
 
 class App: Application() {
     companion object {
-        private const val BASE_URL = "http://" + "localhost" + ":8080"
+        private const val BASE_URL = "http://" + "192.168.1.42" + ":8080"
 
         lateinit var api: BackendApi
 
