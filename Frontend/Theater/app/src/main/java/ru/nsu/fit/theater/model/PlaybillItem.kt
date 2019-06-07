@@ -2,16 +2,18 @@ package ru.nsu.fit.theater.model
 
 import android.os.Parcel
 import android.os.Parcelable
-import java.util.*
+import java.sql.Date
 
 data class PlaybillItem(val date:Date,
                         val premiere: Boolean,
                         val name: String,
-                        val age: Int) : Parcelable {
+                        val age: Int,
+                        val showId: Int) : Parcelable {
     constructor(parcel: Parcel) : this(
             Date(parcel.readLong()),
             parcel.readByte() != 0.toByte(),
             parcel.readString(),
+            parcel.readInt(),
             parcel.readInt())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -19,6 +21,7 @@ data class PlaybillItem(val date:Date,
         parcel.writeByte(if (premiere) 1 else 0)
         parcel.writeString(name)
         parcel.writeInt(age)
+        parcel.writeInt(showId)
     }
 
     override fun describeContents(): Int {
