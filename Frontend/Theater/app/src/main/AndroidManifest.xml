@@ -15,6 +15,18 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+                android:name=".ActorsActivity"
+                android:label="Актеры">
+        </activity>
+        <activity
+                android:name=".CreateActorActivity"
+                android:label="Создать актера">
+        </activity>
+        <activity
+                android:name=".UpdateActorActivity"
+                android:label="Редактировать актера">
+        </activity>
+        <activity
             android:name=".PerformanceActivity"
             android:label="@string/title_activity_performance"
             android:theme="@style/AppTheme.NoActionBar"></activity>
