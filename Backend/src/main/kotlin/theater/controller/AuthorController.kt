@@ -38,7 +38,7 @@ class AuthorController(private val authorService: AuthorService) {
         val authorsList = authorService.getAuthorsOfCountry(name)
         val res = ArrayList<AuthorData>()
         for (author in authorsList) {
-            res.add(AuthorData(author.name, author.surname, author.birthDate, author.deathDate, author.country.name))
+            res.add(AuthorData(author.id, author.name, author.surname, author.birthDate, author.deathDate, author.country.name))
         }
         return res
     }
@@ -51,7 +51,7 @@ class AuthorController(private val authorService: AuthorService) {
             val authorsList = authorService.getAuthorsOfCurCentury(startDate, endDate)
             val res = ArrayList<AuthorData>()
             for (author in authorsList) {
-                res.add(AuthorData(author.name, author.surname, author.birthDate, author.deathDate, author.country.name))
+                res.add(AuthorData(author.id, author.name, author.surname, author.birthDate, author.deathDate, author.country.name))
             }
             res
         } catch (ex: IllegalArgumentException) {
